@@ -1,0 +1,3 @@
+package fr.proutlost.worldprep.biome;
+import java.util.Objects;import java.util.function.Predicate;
+public record BiomeCandidate(String id,String fallback){public enum Status{VALID,FALLBACK,MISSING}public record Resolution(Status status,String resolvedId){}public BiomeCandidate{requireId(id);if(fallback!=null)requireId(fallback);}public Resolution resolve(Predicate<String> registry){Objects.requireNonNull(registry);if(registry.test(id))return new Resolution(Status.VALID,id);if(fallback!=null&&registry.test(fallback))return new Resolution(Status.FALLBACK,fallback);return new Resolution(Status.MISSING,null);}private static void requireId(String id){if(id==null||!id.matches("[a-z0-9_.-]+:[a-z0-9_./-]+"))throw new IllegalArgumentException("Invalid registry id: "+id);}}
