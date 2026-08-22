@@ -24,7 +24,7 @@ public final class WorldPrepSavedData extends SavedData {
         public boolean intersectsQuart(int qx,int qz){int x=qx<<2,z=qz<<2;return dimension.equals(this.dimension)&&x<=maxX&&x+3>=minX&&z<=maxZ&&z+3>=minZ;}
     }
     public record OverrideCell(int quartX,int quartZ,String exactBiome,String palette){}
-    public enum Operation{ANALYZE,PREVIEW_BIOMES,APPLY_BIOMES,ROLLBACK_BIOMES}
+    public enum Operation{ANALYZE,PREVIEW_BIOMES,APPLY_BIOMES,ROLLBACK_BIOMES,PREVIEW_GEOLOGY,APPLY_GEOLOGY,ROLLBACK_GEOLOGY,PREVIEW_ORES,APPLY_ORES,ROLLBACK_ORES}
     public enum JobState{QUEUED,RUNNING,PAUSED,COMPLETED,CANCELLED,FAILED}
     public record Job(UUID id,Operation operation,String area,JobState state,long cursor,String error,UUID snapshotId){
         public Job withState(JobState value){return new Job(id,operation,area,value,cursor,error,snapshotId);}
@@ -52,6 +52,8 @@ public final class WorldPrepSavedData extends SavedData {
     private final Map<UUID,Job> jobs=new LinkedHashMap<>();
     private final Map<UUID,Snapshot> snapshots=new LinkedHashMap<>();
     public Map<UUID,Selection> selections(){return selections;}public Map<String,Area> areas(){return areas;}public Map<String,ProtectedZone> protections(){return protections;}public Map<Long,OverrideCell> overrides(){return overrides;}public Map<String,Plan> plans(){return plans;}public Map<UUID,Job> jobs(){return jobs;}public Map<UUID,Snapshot> snapshots(){return snapshots;}public void changed(){setDirty();}
+    public boolean protectedBlock(String dimension,int x,int z){return protections.values().stream().anyMatch(p->p.dimension().equals(dimension)&&x>=p.minX()&&x<=p.maxX()&&z>=p.minZ()&&z<=p.maxZ());}
+
     public boolean protectedAt(String dimension,int qx,int qz){return protections.values().stream().anyMatch(p->p.dimension().equals(dimension)&&p.intersectsQuart(qx,qz));}
 
     public static WorldPrepSavedData load(CompoundTag root,HolderLookup.Provider registries){int schema=root.getInt("schema");if(schema>SCHEMA)throw new IllegalStateException("WorldPrep data schema "+schema+" is newer than supported "+SCHEMA);var d=new WorldPrepSavedData();
