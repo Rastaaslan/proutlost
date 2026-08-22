@@ -2,6 +2,7 @@ package fr.proutlost;
 
 import fr.proutlost.worldprep.WorldPrepCommands;
 import fr.proutlost.worldprep.WorldPrepConfig;
+import fr.proutlost.worldprep.runtime.WorldPrepRuntime;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -15,5 +16,6 @@ public final class Proutlost {
     public Proutlost(IEventBus modBus, ModContainer container) {
         container.registerConfig(ModConfig.Type.SERVER, WorldPrepConfig.SPEC);
         NeoForge.EVENT_BUS.addListener(WorldPrepCommands::register);
+        NeoForge.EVENT_BUS.addListener(WorldPrepRuntime::tick);
     }
 }
