@@ -1,0 +1,3 @@
+package fr.proutlost.worldprep.location;
+import fr.proutlost.worldprep.area.WorldPrepArea;import java.util.Map;import java.util.Objects;
+public record LocationDefinition(String id,Type type,WorldPrepArea bounds,Map<String,Anchor> anchors){public enum Type{NARRATIVE_STATIC,NARRATIVE_TRANSFORMABLE,HIDDEN,PROTECTED,MANUAL_ENVIRONMENT}public record Anchor(String dimension,int x,int y,int z){}public LocationDefinition{Objects.requireNonNull(type);Objects.requireNonNull(bounds);anchors=Map.copyOf(anchors);if(!id.equals(bounds.id()))throw new IllegalArgumentException("Location and bounds IDs differ");}public boolean blocksWorldPrep(){return type!=Type.NARRATIVE_TRANSFORMABLE;}}
