@@ -1,0 +1,3 @@
+package fr.proutlost.worldprep.plan;
+import java.nio.charset.StandardCharsets;import java.security.MessageDigest;import java.security.NoSuchAlgorithmException;import java.util.HexFormat;
+public record PlanFingerprint(String value){public PlanFingerprint{if(!value.matches("[0-9a-f]{64}"))throw new IllegalArgumentException("SHA-256 required");}public static PlanFingerprint of(String... parts){try{MessageDigest d=MessageDigest.getInstance("SHA-256");for(String p:parts){d.update(p.getBytes(StandardCharsets.UTF_8));d.update((byte)0);}return new PlanFingerprint(HexFormat.of().formatHex(d.digest()));}catch(NoSuchAlgorithmException e){throw new AssertionError(e);}}}

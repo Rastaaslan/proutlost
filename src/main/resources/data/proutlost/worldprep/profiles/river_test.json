@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "id": "proutlost:river_test",
+  "seed": 7640891576956012809,
+  "biomes": {
+    "coastal": [{"id":"minecraft:beach"}],
+    "stony_coast": [{"id":"minecraft:stony_shore","fallback":"minecraft:beach"}],
+    "open_lowland": [{"id":"minecraft:plains"},{"id":"minecraft:meadow","fallback":"minecraft:plains"}],
+    "lowland_forest": [{"id":"minecraft:forest"}],
+    "highland": [{"id":"minecraft:meadow","fallback":"minecraft:plains"}],
+    "rocky_highland": [{"id":"minecraft:windswept_hills","fallback":"minecraft:meadow"}],
+    "mountain": [{"id":"minecraft:jagged_peaks","fallback":"minecraft:windswept_hills"}],
+    "marine_shallow": [{"id":"minecraft:lukewarm_ocean","fallback":"minecraft:ocean"}],
+    "marine": [{"id":"minecraft:ocean"}],
+    "marine_deep": [{"id":"minecraft:deep_ocean","fallback":"minecraft:ocean"}]
+  }
+}
