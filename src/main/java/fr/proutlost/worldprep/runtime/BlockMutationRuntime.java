@@ -26,7 +26,7 @@ public final class BlockMutationRuntime {
     private static final Ore[] ORES={new Ore("coal","coal_ore","deepslate_coal_ore",0,192,95,11),new Ore("iron","iron_ore","deepslate_iron_ore",-64,128,120,17),new Ore("copper","copper_ore","deepslate_copper_ore",-16,112,150,23),new Ore("gold","gold_ore","deepslate_gold_ore",-64,32,260,29),new Ore("redstone","redstone_ore","deepslate_redstone_ore",-64,16,180,31),new Ore("lapis","lapis_ore","deepslate_lapis_ore",-64,48,300,37),new Ore("diamond","diamond_ore","deepslate_diamond_ore",-64,16,650,41),new Ore("emerald","emerald_ore","deepslate_emerald_ore",32,256,900,43)};
 
     public static BlockWorldPrepData data(ServerLevel level){return level.getDataStorage().computeIfAbsent(BlockWorldPrepData.FACTORY,BlockWorldPrepData.FILE_ID);}
-    public static boolean isBlockOperation(WorldPrepSavedData.Operation operation){return operation.ordinal()>=WorldPrepSavedData.Operation.PREVIEW_GEOLOGY.ordinal();}
+    public static boolean isBlockOperation(WorldPrepSavedData.Operation operation){return switch(operation){case PREVIEW_GEOLOGY,APPLY_GEOLOGY,ROLLBACK_GEOLOGY,PREVIEW_ORES,APPLY_ORES,ROLLBACK_ORES->true;default->false;};}
 
     public static void prepare(ServerLevel level,WorldPrepSavedData data,UUID id,WorldPrepSavedData.Operation operation,WorldPrepSavedData.Area area){
         String pass=pass(operation);var blocks=data(level);requireCompatible(blocks);
