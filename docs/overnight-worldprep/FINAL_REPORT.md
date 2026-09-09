@@ -2,33 +2,21 @@
 
 Repository: `Rastaaslan/proutlost`
 
-Initial remote/main snapshot SHA: `106e12683ed70919fc50d079a91bd18182265015` (from `.git/FETCH_HEAD`; live fetch was HTTP 403)
+Initial `main` SHA: `106e12683ed70919fc50d079a91bd18182265015`
 
-Final local SHA before this report: `85a1b966c9bb8594f8673748e6b88b3748d9d27d`
+Actual remote task branch: `codex/executer-le-master-run-overnight-worldprep`
 
-Final remote SHA: `106e12683ed70919fc50d079a91bd18182265015` (publication failed)
+Pull request: **#5** — `Overnight: Harden WorldPrep storage, pipeline models, and safety gates (Phase 0–7)`
 
-Actual task branch: `codex/worldprep-code-complete-overnight`
-
-Remote publication status: **NOT PUBLISHED** — GitHub credentials unavailable. PR URL: unavailable.
-
-## Commits
-
-1. `d8f20dc` phase 0 baseline
-2. `b8b8422` phase 1 hardened primitives
-3. `bd7af0a` phase 2 pipeline model
-4. `68cde54` phase 3 analysis/authoring safety
-5. `ba67172` phase 4 terrestrial primitives
-6. `0a52081` phase 5 aquatic/habitats
-7. `08dbdba` phase 6 tooling gates
-8. `85a1b96` phase 7 adversarial gate
-9. final documentation checkpoint (this document)
+Remote publication status: **PUBLISHED**. The initial shell/Codex push attempts failed because credentials were unavailable, but the work was subsequently published through Codex Web and then hardened directly on the GitHub PR branch.
 
 ## Pinned platform
 
 - Minecraft 1.21.1
 - NeoForge 21.1.248
-- Java 21 (test runtime reported 21.0.2)
+- Java 21
+- Gradle Wrapper 8.14.4
+- Verified wrapper JAR SHA-256: `7d3a4ac4de1c32b59bc6a4eb8ecb8e612ccd0cf1ae1e99f66902da64df296172`
 
 ## Functional matrix
 
@@ -43,62 +31,95 @@ Remote publication status: **NOT PUBLISHED** — GitHub credentials unavailable.
 | TREES | Pure candidate modes only | Unit | Inspectable templates/leaves/groups/live pipeline |
 | AQUATIC | Pure classifier only | Unit | Registry validation/live reversible pipeline |
 | HABITATS | Immutable query model only | Unit | Planner/persistence/upstream identity |
-| VALIDATION | Finding/severity gate only | Unit | Detectors/commands/persistence |
+| VALIDATION | Finding/severity model only | Unit | Detectors/commands/persistence/live pass |
 
 ## Architecture matrix
 
 | Capability | State |
 |---|---|
-| PagedPlanStore / PagedJournalStore | Shared durable page codec implemented and unit tested; not wired to live runtime |
-| Checksums / immutable manifests | Implemented in new layer; manifest not yet serialized/integrated |
-| Recovery / idempotence | Domain states and three-state semantics implemented; legacy block GameTests pass; restart reconciliation incomplete |
-| Maintenance locks | Overlap job check exists; player/authoring interaction hooks incomplete |
-| Chunk safety | **Blocked**: live sampler/runtime uses generating `getChunk` paths |
+| Durable page codec | Implemented, bounded, canonical, SHA-256 protected and independently tested |
+| Page integrity | Digest covers immutable page metadata and payload; forged/corrupt identity fails closed |
+| Sealed PlanManifest | Full canonical identity/root verification implemented and tested |
+| PipelineRun | Exact plan UUID + fingerprint references with canonical self-verifying root implemented/tested |
+| PassGraph | Explicit dependencies/invalidation; VALIDATION is invalidated by every environmental pass |
+| SemanticConfig | Canonical length-prefixed hashing; execution settings excluded from semantic identity |
+| Recovery/idempotence | Domain states and three-state semantics implemented; live restart reconciliation incomplete |
+| EnvironmentRevision / ApplyRecord | Model implemented, not yet persisted/integrated into live execution |
+| PlanningWorldView | Immutable overlay model implemented/tested, not live-wired |
+| ProtectionResolver | Central fail-closed model implemented/tested, not yet used by every legacy path |
+| WorldPrep disabled gate | Enqueue, global tick and direct public `tickLevel` execution are gated; GameTest covered |
+| Chunk safety | **BLOCKED**: live sampler/runtime still has paths that can load/generate missing chunks |
 | Disk preflight | Not implemented |
-| EnvironmentRevision / ApplyRecord | Model implemented, not persisted/integrated |
-| PipelineRun / PlanningWorldView | Immutable models implemented/tested, not live-wired |
-| LocationRegistry | Existing definition plus zones; registry persistence/commands incomplete |
-| ProtectionResolver | Pure central resolver implemented/tested, not used by all legacy paths |
-| OverrideRegistry | Not complete |
-| PNG previews | Safe scale calculation only; files/metadata not implemented |
-| Validation | Severity/FATAL gate only; validation pass not live |
+| Paged live plans/journals | Foundation exists but BIOMES/GEOLOGY/ORES still use legacy runtime persistence |
+| LocationRegistry / OverrideRegistry | Incomplete |
+| PNG previews | Scale-safety primitive only; renderer/metadata incomplete |
+| Validation runtime | Severity/FATAL primitive only; complete live validation pass incomplete |
 
-## Tests
+## PR #5 pre-merge hardening
 
-### Passed
+The initial foundation review found several issues before merge. They were corrected on the PR branch:
 
-- `gradle test --no-daemon`: **40 tests passed**, `BUILD SUCCESSFUL`.
-- `gradle build --no-daemon`: **BUILD SUCCESSFUL**.
-- `gradle runGameTestServer --no-daemon` final run: **14/14 required GameTests passed**, `BUILD SUCCESSFUL`.
+- page checksums now cover page identity metadata as well as payload;
+- `PlanManifest` roots are canonically calculated and self-verified;
+- `PipelineRun` roots cover area/dimension/profile/base-world identity and exact plan UUID+fingerprint references;
+- `VALIDATION` now depends on all nine environmental passes;
+- `SemanticConfig` uses an unambiguous length-prefixed canonical encoding;
+- direct `tickLevel()` execution is refused while WorldPrep is disabled;
+- the complete Gradle 8.14.4 wrapper was restored directly on GitHub and verified by SHA-256;
+- dedicated regression tests were added for the hardening changes.
 
-### Failed then fixed
+Validated foundation commit before report-only cleanup: `7c6ecabc05038c61a00fba99bd2da346446b7e23`.
 
-- Initial compile failed on expanded terrain switch and one long-to-int conversion; fixed.
-- First new unit run had two page failures; publication comparison and corruption targeting were fixed.
-- Second unit run had one corruption-fixture failure; fixed.
-- First GameTest run had 11/14 failures because enabled=false now correctly gated destructive fixture operations; destructive test contexts now explicitly opt in. Final run passed 14/14.
+### Independent GitHub Actions validation
 
-### Not run / not proven
+Run: `34318887696`
 
-- Real mid-apply process kill/restart/reconcile/resume.
-- Real mid-rollback process kill.
-- Full fault-injection matrices.
-- Workload above 5,015 mutations (existing real-chunk test uses 600).
-- Full determinism matrix across workers/restarts/order.
-- Fresh checkout from remote task branch (branch could not be pushed).
+The clean GitHub-hosted runner checked out the remote PR branch and passed all required foundation gates:
+
+- wrapper binary SHA-256 verification: **PASS**;
+- Gradle distribution pinned to 8.14.4: **PASS**;
+- `git diff --check`: **PASS**;
+- no `.ordinal(` use under Java sources: **PASS**;
+- `./gradlew test --no-daemon`: **BUILD SUCCESSFUL**;
+- `./gradlew build --no-daemon`: **BUILD SUCCESSFUL**;
+- `./gradlew runGameTestServer --no-daemon`: **15/15 required GameTests passed**;
+- `./gradlew runServer --no-daemon`: dedicated Minecraft 1.21.1 / NeoForge 21.1.248 server reached **`Done (0.576s)!`**.
+
+The temporary validation workflow used only to establish this independent proof is removed by the report-cleanup commit and is not intended to become a permanent project workflow.
+
+## Historical failures fixed during the work
+
+- Initial compile issues in the expanded terrain code were fixed.
+- Initial durable-page regression failures were fixed.
+- GameTests initially exposed the newly enforced disabled-mode gate; fixtures were corrected to opt in explicitly.
+- Codex Web could not transport `gradle-wrapper.jar`; the verified official binary was restored directly on the GitHub PR branch instead.
+
+## Still not proven / remaining blockers
+
+- Real mid-APPLY process kill/restart/reconcile/resume.
+- Real mid-ROLLBACK process kill/recovery.
+- Complete crash-boundary fault-injection matrix.
+- Representative large-area bounded-memory live execution.
+- Full determinism matrix across execution budgets/workers/restarts/order.
 - MapDev River acceptance.
+- Most importantly, the hardened paged storage/recovery models are **not yet wired into the live BIOMES/GEOLOGY/ORES runtime**.
+- The live sampler/runtime does not yet enforce the required no-generation chunk acquisition policy.
+- Disk preflight, complete maintenance locking and complete rollback ownership integration remain unfinished.
+- SOILS/FLORA/TREES/AQUATIC/HABITATS remain safe planning/model primitives rather than complete reversible live passes.
 
-## Known limitations and environment blockers
+Therefore this PR is safe to merge **as a hardened foundation**, not as a finished environmental compiler.
 
-The live runtime remains a vertical slice with whole-plan maps, the 250,000 mutation cap, repeated SavedData serialization, biome save-per-cell, latest-snapshot biome rollback, incomplete recovery, no disk preflight, and paths that may generate chunks. New passes are safe pure components but are not a complete persisted pipeline. GitHub fetch/push/PR publication is blocked by HTTP 403/missing credentials. The Gradle wrapper JAR is absent, so installed Gradle 8.14.4 was used. GameTest logged an unreachable Mojang public-key request but completed successfully.
+PR #5 PRE-MERGE HARDENING:
+PASS
 
-Manual MapDev acceptance is still required and is **not safe yet** because no-generation and live paged journal/plan guarantees are not integrated.
+SAFE TO MERGE THIS FOUNDATION INTO MAIN:
+YES
 
 WORLDPREP CODE COMPLETE:
 NO
 
 SOURCE DURABLY PUBLISHED TO GITHUB:
-NO
+YES
 
 AUTOMATED SAFETY GATES PASSED:
 NO
