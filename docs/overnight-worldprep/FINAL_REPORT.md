@@ -85,7 +85,7 @@ The clean GitHub-hosted runner checked out the remote PR branch and passed all r
 - `./gradlew runGameTestServer --no-daemon`: **15/15 required GameTests passed**;
 - `./gradlew runServer --no-daemon`: dedicated Minecraft 1.21.1 / NeoForge 21.1.248 server reached **`Done (0.576s)!`**.
 
-The temporary validation workflow used only to establish this independent proof is removed by the report-cleanup commit and is not intended to become a permanent project workflow.
+The temporary validation workflow used only to establish this independent proof was removed by the report-cleanup commit and is not intended to become a permanent project workflow.
 
 ## Historical failures fixed during the work
 
