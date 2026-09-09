@@ -1,0 +1,39 @@
+name: Restore WorldPrep Gradle wrapper
+
+on:
+  push:
+    branches:
+      - codex/executer-le-master-run-overnight-worldprep
+
+permissions:
+  contents: write
+
+jobs:
+  restore-wrapper:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: codex/executer-le-master-run-overnight-worldprep
+          fetch-depth: 0
+
+      - name: Download and verify Gradle 8.14.4 wrapper JAR
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output gradle/wrapper/gradle-wrapper.jar \
+            https://raw.githubusercontent.com/gradle/gradle/v8.14.4/gradle/wrapper/gradle-wrapper.jar
+          echo "7d3a4ac4de1c32b59bc6a4eb8ecb8e612ccd0cf1ae1e99f66902da64df296172  gradle/wrapper/gradle-wrapper.jar" | sha256sum --check --strict
+
+      - name: Commit verified wrapper binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gradle/wrapper/gradle-wrapper.jar
+          git diff --cached --quiet && exit 0
+          git commit -m "build: restore verified Gradle 8.14.4 wrapper"
+          git push origin HEAD:codex/executer-le-master-run-overnight-worldprep
