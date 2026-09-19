@@ -45,6 +45,7 @@ public final class BlockWorldPrepData extends SavedData {
         public final UUID id, job;
         public final String area, pass, fingerprint;
         public final Map<String, Change> changes = new LinkedHashMap<>();
+        public final Map<Long, String> pages = new LinkedHashMap<>();
 
         public Journal(UUID id, UUID job, String area, String pass, String fingerprint) {
             this.id = id;
@@ -86,6 +87,7 @@ public final class BlockWorldPrepData extends SavedData {
             var tag = (CompoundTag) value;
             var journal = new Journal(tag.getUUID("id"), tag.getUUID("job"), tag.getString("area"), tag.getString("pass"), tag.getString("fingerprint"));
             readChunks(tag.getList("chunks", Tag.TAG_COMPOUND), journal.changes);
+            for (Tag pageValue : tag.getList("pages", Tag.TAG_COMPOUND)) { var page = (CompoundTag) pageValue; journal.pages.put(page.getLong("sequence"), page.getString("checksum")); }
             data.journals.put(journal.id, journal);
         }
         return data;
@@ -113,7 +115,7 @@ public final class BlockWorldPrepData extends SavedData {
             var tag = new CompoundTag();
             tag.putUUID("id", journal.id); tag.putUUID("job", journal.job); tag.putString("area", journal.area);
             tag.putString("pass", journal.pass); tag.putString("fingerprint", journal.fingerprint);
-            tag.put("chunks", writeChunks(journal.changes)); savedJournals.add(tag);
+            tag.put("chunks", writeChunks(journal.changes)); var pages = new ListTag(); for (var page : journal.pages.entrySet()) { var pageTag = new CompoundTag(); pageTag.putLong("sequence", page.getKey()); pageTag.putString("checksum", page.getValue()); pages.add(pageTag); } tag.put("pages", pages); savedJournals.add(tag);
         }
         root.put("journals", savedJournals);
         return root;

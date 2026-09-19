@@ -22,7 +22,7 @@ public final class PassGraph {
         DEPENDENCIES.put(PassId.FLORA, Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.SOILS, PassId.STRUCTURES));
         DEPENDENCIES.put(PassId.TREES, Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.SOILS, PassId.STRUCTURES));
         DEPENDENCIES.put(PassId.HABITATS,
-                Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.SOILS, PassId.FLORA, PassId.TREES, PassId.AQUATIC));
+                Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.SOILS, PassId.AQUATIC, PassId.STRUCTURES, PassId.FLORA, PassId.TREES));
         DEPENDENCIES.put(PassId.VALIDATION,
                 Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.GEOLOGY, PassId.ORES, PassId.SOILS,
                         PassId.AQUATIC, PassId.STRUCTURES, PassId.FLORA, PassId.TREES, PassId.HABITATS));

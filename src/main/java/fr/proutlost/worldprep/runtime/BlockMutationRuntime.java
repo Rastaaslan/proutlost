@@ -4,6 +4,7 @@ import fr.proutlost.worldprep.geology.GeologyPlanner;
 import fr.proutlost.worldprep.persistence.BlockWorldPrepData;
 import fr.proutlost.worldprep.persistence.WorldPrepSavedData;
 import fr.proutlost.worldprep.plan.PlanFingerprint;
+import fr.proutlost.worldprep.world.ServerExistingChunkAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -35,8 +36,8 @@ public final class BlockMutationRuntime {
             blocks.journals().put(snapshotId,new BlockWorldPrepData.Journal(snapshotId,id,area.id(),pass,plan.fingerprint));
             data.jobs().put(id,data.jobs().get(id).withSnapshot(snapshotId));blocks.changed();data.changed();level.getDataStorage().save();
         }else if(isRollback(operation)){
-            var journal=blocks.journals().values().stream().filter(j->j.area.equals(area.id())&&j.pass.equals(pass)).reduce((x,y)->y).orElseThrow(()->new IllegalStateException("No owned "+pass+" snapshot"));
-            data.jobs().put(id,data.jobs().get(id).withSnapshot(journal.id));data.changed();
+            var requested=data.jobs().get(id).snapshotId();var journal=blocks.journals().get(requested);
+            if(journal==null||!journal.area.equals(area.id())||!journal.pass.equals(pass))throw new IllegalStateException("Exact rollback journal ownership mismatch");
         }
     }
 
@@ -69,19 +70,24 @@ public final class BlockMutationRuntime {
         int start=(int)job.cursor(),end=start+count;
         for(int index=start;index<end;index++){
             var change=changes.get(index);validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());var current=encode(level.getBlockState(pos));
+            ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
             if(current.equals(change.applied())){
                 if(!journal.changes.containsKey(BlockWorldPrepData.posKey(change.x(),change.y(),change.z())))throw ownership(pos);
             }else if(current.equals(change.before())&&safeAtBoundary(level,data,area,plan,change,pos)){
                 journal.changes.put(BlockWorldPrepData.posKey(change.x(),change.y(),change.z()),change);
             }
-            // A stale/protected unjournaled planned change is deliberately skipped. A journaled third state conflicts below.
-            else if(journal.changes.containsKey(BlockWorldPrepData.posKey(change.x(),change.y(),change.z())))throw ownership(pos);
+            // Every sealed mutation is mandatory: protection, BlockEntity, or a third state is a conflict.
+            else throw ownership(pos);
         }
-        blocks.changed();level.getDataStorage().save(); // journal is durable before every following mutation
+        var batch=List.copyOf(changes.subList(start,end));
+        var page=RuntimePageJournal.publish(level,journal,start,batch);
+        journal.pages.put((long)start,page.checksum());
+        blocks.changed();level.getDataStorage().save(); // disk page + ownership are durable before every following mutation
+        RuntimePageJournal.requirePage(level,journal,start);
         for(int index=start;index<end;index++){
             var change=changes.get(index);String key=BlockWorldPrepData.posKey(change.x(),change.y(),change.z());if(!journal.changes.containsKey(key))continue;
             var pos=new BlockPos(change.x(),change.y(),change.z());String current=encode(level.getBlockState(pos));
-            if(current.equals(change.before())){level.setBlock(pos,decode(change.applied()),Block.UPDATE_CLIENTS);level.getChunkAt(pos).setUnsaved(true);}
+            if(current.equals(change.before())){level.setBlock(pos,decode(change.applied()),Block.UPDATE_CLIENTS);ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z()).setUnsaved(true);}
             else if(!current.equals(change.applied()))throw ownership(pos);
         }
         var advanced=data.jobs().get(id).withCursor(end);if(end>=changes.size())advanced=advanced.withState(WorldPrepSavedData.JobState.COMPLETED);
@@ -89,7 +95,7 @@ public final class BlockMutationRuntime {
     }
 
     private static void preview(ServerLevel level,WorldPrepSavedData data,BlockWorldPrepData.Plan plan,WorldPrepSavedData.Area area,String pass,int x,int y,int z){
-        var pos=new BlockPos(x,y,z);var state=level.getBlockState(pos);boolean protectedAt=data.protectedBlock(area.dimension(),x,z)||level.getBlockEntity(pos)!=null;
+        ServerExistingChunkAccess.requireBlock(level,area,x,y,z);var pos=new BlockPos(x,y,z);var state=level.getBlockState(pos);boolean protectedAt=data.protectedBlock(area.dimension(),x,z)||level.getBlockEntity(pos)!=null;
         if(pass.equals("GEOLOGY")){
             if(!state.is(GEOLOGY)){if(protectedAt)plan.skipped++;return;}plan.eligible++;if(protectedAt){plan.skipped++;return;}
             var province=GeologyPlanner.province(level.getSeed(),x,y,z);String target=GeologyPlanner.replacement(level.getSeed(),x,y,z,province);
@@ -102,12 +108,14 @@ public final class BlockMutationRuntime {
 
     private static void rollback(ServerLevel level,WorldPrepSavedData data,BlockWorldPrepData blocks,UUID id,WorldPrepSavedData.Job job,WorldPrepSavedData.Area area,String pass,int budget){
         var journal=blocks.journals().get(job.snapshotId());if(journal==null||!journal.area.equals(area.id())||!journal.pass.equals(pass))throw new IllegalStateException("Snapshot ownership mismatch");
+        journal.pages.keySet().stream().sorted().forEach(sequence->RuntimePageJournal.requirePage(level,journal,sequence));
         var changes=ordered(journal.changes.values());int count=BlockCheckpointPolicy.batchLength(job.cursor(),changes.size(),budget);int start=(int)job.cursor(),end=start+count;
         for(int index=start;index<end;index++){
             var change=changes.get(index);validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());
             if(data.protectedBlock(area.dimension(),change.x(),change.z()))throw new IllegalStateException("Rollback location is protected");
             String current=encode(level.getBlockState(pos));
-            if(current.equals(change.applied())){level.setBlock(pos,decode(change.before()),Block.UPDATE_CLIENTS);level.getChunkAt(pos).setUnsaved(true);}
+            ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
+            if(current.equals(change.applied())){level.setBlock(pos,decode(change.before()),Block.UPDATE_CLIENTS);ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z()).setUnsaved(true);}
             else if(!current.equals(change.before()))throw ownership(pos); // before means journaled but never applied: safe no-op
         }
         var advanced=data.jobs().get(id).withCursor(end);if(end>=changes.size())advanced=advanced.withState(WorldPrepSavedData.JobState.COMPLETED);data.jobs().put(id,advanced);data.changed();

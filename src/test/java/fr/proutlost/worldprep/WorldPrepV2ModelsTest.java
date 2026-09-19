@@ -36,5 +36,13 @@ class WorldPrepV2ModelsTest {
    assertThrows(java.io.IOException.class, () -> manager.validate("river", "existing", id));
    assertThrows(IllegalArgumentException.class, () -> new BuildWorkspaceManager(sources, sources.resolve("river")));
  }
+ @Test void candidateCopyIsVerifiedAndSourceRemainsUnchanged() throws Exception {
+   var sources=Files.createDirectory(temp.resolve("copy-sources")); var builds=Files.createDirectory(temp.resolve("copy-builds"));
+   var source=Files.createDirectory(sources.resolve("river")); Files.writeString(source.resolve("level.dat"),"immutable");
+   var fingerprint=SourceWorldFingerprint.capture(source); var identity=new BuildIdentity("candidate",fingerprint.value(),"pack");
+   var manager=new BuildWorkspaceManager(sources,builds); var build=manager.createCandidate("river","candidate",identity);
+   assertEquals(BuildState.PLANNING,build.state()); assertEquals("immutable",Files.readString(source.resolve("level.dat")));
+   assertEquals("immutable",Files.readString(build.candidate().resolve("level.dat"))); assertEquals(BuildState.PLANNING,manager.readState(build.candidate()));
+ }
  private static FullPackSnapshot pack(List<ModArtifact> mods) { return new FullPackSnapshot("1.21.1","21.1.248",mods,List.of(new RegistryFingerprint("minecraft:block","dd")),List.of("data"),List.of("config"),List.of()); }
 }

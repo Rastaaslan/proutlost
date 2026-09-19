@@ -1,48 +1,57 @@
-# WorldPrep V2 final report
+# WorldPrep V2 continuation report
 
-CURRENT MAIN BASE SHA:
-`12ea7409aab76179319c3bd6c609038bf690951e`
+REMOTE HEAD SHA:
+`7ba59b33ba1e16cb8e62d7e8137da4f1eb5336de` at continuation start. The final local continuation SHA is the commit containing this report; publication must update PR #6's existing branch.
 
-FINAL BRANCH SHA:
-Recorded by the final commit / PR head.
+REAL BIOMES V2 MIGRATION:
+PARTIAL — live biome access uses the no-generation gateway and symmetric actual-state reconciliation, but its journal is not yet disk-paged.
 
-BRANCH:
-`codex/worldprep-v2-full-build`
+REAL GEOLOGY V2 MIGRATION:
+YES — live apply/rollback uses mandatory three-state semantics, exact rollback identity, existing chunks, and disk journal publication/validation.
 
-PR:
-Created after the final commit.
+REAL ORES V2 MIGRATION:
+YES — live apply/rollback uses the same shared block executor and safety semantics as GEOLOGY.
 
-CHECKPOINTS COMPLETED:
-0, 1, 2, 3, and generic portions of 4, 5, 6, 7, 8, 9, and 12. Checkpoints 10, 11, and full 13 certification are incomplete.
+NO-GENERATION REAL RUNTIME:
+PASS — production terrain, biome, and block paths use `getChunkNow`; a real GameTest verifies a missing chunk remains absent after refusal.
+
+IMMUTABLE BUILD WORKFLOW:
+PASS — source fingerprint, verified staging copy, source recheck, partial marker, overlap checks, and candidate publication are implemented and unit-tested. It has not been exercised on MapDev.
+
+PAGED JOURNAL LIVE INTEGRATION:
+PARTIAL — GEOLOGY/ORES journal pages are live, checksummed, durable-before-write, and required for rollback. BIOMES and disk-paged plans remain incomplete.
+
+RESTART RECONCILIATION:
+PARTIAL — actual before/after/third-state reconciliation is restart-safe and missing pages fail closed, but no true stopped/restarted server process test was run.
+
+REAL PROCESS-KILL APPLY:
+NOT TESTED
+
+REAL PROCESS-KILL ROLLBACK:
+NOT TESTED
+
+ENVIRONMENTAL PACK AUDITED:
+PARTIAL — the actual development runtime artifacts and registries are inspected by GameTest. The expected production environmental/YUNG pack was not installed.
+
+PRODUCTION BIOME ENGINE:
+PARTIAL — deterministic registry-validated region planning exists, and live biome mutation is hardened, but the artistic provider is not frozen and the planner is not fully wired into compile orchestration.
+
+STRUCTURE MATERIALIZATION:
+NO — no verified YUNG artifacts were available; third-party opaque generation remains unsupported.
+
+ECOLOGY LIVE:
+NO — pure planners exist, but destructive SOILS/AQUATIC/FLORA/TREES and HABITATS orchestration are not live.
+
+ZERO-TOUCH COMPILER:
+PARTIAL — exact manifest-bound sealing exists; production compile/build commands and all pass integrations are incomplete.
+
+BOUNDED MEMORY:
+NOT TESTED — pages and streaming file hashes bound important operations, but no representative peak-memory measurement was run and legacy plans remain in SavedData.
 
 WORLDPREP CODE COMPLETE:
 NO
 
 AUTOMATED SAFETY CERTIFIED:
-NO
-
-ENVIRONMENTAL PACK AUDITED:
-NO — no representative installed pack or artifacts were supplied.
-
-BIOME PROVIDER FROZEN:
-NO
-
-MODDED STRUCTURE SUPPORT:
-Generic exact-template/jigsaw/sandbox/custom-adapter capability classification and deterministic allocation exist. No YUNG family is marked supported because no real YUNG artifact/API was available for verification; opaque structures fail closed.
-
-REAL MID-APPLY PROCESS KILL TESTED:
-NO
-
-REAL MID-ROLLBACK PROCESS KILL TESTED:
-NO
-
-REAL RECOVERY-CRASH TESTED:
-NO
-
-NO-GENERATION GUARANTEE TESTED:
-PARTIAL — the generation-free lookup boundary refuses missing/incomplete chunks, but legacy Minecraft runtime migration and a real missing-region GameTest remain incomplete.
-
-BOUNDED MEMORY TESTED:
 NO
 
 MAPDEV ACCEPTED:
@@ -55,18 +64,14 @@ SAFETY INVARIANTS WEAKENED:
 NONE
 
 TESTS ACTUALLY RUN:
-- `./gradlew test --no-daemon` repeatedly, including after all implementation groups.
-- `./gradlew build --no-daemon` on the merged-foundation baseline.
-- `./gradlew runGameTestServer --no-daemon` on the merged-foundation baseline; all 15 required GameTests passed.
+- `./gradlew test --no-daemon` — PASS (61 tests, zero failures/errors/skips)
+- `./gradlew build --no-daemon` — PASS
+- `./gradlew runGameTestServer --no-daemon` — PASS (all 18 required GameTests)
+- `git diff --check`
+- static scan for generation-prone production `getChunk` / `getChunkAt` calls
 
 NOT TESTED:
-Dedicated production smoke; real environmental modpack; representative MapDev; process-kill recovery; production structure materialization/replay/rollback; all ecology mutations through the common executor; full compiler command integration; bounded-memory and large-plan measurements.
+True process-kill apply/rollback/recovery; production modpack/YUNG artifacts; MapDev; opaque structure materialization; end-to-end ecology; representative multi-gigabyte bounded-memory measurement; disk-full and permission fault injection.
 
-KNOWN LIMITATIONS:
-Several models are safe pure foundations rather than wired production paths. Existing legacy BIOMES/GEOLOGY/ORES execution has not all been migrated to the generic executor. No source-world copy implementation is published yet; workspace validation only refuses unsafe layouts. No third-party structure is production-supported. The biome provider remains external and unfrozen.
-
-SAFE TO REVIEW/MERGE:
-NO — review is welcome, but production merge/handoff must wait for the incomplete safety-critical integration and certification gates.
-
-NEXT HUMAN ACTION:
-Provide a representative locked environmental modpack and MapDev copy; then continue the branch by wiring the generic boundaries into the NeoForge runtime, implementing verified clone/materialization, and completing the adversarial matrix without weakening invariants.
+SAFE TO MERGE:
+NO — this continuation materially hardens live BIOMES/GEOLOGY/ORES and immutable builds, but the master ticket's paged plans, biome pages, structures, ecology, orchestration, and complete certification remain unfinished.
