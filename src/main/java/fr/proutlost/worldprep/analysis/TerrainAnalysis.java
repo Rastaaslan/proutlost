@@ -5,11 +5,14 @@ import java.util.Arrays;
 
 /** Compact immutable analysis derived from real sampled heights and water surfaces. */
 public final class TerrainAnalysis {
-    public enum Kind { DEEP_MARINE, MARINE, SHALLOW_MARINE, COAST, LOWLAND, HIGHLAND, MOUNTAIN, CLIFF }
+    public enum Kind { DEEP_MARINE, MARINE, SHALLOW_MARINE, BEACH, STONY_COAST, LOWLAND, OPEN_LOWLAND,
+        WET_LOWLAND, FORESTABLE_LOWLAND, HILL, ROCKY_HILL, HIGHLAND, ROCKY_HIGHLAND, MOUNTAIN, CLIFF,
+        VALLEY, RIVER_EDGE, LAKE_EDGE }
     private final int width,depth,seaLevel; private final short[] surface, waterDepth, coastDistance; private final float[] slope,roughness;
     private TerrainAnalysis(int w,int d,int sea,short[] s,short[] wd,short[] cd,float[] sl,float[] r){width=w;depth=d;seaLevel=sea;surface=s;waterDepth=wd;coastDistance=cd;slope=sl;roughness=r;}
     public static TerrainAnalysis analyze(int width,int depth,int seaLevel,int[] heights,boolean[] water) {
-        if(width<=0||depth<=0||heights.length!=width*depth||water.length!=heights.length) throw new IllegalArgumentException("Invalid grid");
+        final int cells; try { cells=Math.multiplyExact(width,depth); } catch(ArithmeticException e){throw new IllegalArgumentException("Grid dimensions overflow",e);}
+        if(width<=0||depth<=0||heights.length!=cells||water.length!=heights.length) throw new IllegalArgumentException("Invalid grid");
         short[] h=new short[heights.length], wd=new short[h.length], cd=new short[h.length]; float[] sl=new float[h.length], rough=new float[h.length];
         for(int i=0;i<h.length;i++){h[i]=(short)heights[i];wd[i]=(short)Math.max(0,seaLevel-heights[i]);}
         Arrays.fill(cd,Short.MAX_VALUE); ArrayDeque<Integer> q=new ArrayDeque<>();
@@ -21,6 +24,6 @@ public final class TerrainAnalysis {
     private static boolean isBoundary(int w,int d,boolean[] water,int x,int z){boolean v=water[z*w+x];return (x>0&&water[z*w+x-1]!=v)||(x+1<w&&water[z*w+x+1]!=v)||(z>0&&water[(z-1)*w+x]!=v)||(z+1<d&&water[(z+1)*w+x]!=v);}
     private int i(int x,int z){if(x<0||z<0||x>=width||z>=depth)throw new IndexOutOfBoundsException();return z*width+x;}
     public int surface(int x,int z){return surface[i(x,z)];} public int waterDepth(int x,int z){return waterDepth[i(x,z)];} public int coastDistance(int x,int z){return coastDistance[i(x,z)];} public float slope(int x,int z){return slope[i(x,z)];} public float roughness(int x,int z){return roughness[i(x,z)];}
-    public Kind classify(int x,int z){int i=i(x,z);if(waterDepth[i]>20)return Kind.DEEP_MARINE;if(waterDepth[i]>6)return Kind.MARINE;if(waterDepth[i]>0)return Kind.SHALLOW_MARINE;if(surface[i]>=seaLevel+70)return Kind.MOUNTAIN;if(slope[i]>=8)return Kind.CLIFF;if(coastDistance[i]<=2)return Kind.COAST;if(surface[i]>=seaLevel+30)return Kind.HIGHLAND;return Kind.LOWLAND;}
+    public Kind classify(int x,int z){int i=i(x,z);if(waterDepth[i]>20)return Kind.DEEP_MARINE;if(waterDepth[i]>6)return Kind.MARINE;if(waterDepth[i]>0)return Kind.SHALLOW_MARINE;if(surface[i]>=seaLevel+70)return Kind.MOUNTAIN;if(slope[i]>=8)return Kind.CLIFF;if(coastDistance[i]<=2)return slope[i]>3?Kind.STONY_COAST:Kind.BEACH;if(surface[i]>=seaLevel+30)return roughness[i]>5?Kind.ROCKY_HIGHLAND:Kind.HIGHLAND;if(surface[i]>=seaLevel+15)return slope[i]>4?Kind.ROCKY_HILL:Kind.HILL;return Kind.LOWLAND;}
     public int width(){return width;} public int depth(){return depth;}
 }

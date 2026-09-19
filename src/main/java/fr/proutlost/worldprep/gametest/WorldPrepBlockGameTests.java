@@ -1,5 +1,6 @@
 package fr.proutlost.worldprep.gametest;
 
+import fr.proutlost.worldprep.WorldPrepConfig;
 import fr.proutlost.worldprep.persistence.BlockWorldPrepData;
 import fr.proutlost.worldprep.persistence.WorldPrepSavedData;
 import fr.proutlost.worldprep.runtime.BlockMutationRuntime;
@@ -52,7 +53,7 @@ public final class WorldPrepBlockGameTests {
     public static void largeRealChunkPlanRunsInBoundedBatches(GameTestHelper h){var c=context(h,"large_plan");var p=plan(c,"GEOLOGY");var base=h.absolutePos(new BlockPos(1,1,1));for(int i=0;i<600;i++){var pos=new BlockPos(base.getX()+(i%9),c.level.getMinBuildHeight()+(i/27),base.getZ()+((i/9)%3));c.level.setBlockAndUpdate(pos,Blocks.STONE.defaultBlockState());change(p,pos,"minecraft:stone","minecraft:granite","GRANITIC");}apply(c,p,WorldPrepSavedData.Operation.APPLY_GEOLOGY);check(p.changes.size()==600,h,"synthetic plan was not representative");check(p.changes.values().stream().allMatch(change->c.level.getBlockState(new BlockPos(change.x(),change.y(),change.z())).is(Blocks.GRANITE)),h,"large plan did not finish");h.succeed();}
 
     private record Ctx(GameTestHelper helper,net.minecraft.server.level.ServerLevel level,WorldPrepSavedData data,String id,WorldPrepSavedData.Area area){}
-    private static Ctx context(GameTestHelper h,String prefix){var level=h.getLevel();var d=WorldPrepRuntime.data(level);var base=h.absolutePos(new BlockPos(1,1,1));String id="proutlost:"+prefix+UUID.randomUUID().toString().replace("-","");var a=new WorldPrepSavedData.Area(id,level.dimension().location().toString(),base.getX(),base.getZ(),base.getX()+8,base.getZ()+2);d.areas().put(id,a);d.changed();return new Ctx(h,level,d,id,a);}
+    private static Ctx context(GameTestHelper h,String prefix){WorldPrepConfig.ENABLED.set(true);var level=h.getLevel();var d=WorldPrepRuntime.data(level);var base=h.absolutePos(new BlockPos(1,1,1));String id="proutlost:"+prefix+UUID.randomUUID().toString().replace("-","");var a=new WorldPrepSavedData.Area(id,level.dimension().location().toString(),base.getX(),base.getZ(),base.getX()+8,base.getZ()+2);d.areas().put(id,a);d.changed();return new Ctx(h,level,d,id,a);}
     private static BlockWorldPrepData.Plan plan(Ctx c,String pass){return new BlockWorldPrepData.Plan(c.id,pass,"gametest",BlockMutationRuntime.inputIdentity(c.level,c.data,c.area,pass),"");}
     private static void change(BlockWorldPrepData.Plan p,BlockPos pos,String before,String after,String kind){p.changes.put(BlockWorldPrepData.posKey(pos.getX(),pos.getY(),pos.getZ()),new BlockWorldPrepData.Change(pos.getX(),pos.getY(),pos.getZ(),before,after,kind));}
     private static void apply(Ctx c,BlockWorldPrepData.Plan p,WorldPrepSavedData.Operation operation){BlockMutationRuntime.seal(p);BlockMutationRuntime.data(c.level).plans().put(BlockWorldPrepData.planKey(c.id,p.pass),p);BlockMutationRuntime.data(c.level).changed();run(c,WorldPrepRuntime.enqueue(c.level,operation,c.id));var job=c.data.jobs().values().stream().filter(j->j.area().equals(c.id)&&j.operation()==operation).reduce((x,y)->y).orElseThrow();if(job.state()!=WorldPrepSavedData.JobState.COMPLETED)throw new AssertionError("apply job failed: "+job.error());}

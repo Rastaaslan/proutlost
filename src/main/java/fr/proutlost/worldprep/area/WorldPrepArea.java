@@ -14,7 +14,7 @@ public record WorldPrepArea(String id, String dimension, int minX, int minZ, int
     }
     public int width() { return Math.addExact(Math.subtractExact(maxX,minX),1); }
     public int depth() { return Math.addExact(Math.subtractExact(maxZ,minZ),1); }
-    public long blocks() { return (long) width()*depth(); }
+    public long blocks() { return Math.multiplyExact((long) width(),depth()); }
     public boolean contains(int x,int z) { return x>=minX&&x<=maxX&&z>=minZ&&z<=maxZ; }
     public boolean overlaps(WorldPrepArea b) { return dimension.equals(b.dimension)&&minX<=b.maxX&&maxX>=b.minX&&minZ<=b.maxZ&&maxZ>=b.minZ; }
 }
