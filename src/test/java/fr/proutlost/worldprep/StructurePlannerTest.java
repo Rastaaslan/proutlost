@@ -1,0 +1,6 @@
+package fr.proutlost.worldprep;
+import fr.proutlost.worldprep.structure.*;import java.util.*;import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;
+class StructurePlannerTest {
+ @Test void allocationIsOrderIndependentAndNonOverlapping(){var cap=new StructureCapability("test:hut",StructureSupportStatus.EXACT_TEMPLATE,"adapter",9,9,4);var catalog=new StructureCatalog(List.of(cap));var candidates=new ArrayList<>(List.of(new AutomaticStructurePlanner.Candidate("test:hut",0,64,0,10),new AutomaticStructurePlanner.Candidate("test:hut",100,64,100,8),new AutomaticStructurePlanner.Candidate("test:hut",2,64,2,9)));var planner=new AutomaticStructurePlanner();var a=planner.plan(candidates,catalog,42,10);Collections.reverse(candidates);var b=planner.plan(candidates,catalog,42,10);assertEquals(a,b);assertEquals(2,a.size());assertFalse(a.get(0).reservation().intersects(a.get(1).reservation()));}
+ @Test void opaqueRequiredStructureRefuses(){var catalog=new StructureCatalog(List.of(new StructureCapability("mod:opaque",StructureSupportStatus.UNSUPPORTED_OPAQUE,"none",1,1,0)));assertThrows(IllegalStateException.class,()->new AutomaticStructurePlanner().plan(List.of(new AutomaticStructurePlanner.Candidate("mod:opaque",0,0,0,1)),catalog,1,1));}
+}

@@ -17,14 +17,15 @@ public final class PassGraph {
         DEPENDENCIES.put(PassId.GEOLOGY, Set.of(PassId.TERRAIN));
         DEPENDENCIES.put(PassId.ORES, Set.of(PassId.GEOLOGY));
         DEPENDENCIES.put(PassId.SOILS, Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.GEOLOGY));
-        DEPENDENCIES.put(PassId.FLORA, Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.SOILS));
-        DEPENDENCIES.put(PassId.TREES, Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.SOILS));
-        DEPENDENCIES.put(PassId.AQUATIC, Set.of(PassId.TERRAIN, PassId.BIOMES));
+        DEPENDENCIES.put(PassId.AQUATIC, Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.SOILS));
+        DEPENDENCIES.put(PassId.STRUCTURES, Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.AQUATIC));
+        DEPENDENCIES.put(PassId.FLORA, Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.SOILS, PassId.STRUCTURES));
+        DEPENDENCIES.put(PassId.TREES, Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.SOILS, PassId.STRUCTURES));
         DEPENDENCIES.put(PassId.HABITATS,
                 Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.SOILS, PassId.FLORA, PassId.TREES, PassId.AQUATIC));
         DEPENDENCIES.put(PassId.VALIDATION,
                 Set.of(PassId.TERRAIN, PassId.BIOMES, PassId.GEOLOGY, PassId.ORES, PassId.SOILS,
-                        PassId.FLORA, PassId.TREES, PassId.AQUATIC, PassId.HABITATS));
+                        PassId.AQUATIC, PassId.STRUCTURES, PassId.FLORA, PassId.TREES, PassId.HABITATS));
     }
 
     public static Set<PassId> dependencies(PassId pass) {
@@ -53,7 +54,7 @@ public final class PassGraph {
 
     public static List<PassId> order() {
         return List.of(PassId.TERRAIN, PassId.BIOMES, PassId.GEOLOGY, PassId.ORES, PassId.SOILS,
-                PassId.FLORA, PassId.TREES, PassId.AQUATIC, PassId.HABITATS, PassId.VALIDATION);
+                PassId.AQUATIC, PassId.STRUCTURES, PassId.FLORA, PassId.TREES, PassId.HABITATS, PassId.VALIDATION);
     }
 
     private PassGraph() {}
