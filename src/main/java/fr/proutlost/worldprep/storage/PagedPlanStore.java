@@ -20,6 +20,9 @@ public final class PagedPlanStore {
         T read(DataInput in) throws IOException;
     }
 
+    @FunctionalInterface
+    public interface EntryConsumer<T> { void accept(T value) throws IOException; }
+
     public record Publication(Path directory, PlanManifest manifest) {}
     public record ReadMetrics(long pagesRead, long entriesRead, int maximumResidentPages,
                               int maximumResidentEntries) {}
@@ -84,15 +87,33 @@ public final class PagedPlanStore {
     /** Validates every page incrementally before invoking the consumer. */
     public static <T> ReadMetrics read(Path directory, PlanManifest expected, EntryCodec<T> codec,
             Consumer<T> consumer) throws IOException {
+        return readRange(directory, expected, codec, 0, Long.MAX_VALUE, consumer::accept);
+    }
+
+    /**
+     * Reads only the requested logical entry window while retaining one decoded page at a time.
+     * Pages preceding the window are identity-validated but are not decoded.  This makes a
+     * persisted job cursor advisory without ever materialising the complete plan.
+     */
+    public static <T> ReadMetrics readRange(Path directory, PlanManifest expected, EntryCodec<T> codec,
+            long offset, long limit, EntryConsumer<T> consumer) throws IOException {
+        if (offset < 0 || limit < 0) throw new IllegalArgumentException("Invalid plan read window");
         PlanManifest durable = readManifest(directory);
         if (!durable.equals(expected)) throw new IOException("Exact sealed manifest mismatch");
         durable.requireApplicable();
-        long pagesRead=0, entriesRead=0; int maximumEntries=0;
+        long pagesRead=0, entriesRead=0, logical=0, delivered=0; int maximumEntries=0;
         for (var reference : durable.pages()) {
             var page = requirePage(directory, durable, reference);
+            long pageEnd = logical + reference.entryCount();
+            if (pageEnd <= offset) { logical = pageEnd; pagesRead++; continue; }
+            if (delivered >= limit) break;
             var decoded = decode(page, codec);
             maximumEntries = Math.max(maximumEntries, decoded.size()); pagesRead++; entriesRead += decoded.size();
-            for (T entry : decoded) consumer.accept(entry);
+            for (T entry : decoded) {
+                if (logical++ < offset) continue;
+                if (delivered++ >= limit) break;
+                consumer.accept(entry);
+            }
             decoded.clear(); // make the one-page residency explicit before the next disk read
         }
         return new ReadMetrics(pagesRead,entriesRead,pagesRead==0?0:1,maximumEntries);

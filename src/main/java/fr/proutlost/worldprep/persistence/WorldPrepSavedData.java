@@ -12,7 +12,7 @@ import java.util.UUID;
 
 /** Versioned, dimension-local authoritative state for the biome vertical slice. */
 public final class WorldPrepSavedData extends SavedData {
-    public static final int SCHEMA = 2;
+    public static final int SCHEMA = 3;
     public static final String FILE_ID = "proutlost_worldprep";
     public static final Factory<WorldPrepSavedData> FACTORY = new Factory<>(WorldPrepSavedData::new, WorldPrepSavedData::load);
 
@@ -36,8 +36,11 @@ public final class WorldPrepSavedData extends SavedData {
     public record BiomeCell(int quartX,int quartZ,String biome,long terrainSignature){}
     public record SnapshotCell(int quartX,int quartY,int quartZ,String beforeBiome,String appliedBiome){}
     public static final class Plan{
-        public final String area;public final PlanInput input;public String fingerprint;public final Map<Long,BiomeCell> cells=new LinkedHashMap<>();
-        public Plan(String area,PlanInput input,String fingerprint){this.area=area;this.input=input;this.fingerprint=fingerprint;}
+        public final String area;public final PlanInput input;public String fingerprint;public UUID planId;public long entryCount;
+        /** Test/authoring staging only; production preview clears it after page publication and it is never persisted. */
+        public final transient Map<Long,BiomeCell> cells=new LinkedHashMap<>();
+        public Plan(String area,PlanInput input,String fingerprint){this(area,input,fingerprint,null,0);}
+        public Plan(String area,PlanInput input,String fingerprint,UUID planId,long entryCount){this.area=area;this.input=input;this.fingerprint=fingerprint;this.planId=planId;this.entryCount=entryCount;}
     }
     public static final class Snapshot{
         public final UUID id,jobId;public final String dimension,area,pass,planFingerprint;public final Map<String,SnapshotCell> cells=new LinkedHashMap<>();public final Map<Long,String> pages=new LinkedHashMap<>();
@@ -56,12 +59,12 @@ public final class WorldPrepSavedData extends SavedData {
 
     public boolean protectedAt(String dimension,int qx,int qz){return protections.values().stream().anyMatch(p->p.dimension().equals(dimension)&&p.intersectsQuart(qx,qz));}
 
-    public static WorldPrepSavedData load(CompoundTag root,HolderLookup.Provider registries){int schema=root.getInt("schema");if(schema>SCHEMA)throw new IllegalStateException("WorldPrep data schema "+schema+" is newer than supported "+SCHEMA);var d=new WorldPrepSavedData();
+    public static WorldPrepSavedData load(CompoundTag root,HolderLookup.Provider registries){int schema=root.getInt("schema");if(schema!=0&&schema!=SCHEMA)throw new IllegalStateException("WorldPrep data schema "+schema+" is incompatible with paged production schema "+SCHEMA);var d=new WorldPrepSavedData();
         for(Tag v:root.getList("areas",Tag.TAG_COMPOUND)){var t=(CompoundTag)v;var a=new Area(t.getString("id"),t.getString("dimension"),t.getInt("minX"),t.getInt("minZ"),t.getInt("maxX"),t.getInt("maxZ"));d.areas.put(a.id(),a);}
         for(Tag v:root.getList("selections",Tag.TAG_COMPOUND)){var t=(CompoundTag)v;d.selections.put(t.getUUID("player"),new Selection(nullableInt(t,"x1"),nullableInt(t,"z1"),nullableInt(t,"x2"),nullableInt(t,"z2")));}
         for(Tag v:root.getList("protections",Tag.TAG_COMPOUND)){var t=(CompoundTag)v;var p=new ProtectedZone(t.getString("id"),t.getString("dimension"),t.getInt("minX"),t.getInt("minZ"),t.getInt("maxX"),t.getInt("maxZ"));d.protections.put(p.id(),p);}
         for(Tag v:root.getList("overrides",Tag.TAG_COMPOUND)){var t=(CompoundTag)v;var o=new OverrideCell(t.getInt("x"),t.getInt("z"),blankNull(t.getString("exact")),blankNull(t.getString("palette")));d.overrides.put(cellKey(o.quartX(),o.quartZ()),o);}
-        for(Tag v:root.getList("plans",Tag.TAG_COMPOUND)){var t=(CompoundTag)v;var i=readInput(t.getCompound("input"));var p=new Plan(t.getString("area"),i,t.getString("fingerprint"));for(Tag cv:t.getList("cells",Tag.TAG_COMPOUND)){var c=(CompoundTag)cv;var cell=new BiomeCell(c.getInt("x"),c.getInt("z"),c.getString("biome"),c.getLong("terrain"));p.cells.put(cellKey(cell.quartX(),cell.quartZ()),cell);}d.plans.put(p.area,p);}
+        for(Tag v:root.getList("plans",Tag.TAG_COMPOUND)){var t=(CompoundTag)v;var i=readInput(t.getCompound("input"));if(!t.hasUUID("planId"))throw new IllegalStateException("Legacy inline biome plan is incompatible; preview again");var p=new Plan(t.getString("area"),i,t.getString("fingerprint"),t.getUUID("planId"),t.getLong("entryCount"));d.plans.put(p.area,p);}
         for(Tag v:root.getList("jobs",Tag.TAG_COMPOUND)){var t=(CompoundTag)v;var j=new Job(t.getUUID("id"),Operation.valueOf(t.getString("operation")),t.getString("area"),JobState.valueOf(t.getString("state")),t.getLong("cursor"),t.getString("error"),t.hasUUID("snapshot")?t.getUUID("snapshot"):null);d.jobs.put(j.id(),j);}
         for(Tag v:root.getList("snapshots",Tag.TAG_COMPOUND)){var t=(CompoundTag)v;var s=new Snapshot(t.getUUID("id"),t.getUUID("job"),t.getString("dimension"),t.getString("area"),t.getString("pass"),t.getString("fingerprint"));for(Tag cv:t.getList("cells",Tag.TAG_COMPOUND)){var c=(CompoundTag)cv;var cell=new SnapshotCell(c.getInt("x"),c.getInt("y"),c.getInt("z"),c.getString("before"),c.getString("applied"));s.cells.put(snapshotKey(cell.quartX(),cell.quartY(),cell.quartZ()),cell);}for(Tag pv:t.getList("pages",Tag.TAG_COMPOUND)){var p=(CompoundTag)pv;s.pages.put(p.getLong("sequence"),p.getString("checksum"));}d.snapshots.put(s.id,s);}return d;}
     @Override public CompoundTag save(CompoundTag root,HolderLookup.Provider registries){root.putInt("schema",SCHEMA);root.put("areas",areasTag());root.put("selections",selectionsTag());root.put("protections",protectionsTag());root.put("overrides",overridesTag());root.put("plans",plansTag());root.put("jobs",jobsTag());root.put("snapshots",snapshotsTag());return root;}
@@ -69,7 +72,8 @@ public final class WorldPrepSavedData extends SavedData {
     private ListTag selectionsTag(){var l=new ListTag();for(var e:selections.entrySet()){var t=new CompoundTag();t.putUUID("player",e.getKey());putNullable(t,"x1",e.getValue().x1());putNullable(t,"z1",e.getValue().z1());putNullable(t,"x2",e.getValue().x2());putNullable(t,"z2",e.getValue().z2());l.add(t);}return l;}
     private ListTag protectionsTag(){var l=new ListTag();for(var p:protections.values()){var t=new CompoundTag();t.putString("id",p.id());t.putString("dimension",p.dimension());t.putInt("minX",p.minX());t.putInt("minZ",p.minZ());t.putInt("maxX",p.maxX());t.putInt("maxZ",p.maxZ());l.add(t);}return l;}
     private ListTag overridesTag(){var l=new ListTag();for(var o:overrides.values()){var t=new CompoundTag();t.putInt("x",o.quartX());t.putInt("z",o.quartZ());t.putString("exact",nullBlank(o.exactBiome()));t.putString("palette",nullBlank(o.palette()));l.add(t);}return l;}
-    private ListTag plansTag(){var l=new ListTag();for(var p:plans.values()){var t=new CompoundTag();t.putString("area",p.area);t.put("input",writeInput(p.input));t.putString("fingerprint",p.fingerprint);var cs=new ListTag();for(var c:p.cells.values()){var x=new CompoundTag();x.putInt("x",c.quartX());x.putInt("z",c.quartZ());x.putString("biome",c.biome());x.putLong("terrain",c.terrainSignature());cs.add(x);}t.put("cells",cs);l.add(t);}return l;}
+    private ListTag plansTag(){var l=new ListTag();for(var p:plans.values()){if(p.planId==null)continue; // transient GameTest/authoring staging is deliberately non-authoritative
+        var t=new CompoundTag();t.putString("area",p.area);t.put("input",writeInput(p.input));t.putString("fingerprint",p.fingerprint);t.putUUID("planId",p.planId);t.putLong("entryCount",p.entryCount);l.add(t);}return l;}
     private ListTag jobsTag(){var l=new ListTag();for(var j:jobs.values()){var t=new CompoundTag();t.putUUID("id",j.id());t.putString("operation",j.operation().name());t.putString("area",j.area());t.putString("state",j.state().name());t.putLong("cursor",j.cursor());t.putString("error",nullBlank(j.error()));if(j.snapshotId()!=null)t.putUUID("snapshot",j.snapshotId());l.add(t);}return l;}
     private ListTag snapshotsTag(){var l=new ListTag();for(var s:snapshots.values()){var t=new CompoundTag();t.putUUID("id",s.id);t.putUUID("job",s.jobId);t.putString("dimension",s.dimension);t.putString("area",s.area);t.putString("pass",s.pass);t.putString("fingerprint",s.planFingerprint);var cs=new ListTag();for(var c:s.cells.values()){var x=new CompoundTag();x.putInt("x",c.quartX());x.putInt("y",c.quartY());x.putInt("z",c.quartZ());x.putString("before",c.beforeBiome());x.putString("applied",c.appliedBiome());cs.add(x);}t.put("cells",cs);var ps=new ListTag();for(var p:s.pages.entrySet()){var x=new CompoundTag();x.putLong("sequence",p.getKey());x.putString("checksum",p.getValue());ps.add(x);}t.put("pages",ps);l.add(t);}return l;}
     private static CompoundTag writeInput(PlanInput i){var t=new CompoundTag();t.putString("dimension",i.dimension());t.putInt("minX",i.minX());t.putInt("minZ",i.minZ());t.putInt("maxX",i.maxX());t.putInt("maxZ",i.maxZ());t.putLong("seed",i.seed());t.putString("profile",i.profile());t.putString("profileDigest",i.profileDigest());t.putString("configDigest",i.configDigest());t.putString("registryDigest",i.registryDigest());t.putString("overrideDigest",i.overrideDigest());t.putString("protectionDigest",i.protectionDigest());return t;}

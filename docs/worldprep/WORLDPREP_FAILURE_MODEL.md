@@ -458,3 +458,8 @@ BIOMES now publishes a checksummed journal page before palette mutation and pers
 
 ## 2026-09-20 paged-plan substrate evidence
 `PagedPlanStore` implements incremental detection for WP-012, WP-014 through WP-018 and reports orphan temporary/unreferenced pages without destructive cleanup. Publication validates all immutable pages before atomically publishing the SEALED manifest commit record. These controls are substrate-only until all three live planners and executors stop using SavedData plan collections; a missing production plan page is therefore not yet a certified live failure path.
+
+## 2026-09-20 production paged-plan integration
+BIOMES, GEOLOGY, and ORES production plans now use exact UUID-addressed, sealed manifests. Apply rereads the durable manifest, requires pass/dimension/input/root identity, and streams a cursor window without recalculating decisions. Missing, corrupt, reordered, or mismatched plan pages refuse mutation. ORES additionally persists and requires both the exact upstream GEOLOGY plan UUID and root; there is no “latest geology” resolution. Schema-2 inline plans are rejected rather than guessed.
+
+The durability gate is not yet complete: rollback journal entries are still mirrored in SavedData even though journal pages are published first and validated. This is a bounded-memory blocker, not a weakened ownership rule; ecology remains prohibited until rollback streams journal pages and the mirrors are removed.

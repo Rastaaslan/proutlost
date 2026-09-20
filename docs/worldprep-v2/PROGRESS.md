@@ -55,3 +55,9 @@
 - **BOUNDED TEST:** 50,003 entries for each of BIOMES, GEOLOGY, and ORES, 127 entries/page (394 pages/pass), with measured maximum residency of one page/127 entries. This certifies the generic reader, not live runtime integration.
 - **CORRUPTION TESTS:** missing page, trailing bytes, checksum/owner corruption, exact-manifest mismatch, and lifecycle diagnostics refuse or report as designed.
 - **REMAINING BLOCKER:** live preview/apply still uses the existing SavedData plan collections. The generic store is not yet wired into BIOMES/GEOLOGY/ORES, so no pass is claimed to have a paged production plan and ecology remains gated.
+
+## 2026-09-20 live paged-plan production migration
+- **START HEAD:** `8818844c99ac2a4b0c9407f31152ecca61192308`; the workspace had no remote and the local branch was renamed to the requested canonical PR #8 branch without resetting the checkpoint.
+- **IMPLEMENTED:** BIOMES, GEOLOGY, and ORES preview publish immutable `PagedPlanStore` pages and retain only plan UUID/root/count/input metadata in SavedData. Live apply resolves the exact sealed manifest and reads a budget window one page at a time. ORES metadata binds the exact GEOLOGY UUID and manifest root. Legacy schemas fail closed.
+- **BOUNDED PLAN PATH:** 256 entries/page; apply retains at most one decoded page plus one bounded mutation batch. Inline biome/block plan collections are transient authoring/GameTest staging and are not serialized or consulted after publication.
+- **REMAINING GATE:** Journal ownership entries are still mirrored in SavedData collections for rollback. Although the durable journal pages remain authoritative and missing pages fail closed, this mirror prevents a truthful live bounded-memory certification. Restart/process-kill and a representative live large-plan memory measurement also remain incomplete. Ecology stays gated.

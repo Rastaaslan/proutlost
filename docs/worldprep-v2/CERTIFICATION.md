@@ -37,3 +37,15 @@ claim of safety certification.
 | lifecycle diagnostics | PASS | temporary, unreferenced, and referenced-missing files reported; no deletion |
 | live BIOMES/GEOLOGY/ORES paged plan | NOT TESTED | production runtime is not wired to this store |
 | live large-plan bounded memory | NOT TESTED | SavedData production collections remain |
+
+## PR #8 live plan migration evidence
+
+| Control | Status | Evidence / limitation |
+|---|---|---|
+| BIOMES/GEOLOGY/ORES exact paged production plan | PASS | live preview publishes sealed pages; apply requires exact UUID/root/pass/input |
+| ORES exact upstream identity | PASS | persisted GEOLOGY UUID and manifest root are both required |
+| SavedData production plan collections | PASS | schema 3 persists compact references only; older inline formats fail closed |
+| live streaming plan apply | PASS | `readRange` decodes at most one 256-entry page and a bounded block batch |
+| paged durable journals | PASS | all three passes publish journal pages before mutation |
+| fully bounded live working set | FAIL | rollback ownership mirrors remain unbounded in SavedData |
+| restart/process-kill certification | PARTIAL | reconciliation is idempotent; true process kill not tested |

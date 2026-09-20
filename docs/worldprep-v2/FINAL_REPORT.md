@@ -1,42 +1,40 @@
-# WorldPrep V2 — PR #7 paged-plan exit-gate report
+# WorldPrep V2 — PR #8 live paged-plan report
 
-REMOTE HEAD SHA: unavailable (this checkout has no configured Git remote; local start head was `faf643089a33e77057c87191ba571fe03c2f58e7`).
+START HEAD: `8818844c99ac2a4b0c9407f31152ecca61192308`
 
-PR: #7
+PR: #8 (canonical branch; no remote was configured in this workspace)
 
-UNIT TESTS: PASS — 65 tests, zero failures/errors/skips.
-
-GAMETESTS: PASS — all 18 required GameTests.
-
-BIOMES PAGED PLAN: NO
+BIOMES PAGED PLAN: YES
 
 BIOMES PAGED JOURNAL: YES
 
-GEOLOGY PAGED PLAN: NO
+GEOLOGY PAGED PLAN: YES
 
 GEOLOGY PAGED JOURNAL: YES
 
-ORES PAGED PLAN: NO
+ORES PAGED PLAN: YES
 
 ORES PAGED JOURNAL: YES
 
-LARGE SAVEDDATA PRODUCTION PATH REMOVED: NO
+LARGE SAVEDDATA PRODUCTION PLAN PATH REMOVED: YES
 
-PAGED STREAMING APPLY: PARTIAL — bounded generic page traversal exists, but live apply is not migrated.
+LIVE STREAMING APPLY: PASS — exact sealed pages are read in bounded windows.
 
-PAGED STREAMING ROLLBACK: PARTIAL — journals are paged, but SavedData still holds unbounded journal collections.
+LIVE BOUNDED MEMORY: FAIL — SavedData journal ownership mirrors still grow with total applied mutations.
+
+NO-GENERATION: PASS
 
 RESTART RECONCILIATION: PARTIAL
 
 TRUE PROCESS-KILL: NOT TESTED
 
-NO-GENERATION: PASS
+UNIT TESTS: PASS — 64 tests.
 
-BOUNDED MEMORY ARCHITECTURE: FAIL — generic plan storage is bounded; the production runtime remains unbounded.
+BUILD: PASS
 
-REPRESENTATIVE LARGE-PLAN MEMORY TEST: PASS for the generic reader only — BIOMES/GEOLOGY/ORES each traverse 50,003 entries across 394 pages at 127 entries/page, maximum measured residency one page/127 entries. Live runtime remains NOT TESTED.
+GAMETESTS: PASS — 18 tests.
 
-STATIC SAFETY AUDIT: PASS for generation-prone production calls; FAIL for unbounded production plan collections.
+STATIC LEGACY BYPASS AUDIT: PARTIAL — inline plans are non-persisted staging only; journal mirrors remain.
 
 SAFETY INVARIANTS WEAKENED: NONE
 
@@ -44,4 +42,4 @@ SAFE TO CONTINUE TO ECOLOGY: NO
 
 SAFE TO MERGE: NO
 
-NEXT PHASE: wire BIOMES, GEOLOGY, and ORES preview/apply to exact `PagedPlanStore` manifests; bind ORES to the exact geology UUID/root; remove SavedData cells/changes; stream rollback ownership pages; add restart and real live large-plan measurements. Ecology and structure materialization remain blocked.
+NEXT PHASE: stream rollback directly from durable journal pages, remove SavedData journal entry mirrors, and complete live restart and bounded-memory certification before ecology.

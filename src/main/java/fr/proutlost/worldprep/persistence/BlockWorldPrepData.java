@@ -13,9 +13,7 @@ import java.util.UUID;
 /** Dimension-local persisted block plans and compact chunk-scoped change journals. */
 public final class BlockWorldPrepData extends SavedData {
     public static final String FILE_ID = "proutlost_worldprep_blocks";
-    public static final int FORMAT_VERSION = 2;
-    /** Deliberate fail-closed hotfix bound; pages remain future work. */
-    public static final int MAX_PLAN_CHANGES = 250_000;
+    public static final int FORMAT_VERSION = 3;
     public static final Factory<BlockWorldPrepData> FACTORY = new Factory<>(BlockWorldPrepData::new, BlockWorldPrepData::load);
 
     public record Change(int x, int y, int z, String before, String applied, String province) {}
@@ -23,8 +21,13 @@ public final class BlockWorldPrepData extends SavedData {
     public static final class Plan {
         public final String area, pass, profile, input;
         public String fingerprint;
+        public UUID planId;
+        public long entryCount;
+        public UUID upstreamPlanId;
+        public String upstreamRoot = "";
         public long eligible, skipped;
-        public final Map<String, Change> changes = new LinkedHashMap<>();
+        /** Test/authoring staging only. Production clears this after publication; it is never SavedData. */
+        public final transient Map<String, Change> changes = new LinkedHashMap<>();
 
         public Plan(String area, String pass, String profile, String input, String fingerprint) {
             this.area = area;
@@ -36,7 +39,6 @@ public final class BlockWorldPrepData extends SavedData {
 
         public void add(Change change) {
             String key = posKey(change.x(), change.y(), change.z());
-            if (!changes.containsKey(key)) requirePlanSize(changes.size() + 1);
             changes.put(key, change);
         }
     }
@@ -66,10 +68,6 @@ public final class BlockWorldPrepData extends SavedData {
     public void changed() { setDirty(); }
     public static String planKey(String area, String pass) { return area + "|" + pass; }
     public static String posKey(int x, int y, int z) { return x + ":" + y + ":" + z; }
-    public static void requirePlanSize(int size) {
-        if (size < 0 || size > MAX_PLAN_CHANGES) throw new IllegalStateException("Block plan exceeds safe limit of " + MAX_PLAN_CHANGES + " changes");
-    }
-
     public static BlockWorldPrepData load(CompoundTag root, HolderLookup.Provider ignored) {
         var data = new BlockWorldPrepData();
         data.compatible = root.getInt("format") == FORMAT_VERSION;
@@ -79,8 +77,9 @@ public final class BlockWorldPrepData extends SavedData {
             var plan = new Plan(tag.getString("area"), tag.getString("pass"), tag.getString("profile"), tag.getString("input"), tag.getString("fingerprint"));
             plan.eligible = tag.getLong("eligible");
             plan.skipped = tag.getLong("skipped");
-            readChunks(tag.getList("chunks", Tag.TAG_COMPOUND), plan.changes);
-            try { requirePlanSize(plan.changes.size()); } catch (IllegalStateException exception) { return incompatible(); }
+            if (!tag.hasUUID("planId")) return incompatible();
+            plan.planId=tag.getUUID("planId");plan.entryCount=tag.getLong("entryCount");
+            if(tag.hasUUID("upstreamPlanId"))plan.upstreamPlanId=tag.getUUID("upstreamPlanId");plan.upstreamRoot=tag.getString("upstreamRoot");
             data.plans.put(planKey(plan.area, plan.pass), plan);
         }
         for (Tag value : root.getList("journals", Tag.TAG_COMPOUND)) {
@@ -103,11 +102,14 @@ public final class BlockWorldPrepData extends SavedData {
         root.putInt("format", FORMAT_VERSION);
         var savedPlans = new ListTag();
         for (var plan : plans.values()) {
+            if (plan.planId == null) continue; // transient GameTest/authoring staging, never production authority
             var tag = new CompoundTag();
             tag.putString("area", plan.area); tag.putString("pass", plan.pass); tag.putString("profile", plan.profile);
             tag.putString("input", plan.input); tag.putString("fingerprint", plan.fingerprint);
+            tag.putUUID("planId",plan.planId);tag.putLong("entryCount",plan.entryCount);
+            if(plan.upstreamPlanId!=null)tag.putUUID("upstreamPlanId",plan.upstreamPlanId);tag.putString("upstreamRoot",plan.upstreamRoot);
             tag.putLong("eligible", plan.eligible); tag.putLong("skipped", plan.skipped);
-            tag.put("chunks", writeChunks(plan.changes)); savedPlans.add(tag);
+            savedPlans.add(tag);
         }
         root.put("plans", savedPlans);
         var savedJournals = new ListTag();
