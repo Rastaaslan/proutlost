@@ -25,3 +25,15 @@ claim of safety certification.
 | crash during APPLY/ROLLBACK/RECOVERY | PARTIAL | live block and biome durable-journal failure/reconcile coverage; no OS process kill |
 | different tick budget/iteration order | PARTIAL | pure biome/structure order independence; full pipeline not integrated |
 | representative large plan/bounded memory | NOT TESTED | streaming executor boundary exists; no measurement |
+
+## PR #7 paged-plan substrate evidence
+
+| Control | Status | Evidence / limitation |
+|---|---|---|
+| immutable exact sealed manifest | PASS | `PagedPlanStoreTest`; disk manifest is the post-page commit record |
+| PLAN page owner/pass/dimension/sequence/count/checksum | PASS | incremental reader validates every reference against every page |
+| missing/corrupt/trailing/wrong-owner page | PASS | adversarial store tests refuse reads |
+| bounded generic reader | PASS | 3 × 50,003 entries; max one page/127 entries resident |
+| lifecycle diagnostics | PASS | temporary, unreferenced, and referenced-missing files reported; no deletion |
+| live BIOMES/GEOLOGY/ORES paged plan | NOT TESTED | production runtime is not wired to this store |
+| live large-plan bounded memory | NOT TESTED | SavedData production collections remain |

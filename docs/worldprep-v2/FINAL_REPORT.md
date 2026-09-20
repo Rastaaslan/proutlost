@@ -1,90 +1,47 @@
-# WorldPrep V2 final integration status
+# WorldPrep V2 — PR #7 paged-plan exit-gate report
 
-REMOTE HEAD SHA:
-Unavailable until publication; continuation started at `aca337fcb369d5ca2ad6325a10e5089f7e77ee76`.
+REMOTE HEAD SHA: unavailable (this checkout has no configured Git remote; local start head was `faf643089a33e77057c87191ba571fe03c2f58e7`).
 
-PR: #6
+PR: #7
 
-UNIT TESTS: PASS — 61 tests, zero failures/errors/skips.
-
-BUILD: PASS
+UNIT TESTS: PASS — 65 tests, zero failures/errors/skips.
 
 GAMETESTS: PASS — all 18 required GameTests.
 
-REAL BIOMES PAGED PLAN: NO
+BIOMES PAGED PLAN: NO
 
-REAL BIOMES PAGED JOURNAL: YES — live apply publishes checksum-bound ownership pages before mutation; rollback validates the complete referenced page set before mutation.
+BIOMES PAGED JOURNAL: YES
 
-REAL GEOLOGY PAGED PLAN: NO
+GEOLOGY PAGED PLAN: NO
 
-REAL GEOLOGY PAGED JOURNAL: YES
+GEOLOGY PAGED JOURNAL: YES
 
-REAL ORES PAGED PLAN: NO
+ORES PAGED PLAN: NO
 
-REAL ORES PAGED JOURNAL: YES
+ORES PAGED JOURNAL: YES
 
-LEGACY LARGE SAVEDDATA PRODUCTION PATH REMOVED: NO
+LARGE SAVEDDATA PRODUCTION PATH REMOVED: NO
 
-NO-GENERATION REAL RUNTIME: PASS
+PAGED STREAMING APPLY: PARTIAL — bounded generic page traversal exists, but live apply is not migrated.
 
-IMMUTABLE BUILD WORKFLOW: PASS (automated model/workspace tests; MapDev not exercised)
+PAGED STREAMING ROLLBACK: PARTIAL — journals are paged, but SavedData still holds unbounded journal collections.
 
 RESTART RECONCILIATION: PARTIAL
 
-REAL PROCESS-KILL APPLY: NOT TESTED
+TRUE PROCESS-KILL: NOT TESTED
 
-REAL PROCESS-KILL ROLLBACK: NOT TESTED
+NO-GENERATION: PASS
 
-REAL PROCESS-KILL RECOVERY: NOT TESTED
+BOUNDED MEMORY ARCHITECTURE: FAIL — generic plan storage is bounded; the production runtime remains unbounded.
 
-DISK FAILURE TESTING: PARTIAL
+REPRESENTATIVE LARGE-PLAN MEMORY TEST: PASS for the generic reader only — BIOMES/GEOLOGY/ORES each traverse 50,003 entries across 394 pages at 127 entries/page, maximum measured residency one page/127 entries. Live runtime remains NOT TESTED.
 
-ENVIRONMENTAL PACK AUDIT: BLOCKED_EXTERNAL — `run/mods` contained no production artifacts.
-
-BIOME PROVIDER FROZEN: NO
-
-PRODUCTION BIOME ENGINE: PARTIAL
-
-STRUCTURE PLANNER: YES
-
-STRUCTURE MATERIALIZATION ENGINE: NO
-
-REAL YUNG SUPPORT: every requested YUNG family is `UNSUPPORTED`/`BLOCKED_EXTERNAL`; no artifacts or verified APIs were present.
-
-SOILS LIVE: NO
-
-AQUATIC LIVE: NO
-
-FLORA LIVE: NO
-
-TREES LIVE: NO
-
-HABITATS LIVE: NO
-
-VALIDATION LIVE: NO
-
-ZERO-TOUCH COMPILE: PARTIAL
-
-EXACT BUILD: PARTIAL
-
-PREPARED WORLD MANIFEST: PARTIAL
-
-BOUNDED MEMORY: NOT TESTED
-
-WORLDPREP CODE COMPLETE: NO
-
-AUTOMATED SAFETY CERTIFIED: NO
-
-MAPDEV ACCEPTED: NO
-
-RIVER HANDOFF READY: NO
+STATIC SAFETY AUDIT: PASS for generation-prone production calls; FAIL for unbounded production plan collections.
 
 SAFETY INVARIANTS WEAKENED: NONE
 
-NOT TESTED: OS process-kill apply/rollback/recovery; recovery-of-recovery; full/permission-denied filesystem injection; representative large-plan peak heap; MapDev; real environmental/YUNG artifacts; production biome provider.
-
-KNOWN EXTERNAL BLOCKERS: final biome-provider decision; production environmental/YUNG artifacts; representative MapDev world; repository remote credentials/configuration in this workspace.
+SAFE TO CONTINUE TO ECOLOGY: NO
 
 SAFE TO MERGE: NO
 
-NEXT HUMAN ACTION: configure/publish the existing PR #6 branch, then continue the disk-paged BIOMES/GEOLOGY/ORES plan migration and remove large SavedData collections before ecology/materialization work.
+NEXT PHASE: wire BIOMES, GEOLOGY, and ORES preview/apply to exact `PagedPlanStore` manifests; bind ORES to the exact geology UUID/root; remove SavedData cells/changes; stream rollback ownership pages; add restart and real live large-plan measurements. Ecology and structure materialization remain blocked.

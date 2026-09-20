@@ -455,3 +455,6 @@ Every entry is normative; `IMPLEMENTED` means an automated control exists, while
 
 ## 2026-09-20 live BIOMES durability evidence
 BIOMES now publishes a checksummed journal page before palette mutation and persists its exact sequence/checksum ownership reference. Rollback validates every referenced page before mutation; missing pages and legacy nonempty snapshots without durable references fail closed. This is real in-server fault injection, not evidence of an OS process-kill restart.
+
+## 2026-09-20 paged-plan substrate evidence
+`PagedPlanStore` implements incremental detection for WP-012, WP-014 through WP-018 and reports orphan temporary/unreferenced pages without destructive cleanup. Publication validates all immutable pages before atomically publishing the SEALED manifest commit record. These controls are substrate-only until all three live planners and executors stop using SavedData plan collections; a missing production plan page is therefore not yet a certified live failure path.

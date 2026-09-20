@@ -48,3 +48,10 @@
 - **REAL GAMETEST:** The controlled partial BIOMES apply proves a durable page exists, deletes it, and verifies exact rollback fails closed before restoring test state.
 - **GATES:** 61 unit tests passed; build passed; all 18 required GameTests passed; `git diff --check` passed; production-source generation-prone access scan found no matches (the sole textual match is intentional GameTest setup).
 - **REMAINING:** BIOMES plan pages and removal of legacy full plan/snapshot cells from SavedData are not complete. Therefore BIOMES remains `PARTIAL`, bounded-memory certification remains `NOT_TESTED`, and code-complete/safety-certified remain `NO`.
+
+## 2026-09-20 paged-plan substrate checkpoint (PR #7)
+- **START HEAD:** `faf643089a33e77057c87191ba571fe03c2f58e7`; the checkout had no configured remote and was renamed locally to the requested canonical branch.
+- **IMPLEMENTED:** `PagedPlanStore` publishes immutable checksummed PLAN pages, validates every page before publishing the exact sealed manifest commit record, rereads exact manifests, streams one page at a time, and reports orphan temporary/completed files and referenced missing pages without deleting recovery material.
+- **BOUNDED TEST:** 50,003 entries for each of BIOMES, GEOLOGY, and ORES, 127 entries/page (394 pages/pass), with measured maximum residency of one page/127 entries. This certifies the generic reader, not live runtime integration.
+- **CORRUPTION TESTS:** missing page, trailing bytes, checksum/owner corruption, exact-manifest mismatch, and lifecycle diagnostics refuse or report as designed.
+- **REMAINING BLOCKER:** live preview/apply still uses the existing SavedData plan collections. The generic store is not yet wired into BIOMES/GEOLOGY/ORES, so no pass is claimed to have a paged production plan and ecology remains gated.
