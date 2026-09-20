@@ -452,3 +452,6 @@ Every entry is normative; `IMPLEMENTED` means an automated control exists, while
 - **RECOVERY:** Correct the input or restore the verified prerequisite, then create a new exact plan.
 - **AUTOMATED TEST:** `WorldPrepV2SafetyTest` / phase-specific integration test required.
 - **STATUS:** SPECIFIED; certification matrix tracks implementation.
+
+## 2026-09-20 live BIOMES durability evidence
+BIOMES now publishes a checksummed journal page before palette mutation and persists its exact sequence/checksum ownership reference. Rollback validates every referenced page before mutation; missing pages and legacy nonempty snapshots without durable references fail closed. This is real in-server fault injection, not evidence of an OS process-kill restart.

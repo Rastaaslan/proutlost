@@ -41,3 +41,10 @@
 - **NOT TESTED:** YUNG APIs/materialization; selected production biome provider.
 - **KNOWN LIMITATIONS:** Structure materialization, ecology runtime, and final compile/build commands remain incomplete.
 - **NEXT PHASE:** Continue only with verified artifacts and MapDev candidate.
+
+## 2026-09-20 biome durable-journal continuation
+- **START HEAD:** `aca337fcb369d5ca2ad6325a10e5089f7e77ee76` (the expected PR #6 head was already checked out). No Git remote was configured in this workspace, so fetch, push, and server-side PR-body reconciliation were unavailable.
+- **IMPLEMENTED:** Live BIOMES apply now publishes and rereads a checksummed `DurablePageStore` journal page before each column mutation. Snapshot metadata persists exact page sequence/checksum references. Resume adopts only the exact durable ownership page, rollback validates every referenced page before its first mutation, and legacy nonempty biome snapshots without pages refuse rollback.
+- **REAL GAMETEST:** The controlled partial BIOMES apply proves a durable page exists, deletes it, and verifies exact rollback fails closed before restoring test state.
+- **GATES:** 61 unit tests passed; build passed; all 18 required GameTests passed; `git diff --check` passed; production-source generation-prone access scan found no matches (the sole textual match is intentional GameTest setup).
+- **REMAINING:** BIOMES plan pages and removal of legacy full plan/snapshot cells from SavedData are not complete. Therefore BIOMES remains `PARTIAL`, bounded-memory certification remains `NOT_TESTED`, and code-complete/safety-certified remain `NO`.
