@@ -13,7 +13,7 @@ import java.util.UUID;
 /** Dimension-local persisted block plans and compact chunk-scoped change journals. */
 public final class BlockWorldPrepData extends SavedData {
     public static final String FILE_ID = "proutlost_worldprep_blocks";
-    public static final int FORMAT_VERSION = 3;
+    public static final int FORMAT_VERSION = 4;
     public static final Factory<BlockWorldPrepData> FACTORY = new Factory<>(BlockWorldPrepData::new, BlockWorldPrepData::load);
 
     public record Change(int x, int y, int z, String before, String applied, String province) {}
@@ -44,14 +44,14 @@ public final class BlockWorldPrepData extends SavedData {
     }
 
     public static final class Journal {
-        public final UUID id, job;
+        public final UUID id, job, planId;
         public final String area, pass, fingerprint;
-        public final Map<String, Change> changes = new LinkedHashMap<>();
-        public final Map<Long, String> pages = new LinkedHashMap<>();
+        public long pageCount,entryCount;public String journalRoot="";
 
-        public Journal(UUID id, UUID job, String area, String pass, String fingerprint) {
+        public Journal(UUID id, UUID job, UUID planId, String area, String pass, String fingerprint) {
             this.id = id;
             this.job = job;
+            this.planId=planId;
             this.area = area;
             this.pass = pass;
             this.fingerprint = fingerprint;
@@ -84,9 +84,9 @@ public final class BlockWorldPrepData extends SavedData {
         }
         for (Tag value : root.getList("journals", Tag.TAG_COMPOUND)) {
             var tag = (CompoundTag) value;
-            var journal = new Journal(tag.getUUID("id"), tag.getUUID("job"), tag.getString("area"), tag.getString("pass"), tag.getString("fingerprint"));
-            readChunks(tag.getList("chunks", Tag.TAG_COMPOUND), journal.changes);
-            for (Tag pageValue : tag.getList("pages", Tag.TAG_COMPOUND)) { var page = (CompoundTag) pageValue; journal.pages.put(page.getLong("sequence"), page.getString("checksum")); }
+            if(!tag.hasUUID("planId"))return incompatible();
+            var journal = new Journal(tag.getUUID("id"), tag.getUUID("job"),tag.getUUID("planId"), tag.getString("area"), tag.getString("pass"), tag.getString("fingerprint"));
+            journal.pageCount=tag.getLong("pageCount");journal.entryCount=tag.getLong("entryCount");journal.journalRoot=tag.getString("journalRoot");
             data.journals.put(journal.id, journal);
         }
         return data;
@@ -115,40 +115,13 @@ public final class BlockWorldPrepData extends SavedData {
         var savedJournals = new ListTag();
         for (var journal : journals.values()) {
             var tag = new CompoundTag();
-            tag.putUUID("id", journal.id); tag.putUUID("job", journal.job); tag.putString("area", journal.area);
+            tag.putUUID("id", journal.id); tag.putUUID("job", journal.job);tag.putUUID("planId",journal.planId); tag.putString("area", journal.area);
             tag.putString("pass", journal.pass); tag.putString("fingerprint", journal.fingerprint);
-            tag.put("chunks", writeChunks(journal.changes)); var pages = new ListTag(); for (var page : journal.pages.entrySet()) { var pageTag = new CompoundTag(); pageTag.putLong("sequence", page.getKey()); pageTag.putString("checksum", page.getValue()); pages.add(pageTag); } tag.put("pages", pages); savedJournals.add(tag);
+            tag.putLong("pageCount",journal.pageCount);tag.putLong("entryCount",journal.entryCount);tag.putString("journalRoot",journal.journalRoot);savedJournals.add(tag);
         }
         root.put("journals", savedJournals);
         return root;
     }
 
-    private static ListTag writeChunks(Map<String, Change> changes) {
-        var grouped = new LinkedHashMap<Long, ListTag>();
-        for (var change : changes.values()) {
-            long key = ((long) (change.x() >> 4) << 32) ^ ((change.z() >> 4) & 0xffffffffL);
-            var entries = grouped.computeIfAbsent(key, ignored -> new ListTag());
-            var tag = new CompoundTag();
-            tag.putByte("x", (byte) (change.x() & 15)); tag.putInt("y", change.y()); tag.putByte("z", (byte) (change.z() & 15));
-            tag.putString("before", change.before()); tag.putString("applied", change.applied()); tag.putString("province", change.province());
-            entries.add(tag);
-        }
-        var result = new ListTag();
-        for (var entry : grouped.entrySet()) {
-            var tag = new CompoundTag(); tag.putInt("x", (int) (entry.getKey() >> 32)); tag.putInt("z", (int) (long) entry.getKey());
-            tag.put("entries", entry.getValue()); result.add(tag);
-        }
-        return result;
-    }
 
-    private static void readChunks(ListTag chunks, Map<String, Change> output) {
-        for (Tag value : chunks) {
-            var chunk = (CompoundTag) value; int cx = chunk.getInt("x"), cz = chunk.getInt("z");
-            for (Tag entry : chunk.getList("entries", Tag.TAG_COMPOUND)) {
-                var tag = (CompoundTag) entry;
-                var change = new Change((cx << 4) + (tag.getByte("x") & 15), tag.getInt("y"), (cz << 4) + (tag.getByte("z") & 15), tag.getString("before"), tag.getString("applied"), tag.getString("province"));
-                output.put(posKey(change.x(), change.y(), change.z()), change);
-            }
-        }
-    }
 }

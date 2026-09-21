@@ -1,8 +1,8 @@
-# WorldPrep V2 — PR #8 live paged-plan report
+# WorldPrep V2 — PR #9 durable journal streaming report
 
-START HEAD: `8818844c99ac2a4b0c9407f31152ecca61192308`
+START HEAD: `cb1375ca26f3754925fe98230f292203a8dd4262` (legitimate published paged-plan continuation; no Git remote is configured).
 
-PR: #8 (canonical branch; no remote was configured in this workspace)
+PR: #9 canonical continuation branch `codex/continuer-migration-des-plans-pagines`.
 
 BIOMES PAGED PLAN: YES
 
@@ -16,30 +16,40 @@ ORES PAGED PLAN: YES
 
 ORES PAGED JOURNAL: YES
 
-LARGE SAVEDDATA PRODUCTION PLAN PATH REMOVED: YES
+LARGE SAVEDDATA PRODUCTION PATH REMOVED: YES
 
-LIVE STREAMING APPLY: PASS — exact sealed pages are read in bounded windows.
+SAVEDDATA JOURNAL MIRRORS REMOVED: YES
 
-LIVE BOUNDED MEMORY: FAIL — SavedData journal ownership mirrors still grow with total applied mutations.
+STREAMING APPLY: PASS
+
+STREAMING ROLLBACK: PASS
+
+LIVE BOUNDED MEMORY: PASS — live GEOLOGY and ORES each exercise 600 plan/journal mutations over three pages, with one decoded page and at most 256 decoded entries resident. The shared journal store additionally traverses 2,100 entries over 300 pages with one page/seven decoded entries resident. BIOMES uses the same one-page visitor and persists no ownership cells in SavedData.
+
+RESTART RECONCILIATION: PASS — recreated compact metadata with cursor behind, cursor ahead, world BEFORE, world AFTER, and world THIRD paths are covered. Durable manifest plus actual world wins; no planner is called during reconciliation.
+
+TRUE PROCESS-KILL APPLY: NOT TESTED
+
+TRUE PROCESS-KILL ROLLBACK: NOT TESTED
+
+TRUE PROCESS-KILL RECOVERY: NOT TESTED
+
+DISK FAILURE TESTING: PARTIAL — missing, corrupt/trailing, conflicting orphan, exact-manifest mismatch, and atomic publication paths are tested. Filesystem-full and permission injection were not safely exercised.
 
 NO-GENERATION: PASS
 
-RESTART RECONCILIATION: PARTIAL
+STATIC LEGACY BYPASS AUDIT: PASS
 
-TRUE PROCESS-KILL: NOT TESTED
-
-UNIT TESTS: PASS — 64 tests.
+UNIT TESTS: PASS — 67 tests.
 
 BUILD: PASS
 
-GAMETESTS: PASS — 18 tests.
-
-STATIC LEGACY BYPASS AUDIT: PARTIAL — inline plans are non-persisted staging only; journal mirrors remain.
+GAMETESTS: PASS — 19 tests.
 
 SAFETY INVARIANTS WEAKENED: NONE
 
-SAFE TO CONTINUE TO ECOLOGY: NO
+SAFE TO CONTINUE TO ECOLOGY: YES
 
-SAFE TO MERGE: NO
+SAFE TO MERGE: YES, subject to normal human review. True process-kill remains mandatory before final River handoff.
 
-NEXT PHASE: stream rollback directly from durable journal pages, remove SavedData journal entry mirrors, and complete live restart and bounded-memory certification before ecology.
+NEXT PHASE: WorldPrep Environmental Completion: SOILS -> AQUATIC -> STRUCTURES -> FLORA -> TREES -> HABITATS.

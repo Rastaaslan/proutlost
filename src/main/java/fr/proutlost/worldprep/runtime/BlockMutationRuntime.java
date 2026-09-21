@@ -38,7 +38,7 @@ public final class BlockMutationRuntime {
         String pass=pass(operation);var blocks=data(level);requireCompatible(blocks);
         if(isApply(operation)){
             var plan=requirePlan(level,data,area,pass);var snapshotId=UUID.randomUUID();
-            blocks.journals().put(snapshotId,new BlockWorldPrepData.Journal(snapshotId,id,area.id(),pass,plan.fingerprint));
+            var journal=new BlockWorldPrepData.Journal(snapshotId,id,plan.planId,area.id(),pass,plan.fingerprint);RuntimePageJournal.initialize(level,journal);blocks.journals().put(snapshotId,journal);
             data.jobs().put(id,data.jobs().get(id).withSnapshot(snapshotId));blocks.changed();data.changed();level.getDataStorage().save();
         }else if(isRollback(operation)){
             var requested=data.jobs().get(id).snapshotId();var journal=blocks.journals().get(requested);
@@ -68,28 +68,24 @@ public final class BlockMutationRuntime {
 
     /** Two phase protocol: persist the complete batch journal, then perform idempotent writes, then persist its cursor. */
     private static void applyBatch(ServerLevel level,WorldPrepSavedData data,BlockWorldPrepData blocks,UUID id,WorldPrepSavedData.Job job,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan,int budget){
-        List<BlockWorldPrepData.Change> changes=new ArrayList<>();int count=BlockCheckpointPolicy.batchLength(job.cursor(),Math.toIntExact(plan.entryCount),budget);
-        if(count==0){data.jobs().put(id,job.withState(WorldPrepSavedData.JobState.COMPLETED));data.changed();return;}
-        try{PagedPlanStore.readRange(RuntimePlanStore.directory(level,plan.planId),manifest(level,plan),RuntimePlanStore.BLOCK_CODEC,job.cursor(),count,changes::add);}catch(IOException e){throw new IllegalStateException("Paged plan validation failed",e);}
+        var journal=requireJournal(blocks,job,area,plan);reconcileAppliedJournal(level,data,area,plan,journal);blocks.changed();
+        long durable=RuntimePageJournal.durableEntryCount(level,journal);if(durable>plan.entryCount)throw new IllegalStateException("Journal exceeds exact plan");
+        List<BlockWorldPrepData.Change> changes=new ArrayList<>();int count=BlockCheckpointPolicy.batchLength(durable,Math.toIntExact(plan.entryCount),budget);
+        if(count==0){data.jobs().put(id,job.withCursor(durable).withState(WorldPrepSavedData.JobState.COMPLETED));data.changed();level.getDataStorage().save();return;}
+        try{PagedPlanStore.readRange(RuntimePlanStore.directory(level,plan.planId),manifest(level,plan),RuntimePlanStore.BLOCK_CODEC,durable,count,changes::add);}catch(IOException e){throw new IllegalStateException("Paged plan validation failed",e);}
         if(changes.size()!=count)throw new IllegalStateException("Paged plan ended before sealed entry count");
-        var journal=requireJournal(blocks,job,area,plan);
-        int start=(int)job.cursor(),end=start+count;
+        int start=Math.toIntExact(durable),end=start+count;
         for(var change:changes){validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());var current=encode(level.getBlockState(pos));
             ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
-            if(current.equals(change.applied())){
-                if(!journal.changes.containsKey(BlockWorldPrepData.posKey(change.x(),change.y(),change.z())))throw ownership(pos);
-            }else if(current.equals(change.before())&&safeAtBoundary(level,data,area,plan,change,pos)){
-                journal.changes.put(BlockWorldPrepData.posKey(change.x(),change.y(),change.z()),change);
-            }
+            if(current.equals(change.before())&&safeAtBoundary(level,data,area,plan,change,pos)){}
             // Every sealed mutation is mandatory: protection, BlockEntity, or a third state is a conflict.
             else throw ownership(pos);
         }
         var batch=List.copyOf(changes);
-        var page=RuntimePageJournal.publish(level,journal,start,batch);
-        journal.pages.put((long)start,page.checksum());
+        RuntimePageJournal.publish(level,journal,batch);
         blocks.changed();level.getDataStorage().save(); // disk page + ownership are durable before every following mutation
-        RuntimePageJournal.requirePage(level,journal,start);
-        for(var change:changes){String key=BlockWorldPrepData.posKey(change.x(),change.y(),change.z());if(!journal.changes.containsKey(key))continue;
+        RuntimePageJournal.reconcile(level,journal);
+        for(var change:changes){
             var pos=new BlockPos(change.x(),change.y(),change.z());String current=encode(level.getBlockState(pos));
             if(current.equals(change.before())){level.setBlock(pos,decode(change.applied()),Block.UPDATE_CLIENTS);ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z()).setUnsaved(true);}
             else if(!current.equals(change.applied()))throw ownership(pos);
@@ -112,19 +108,14 @@ public final class BlockMutationRuntime {
 
     private static void rollback(ServerLevel level,WorldPrepSavedData data,BlockWorldPrepData blocks,UUID id,WorldPrepSavedData.Job job,WorldPrepSavedData.Area area,String pass,int budget){
         var journal=blocks.journals().get(job.snapshotId());if(journal==null||!journal.area.equals(area.id())||!journal.pass.equals(pass))throw new IllegalStateException("Snapshot ownership mismatch");
-        journal.pages.keySet().stream().sorted().forEach(sequence->RuntimePageJournal.requirePage(level,journal,sequence));
-        var changes=ordered(journal.changes.values());int count=BlockCheckpointPolicy.batchLength(job.cursor(),changes.size(),budget);int start=(int)job.cursor(),end=start+count;
-        for(int index=start;index<end;index++){
-            var change=changes.get(index);validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());
-            if(data.protectedBlock(area.dimension(),change.x(),change.z()))throw new IllegalStateException("Rollback location is protected");
-            String current=encode(level.getBlockState(pos));
-            ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
-            if(current.equals(change.applied())){level.setBlock(pos,decode(change.before()),Block.UPDATE_CLIENTS);ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z()).setUnsaved(true);}
-            else if(!current.equals(change.before()))throw ownership(pos); // before means journaled but never applied: safe no-op
-        }
-        var advanced=data.jobs().get(id).withCursor(end);if(end>=changes.size())advanced=advanced.withState(WorldPrepSavedData.JobState.COMPLETED);data.jobs().put(id,advanced);data.changed();
-        if(count>0)level.getDataStorage().save();
+        RuntimePageJournal.reconcile(level,journal);preflightBlockRollback(level,data,area,journal);
+        int[] remaining={Math.max(1,budget)},restored={0};boolean[] pending={false};
+        RuntimePageJournal.visit(level,journal,(sequence,changes)->{for(var change:changes){var pos=new BlockPos(change.x(),change.y(),change.z());String current=encode(level.getBlockState(pos));if(current.equals(change.applied())){if(remaining[0]>0){level.setBlock(pos,decode(change.before()),Block.UPDATE_CLIENTS);ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z()).setUnsaved(true);remaining[0]--;restored[0]++;}else pending[0]=true;}}});
+        var advanced=data.jobs().get(id).withCursor(job.cursor()+restored[0]);if(!pending[0])advanced=advanced.withState(WorldPrepSavedData.JobState.COMPLETED);data.jobs().put(id,advanced);data.changed();blocks.changed();level.getDataStorage().save();
     }
+
+    private static void reconcileAppliedJournal(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan,BlockWorldPrepData.Journal journal){if(journal.pageCount==0&&!java.nio.file.Files.exists(fr.proutlost.worldprep.storage.PagedJournalStore.manifestPath(RuntimePageJournal.directory(level,journal.id))))return;RuntimePageJournal.reconcile(level,journal);RuntimePageJournal.visit(level,journal,(sequence,changes)->{for(var change:changes){validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());String current=encode(level.getBlockState(pos));if(current.equals(change.before())){if(!safeAtBoundary(level,data,area,plan,change,pos))throw ownership(pos);}else if(!current.equals(change.applied()))throw ownership(pos);}});RuntimePageJournal.visit(level,journal,(sequence,changes)->{for(var change:changes){var pos=new BlockPos(change.x(),change.y(),change.z());if(encode(level.getBlockState(pos)).equals(change.before())){level.setBlock(pos,decode(change.applied()),Block.UPDATE_CLIENTS);ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z()).setUnsaved(true);}}});}
+    private static void preflightBlockRollback(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Journal journal){RuntimePageJournal.visit(level,journal,(sequence,changes)->{for(var change:changes){validateBounds(level,area,change);if(data.protectedBlock(area.dimension(),change.x(),change.z()))throw new IllegalStateException("Rollback location is protected");var pos=new BlockPos(change.x(),change.y(),change.z());ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());String current=encode(level.getBlockState(pos));if(!current.equals(change.applied())&&!current.equals(change.before()))throw ownership(pos);}});}
 
     private static boolean safeAtBoundary(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan,BlockWorldPrepData.Change change,BlockPos pos){
         if(data.protectedBlock(area.dimension(),change.x(),change.z())||level.getBlockEntity(pos)!=null)return false;

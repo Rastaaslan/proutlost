@@ -49,3 +49,18 @@ claim of safety certification.
 | paged durable journals | PASS | all three passes publish journal pages before mutation |
 | fully bounded live working set | FAIL | rollback ownership mirrors remain unbounded in SavedData |
 | restart/process-kill certification | PARTIAL | reconciliation is idempotent; true process kill not tested |
+
+## PR #9 durable journal and memory certification
+
+| Control | Status | Evidence / limitation |
+|---|---|---|
+| SavedData ownership mirrors removed | PASS | schema/format 4 serialize compact journal identity/counters only |
+| canonical complete journal identity | PASS | manifest binds journal/plan UUID, plan root, pass, dimension, area, ordered checksums and entry count |
+| journal-before-write | PASS | manifest page commit and SavedData metadata save precede mutation |
+| streaming APPLY recovery | PASS | durable pages reconcile BEFORE/AFTER/THIRD without replanning |
+| streaming ROLLBACK | PASS | full validation/preflight then one-page traversal; cursor is advisory |
+| missing/corrupt/conflicting page | PASS | unit and live missing-page GameTests fail closed |
+| live bounded memory | PASS | GEOLOGY/ORES 600 entries and <=256 resident; 300-page store stress and <=7 resident |
+| restart reconciliation | PASS | compact metadata recreation, cursor behind/ahead, duplicate rollback, BEFORE/AFTER/THIRD |
+| true process kill | NOT TESTED | no kill -9 claim; mandatory before final River handoff |
+| disk exhaustion/permissions | PARTIAL | integrity and publication faults covered; OS resource faults not injected |

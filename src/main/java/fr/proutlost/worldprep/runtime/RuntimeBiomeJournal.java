@@ -2,96 +2,43 @@ package fr.proutlost.worldprep.runtime;
 
 import fr.proutlost.worldprep.persistence.WorldPrepSavedData;
 import fr.proutlost.worldprep.pipeline.PassId;
-import fr.proutlost.worldprep.storage.DurablePageStore;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.storage.LevelResource;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import fr.proutlost.worldprep.storage.PagedJournalStore;
+import fr.proutlost.worldprep.storage.PagedPlanStore;
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.LevelResource;
 
-/** Durable, checksummed biome ownership pages. Publication precedes every palette mutation. */
+/** Exact, manifest-bound BIOMES ownership journal; SavedData retains metadata only. */
 public final class RuntimeBiomeJournal {
-    public static List<WorldPrepSavedData.SnapshotCell> publishOrRead(ServerLevel level,
-            WorldPrepSavedData.Snapshot snapshot, long sequence, int quartX, int quartZ,
-            List<WorldPrepSavedData.SnapshotCell> proposed) {
-        Path target = pagePath(level, snapshot.id, sequence);
-        try {
-            if (Files.exists(target)) return validateAndDecode(level, snapshot, sequence, quartX, quartZ);
-            byte[] payload = encode(proposed);
-            var page = DurablePageStore.page(DurablePageStore.StorageKind.JOURNAL, snapshot.id,
-                    PassId.BIOMES, snapshot.dimension, QuartPosHelper.chunk(quartX), QuartPosHelper.chunk(quartZ),
-                    sequence, proposed.size(), payload);
-            DurablePageStore.publish(target, page);
-            var durable = DurablePageStore.read(target);
-            snapshot.pages.put(sequence, durable.checksum());
-            return decode(durable);
-        } catch (IOException exception) {
-            throw new IllegalStateException("Durable biome journal publication failed", exception);
-        }
+    private static final PagedPlanStore.EntryCodec<WorldPrepSavedData.SnapshotCell> CODEC=new PagedPlanStore.EntryCodec<>(){
+        public void write(DataOutput out,WorldPrepSavedData.SnapshotCell c)throws IOException{out.writeInt(c.quartX());out.writeInt(c.quartY());out.writeInt(c.quartZ());out.writeUTF(c.beforeBiome());out.writeUTF(c.appliedBiome());}
+        public WorldPrepSavedData.SnapshotCell read(DataInput in)throws IOException{return new WorldPrepSavedData.SnapshotCell(in.readInt(),in.readInt(),in.readInt(),in.readUTF(),in.readUTF());}
+    };
+    public static PagedJournalStore.Manifest initialize(ServerLevel level,WorldPrepSavedData.Snapshot snapshot){try{var manifest=PagedJournalStore.initialize(directory(level,snapshot.id),PagedJournalStore.empty(snapshot.id,snapshot.planId,snapshot.planFingerprint,PassId.BIOMES,snapshot.dimension,snapshot.area));update(snapshot,manifest);return manifest;}catch(IOException e){throw new IllegalStateException("Durable biome journal initialization failed",e);}}
+
+    public static List<WorldPrepSavedData.SnapshotCell> publishOrRead(ServerLevel level,WorldPrepSavedData.Snapshot snapshot,List<WorldPrepSavedData.SnapshotCell> proposed){
+        try{
+            var current=manifestOrEmpty(level,snapshot);long sequence=current.pages().size();
+            var advanced=PagedJournalStore.append(directory(level,snapshot.id),current,proposed,CODEC);update(snapshot,advanced);
+            var result=new AtomicReference<List<WorldPrepSavedData.SnapshotCell>>();
+            PagedJournalStore.visitPages(directory(level,snapshot.id),advanced,CODEC,(page,entries)->{if(page==sequence)result.set(List.copyOf(entries));});
+            return result.get();
+        }catch(IOException e){throw new IllegalStateException("Durable biome journal publication failed",e);}
     }
 
-    public static void requireAll(ServerLevel level, WorldPrepSavedData.Snapshot snapshot) {
-        if (!snapshot.cells.isEmpty() && snapshot.pages.isEmpty()) {
-            throw new IllegalStateException("Legacy biome snapshot has no durable journal pages");
-        }
-        for (var reference : snapshot.pages.entrySet()) {
-            try {
-                var page = DurablePageStore.read(pagePath(level, snapshot.id, reference.getKey()));
-                if (page.storageKind() != DurablePageStore.StorageKind.JOURNAL
-                        || !page.ownerId().equals(snapshot.id) || page.passId() != PassId.BIOMES
-                        || !page.dimension().equals(snapshot.dimension) || page.sequence() != reference.getKey()
-                        || !page.checksum().equals(reference.getValue())) throw new IOException("Biome page identity mismatch");
-                decode(page);
-            } catch (IOException exception) {
-                throw new IllegalStateException("Biome journal page validation failed", exception);
-            }
-        }
-    }
-
-    private static List<WorldPrepSavedData.SnapshotCell> validateAndDecode(ServerLevel level,
-            WorldPrepSavedData.Snapshot snapshot, long sequence, int quartX, int quartZ) throws IOException {
-        var page = DurablePageStore.read(pagePath(level, snapshot.id, sequence));
-        String expected = snapshot.pages.get(sequence);
-        if (expected == null || page.storageKind() != DurablePageStore.StorageKind.JOURNAL
-                || !page.ownerId().equals(snapshot.id) || page.passId() != PassId.BIOMES
-                || !page.dimension().equals(snapshot.dimension) || page.sequence() != sequence
-                || page.chunkX() != QuartPosHelper.chunk(quartX) || page.chunkZ() != QuartPosHelper.chunk(quartZ)
-                || !page.checksum().equals(expected)) throw new IOException("Biome page identity mismatch");
-        return decode(page);
-    }
-
-    private static byte[] encode(List<WorldPrepSavedData.SnapshotCell> cells) throws IOException {
-        var bytes = new ByteArrayOutputStream();
-        try (var out = new DataOutputStream(bytes)) {
-            out.writeInt(cells.size());
-            for (var cell : cells) { out.writeInt(cell.quartX()); out.writeInt(cell.quartY()); out.writeInt(cell.quartZ()); out.writeUTF(cell.beforeBiome()); out.writeUTF(cell.appliedBiome()); }
-        }
-        return bytes.toByteArray();
-    }
-
-    private static List<WorldPrepSavedData.SnapshotCell> decode(DurablePageStore.Page page) throws IOException {
-        try (var in = new DataInputStream(new ByteArrayInputStream(page.payload()))) {
-            int count = in.readInt();
-            if (count != page.entryCount()) throw new IOException("Biome page entry count mismatch");
-            var result = new ArrayList<WorldPrepSavedData.SnapshotCell>(count);
-            for (int i=0;i<count;i++) result.add(new WorldPrepSavedData.SnapshotCell(in.readInt(),in.readInt(),in.readInt(),in.readUTF(),in.readUTF()));
-            if (in.read()!=-1) throw new IOException("Trailing biome page payload");
-            return result;
-        }
-    }
-
-    public static Path pagePath(ServerLevel level, java.util.UUID snapshotId, long sequence) {
-        return level.getServer().getWorldPath(LevelResource.ROOT).resolve("worldprep-v2").resolve("biome-journals")
-                .resolve(snapshotId.toString()).resolve(String.format("%020d.wpp",sequence));
-    }
-
-    private static final class QuartPosHelper { static int chunk(int quart) { return (quart << 2) >> 4; } }
-    private RuntimeBiomeJournal() {}
+    public static PagedJournalStore.Manifest requireManifest(ServerLevel level,WorldPrepSavedData.Snapshot snapshot){try{var manifest=PagedJournalStore.readManifest(directory(level,snapshot.id));requireIdentity(snapshot,manifest);PagedJournalStore.validateAll(directory(level,snapshot.id),manifest);update(snapshot,manifest);return manifest;}catch(IOException e){throw new IllegalStateException("Biome journal recovery required",e);}}
+    public static PagedJournalStore.Metrics visit(ServerLevel level,WorldPrepSavedData.Snapshot snapshot,PagedJournalStore.PageConsumer<WorldPrepSavedData.SnapshotCell> consumer){try{var manifest=requireManifest(level,snapshot);return PagedJournalStore.visitPages(directory(level,snapshot.id),manifest,CODEC,consumer);}catch(IOException e){throw new IllegalStateException("Biome journal recovery required",e);}}
+    public static long durablePageCount(ServerLevel level,WorldPrepSavedData.Snapshot snapshot){Path manifest=PagedJournalStore.manifestPath(directory(level,snapshot.id));if(!Files.exists(manifest))return 0;try{return PagedJournalStore.readManifest(directory(level,snapshot.id)).pages().size();}catch(IOException e){throw new IllegalStateException("Biome journal recovery required",e);}}
+    private static PagedJournalStore.Manifest manifestOrEmpty(ServerLevel level,WorldPrepSavedData.Snapshot s)throws IOException{Path directory=directory(level,s.id);if(Files.exists(PagedJournalStore.manifestPath(directory))){var m=PagedJournalStore.readManifest(directory);if(!m.journalId().equals(s.id)||!m.planId().equals(s.planId)||!m.planRoot().equals(s.planFingerprint)||m.pass()!=PassId.BIOMES||!m.dimension().equals(s.dimension)||!m.area().equals(s.area))throw new IOException("Biome journal identity mismatch");return m;}return PagedJournalStore.empty(s.id,s.planId,s.planFingerprint,PassId.BIOMES,s.dimension,s.area);}
+    private static void update(WorldPrepSavedData.Snapshot s,PagedJournalStore.Manifest m){s.pageCount=m.pages().size();s.entryCount=m.entryCount();s.journalRoot=m.root();}
+    private static void requireIdentity(WorldPrepSavedData.Snapshot s,PagedJournalStore.Manifest m)throws IOException{if(!m.journalId().equals(s.id)||!m.planId().equals(s.planId)||!m.planRoot().equals(s.planFingerprint)||m.pass()!=PassId.BIOMES||!m.dimension().equals(s.dimension)||!m.area().equals(s.area))throw new IOException("Exact biome journal identity mismatch");}
+    public static Path directory(ServerLevel level,java.util.UUID id){return level.getServer().getWorldPath(LevelResource.ROOT).resolve("worldprep-v2").resolve("biome-journals").resolve(id.toString());}
+    public static Path pagePath(ServerLevel level,java.util.UUID id,long sequence){return PagedJournalStore.pagePath(directory(level,id),sequence);}
+    private RuntimeBiomeJournal(){}
 }

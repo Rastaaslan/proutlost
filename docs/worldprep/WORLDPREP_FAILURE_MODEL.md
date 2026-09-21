@@ -463,3 +463,10 @@ BIOMES now publishes a checksummed journal page before palette mutation and pers
 BIOMES, GEOLOGY, and ORES production plans now use exact UUID-addressed, sealed manifests. Apply rereads the durable manifest, requires pass/dimension/input/root identity, and streams a cursor window without recalculating decisions. Missing, corrupt, reordered, or mismatched plan pages refuse mutation. ORES additionally persists and requires both the exact upstream GEOLOGY plan UUID and root; there is no “latest geology” resolution. Schema-2 inline plans are rejected rather than guessed.
 
 The durability gate is not yet complete: rollback journal entries are still mirrored in SavedData even though journal pages are published first and validated. This is a bounded-memory blocker, not a weakened ownership rule; ecology remains prohibited until rollback streams journal pages and the mirrors are removed.
+
+## 2026-09-20 durable journal manifest and streaming recovery
+Journal ownership is no longer mirrored as mutation collections in SavedData. The durable commit record binds the journal UUID, exact plan UUID/root, pass, dimension, area, ordered page identities/checksums, and total entries. Only manifest-referenced pages grant ownership; conflicting orphan pages are rejected. Missing, corrupt, truncated/trailing, reordered, wrong-owner, or wrong-pass data enters recovery-required failure before rollback mutation.
+
+APPLY recovery streams committed journal pages and reconciles each actual value as BEFORE (pending write), AFTER (safe no-op), or THIRD (conflict). ROLLBACK first validates and preflights the complete journal without retaining decoded pages, then restores in deterministic page/entry order with one page resident. Persisted cursors are advisory. Legacy mirrored journal schemas are not guessed or silently upgraded; they fail compatibility checks.
+
+True process-kill testing was not performed. The in-process restart reconstruction and fault injection evidence must not be represented as kill -9 certification; real subprocess termination remains mandatory before final River handoff.
