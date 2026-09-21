@@ -21,11 +21,6 @@ class BlockCheckpointPolicyTest {
         assertEquals(3, BlockCheckpointPolicy.batchLength(4_997, 5_000, 10_000));
     }
 
-    @Test void planFailsClosedAtExplicitMemoryBound() {
-        BlockWorldPrepData.requirePlanSize(BlockWorldPrepData.MAX_PLAN_CHANGES);
-        assertThrows(IllegalStateException.class, () -> BlockWorldPrepData.requirePlanSize(BlockWorldPrepData.MAX_PLAN_CHANGES + 1));
-    }
-
     @Test void legacyBlockPersistenceFailsClosed() {
         var legacy = BlockWorldPrepData.load(new CompoundTag(), null);
         assertFalse(legacy.compatible());

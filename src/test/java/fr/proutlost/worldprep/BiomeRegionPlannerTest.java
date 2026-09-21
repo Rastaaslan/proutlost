@@ -1,0 +1,3 @@
+package fr.proutlost.worldprep;
+import fr.proutlost.worldprep.biome.v2.*;import java.util.*;import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;
+class BiomeRegionPlannerTest {@Test void orderAndBudgetSchedulingDoNotAffectSemanticPlan(){var pool=new BiomeCandidatePool(List.of(new BiomeCandidatePool.Candidate("minecraft:plains",BiomeFamily.PLAINS,1)),Set.of("minecraft:plains"));var cells=new ArrayList<>(List.of(new BiomeRegionPlanner.Cell(1,2,TerrainSemantic.LOWLAND,MacroClimate.TEMPERATE,1),new BiomeRegionPlanner.Cell(-1,3,TerrainSemantic.LOWLAND,MacroClimate.WARM,0)));var planner=new BiomeRegionPlanner();var a=planner.plan(cells,pool,2,1);Collections.reverse(cells);assertEquals(a,planner.plan(cells,pool,2,1));}}

@@ -4,6 +4,9 @@ import fr.proutlost.worldprep.geology.GeologyPlanner;
 import fr.proutlost.worldprep.persistence.BlockWorldPrepData;
 import fr.proutlost.worldprep.persistence.WorldPrepSavedData;
 import fr.proutlost.worldprep.plan.PlanFingerprint;
+import fr.proutlost.worldprep.storage.PagedPlanStore;
+import fr.proutlost.worldprep.storage.PlanManifest;
+import fr.proutlost.worldprep.world.ServerExistingChunkAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /** Shared incremental executor for deterministic BlockState plans and owned rollback journals. */
 public final class BlockMutationRuntime {
@@ -32,11 +38,11 @@ public final class BlockMutationRuntime {
         String pass=pass(operation);var blocks=data(level);requireCompatible(blocks);
         if(isApply(operation)){
             var plan=requirePlan(level,data,area,pass);var snapshotId=UUID.randomUUID();
-            blocks.journals().put(snapshotId,new BlockWorldPrepData.Journal(snapshotId,id,area.id(),pass,plan.fingerprint));
+            var journal=new BlockWorldPrepData.Journal(snapshotId,id,plan.planId,area.id(),pass,plan.fingerprint);RuntimePageJournal.initialize(level,journal);blocks.journals().put(snapshotId,journal);
             data.jobs().put(id,data.jobs().get(id).withSnapshot(snapshotId));blocks.changed();data.changed();level.getDataStorage().save();
         }else if(isRollback(operation)){
-            var journal=blocks.journals().values().stream().filter(j->j.area.equals(area.id())&&j.pass.equals(pass)).reduce((x,y)->y).orElseThrow(()->new IllegalStateException("No owned "+pass+" snapshot"));
-            data.jobs().put(id,data.jobs().get(id).withSnapshot(journal.id));data.changed();
+            var requested=data.jobs().get(id).snapshotId();var journal=blocks.journals().get(requested);
+            if(journal==null||!journal.area.equals(area.id())||!journal.pass.equals(pass))throw new IllegalStateException("Exact rollback journal ownership mismatch");
         }
     }
 
@@ -45,8 +51,7 @@ public final class BlockMutationRuntime {
         if(isRollback(job.operation())){rollback(level,data,blocks,id,job,area,pass,budget);return;}
         String key=BlockWorldPrepData.planKey(area.id(),pass);var plan=blocks.plans().get(key);
         if(job.operation().name().startsWith("PREVIEW")){
-            if(job.cursor()==0){plan=new BlockWorldPrepData.Plan(area.id(),pass,"development",input(level,data,area,pass),"");blocks.plans().put(key,plan);blocks.changed();}
-            previewSlice(level,data,blocks,id,job,area,pass,plan,budget);return;
+            if(job.cursor()==0){plan=new BlockWorldPrepData.Plan(area.id(),pass,"development",input(level,data,area,pass),"");publish(level,data,area,plan);blocks.plans().put(key,plan);if(pass.equals("GEOLOGY"))blocks.plans().remove(BlockWorldPrepData.planKey(area.id(),"ORES"));blocks.changed();data.jobs().put(id,job.withCursor(plan.entryCount).withState(WorldPrepSavedData.JobState.COMPLETED));data.changed();}return;
         }
         plan=requirePlan(level,data,area,pass);
         applyBatch(level,data,blocks,id,job,area,plan,budget);
@@ -63,33 +68,34 @@ public final class BlockMutationRuntime {
 
     /** Two phase protocol: persist the complete batch journal, then perform idempotent writes, then persist its cursor. */
     private static void applyBatch(ServerLevel level,WorldPrepSavedData data,BlockWorldPrepData blocks,UUID id,WorldPrepSavedData.Job job,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan,int budget){
-        List<BlockWorldPrepData.Change> changes=ordered(plan.changes.values());int count=BlockCheckpointPolicy.batchLength(job.cursor(),changes.size(),budget);
-        if(count==0){data.jobs().put(id,job.withState(WorldPrepSavedData.JobState.COMPLETED));data.changed();return;}
-        var journal=requireJournal(blocks,job,area,plan);
-        int start=(int)job.cursor(),end=start+count;
-        for(int index=start;index<end;index++){
-            var change=changes.get(index);validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());var current=encode(level.getBlockState(pos));
-            if(current.equals(change.applied())){
-                if(!journal.changes.containsKey(BlockWorldPrepData.posKey(change.x(),change.y(),change.z())))throw ownership(pos);
-            }else if(current.equals(change.before())&&safeAtBoundary(level,data,area,plan,change,pos)){
-                journal.changes.put(BlockWorldPrepData.posKey(change.x(),change.y(),change.z()),change);
-            }
-            // A stale/protected unjournaled planned change is deliberately skipped. A journaled third state conflicts below.
-            else if(journal.changes.containsKey(BlockWorldPrepData.posKey(change.x(),change.y(),change.z())))throw ownership(pos);
+        var journal=requireJournal(blocks,job,area,plan);reconcileAppliedJournal(level,data,area,plan,journal);blocks.changed();
+        long durable=RuntimePageJournal.durableEntryCount(level,journal);if(durable>plan.entryCount)throw new IllegalStateException("Journal exceeds exact plan");
+        List<BlockWorldPrepData.Change> changes=new ArrayList<>();int count=BlockCheckpointPolicy.batchLength(durable,Math.toIntExact(plan.entryCount),budget);
+        if(count==0){data.jobs().put(id,job.withCursor(durable).withState(WorldPrepSavedData.JobState.COMPLETED));data.changed();level.getDataStorage().save();return;}
+        try{PagedPlanStore.readRange(RuntimePlanStore.directory(level,plan.planId),manifest(level,plan),RuntimePlanStore.BLOCK_CODEC,durable,count,changes::add);}catch(IOException e){throw new IllegalStateException("Paged plan validation failed",e);}
+        if(changes.size()!=count)throw new IllegalStateException("Paged plan ended before sealed entry count");
+        int start=Math.toIntExact(durable),end=start+count;
+        for(var change:changes){validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());var current=encode(level.getBlockState(pos));
+            ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
+            if(current.equals(change.before())&&safeAtBoundary(level,data,area,plan,change,pos)){}
+            // Every sealed mutation is mandatory: protection, BlockEntity, or a third state is a conflict.
+            else throw ownership(pos);
         }
-        blocks.changed();level.getDataStorage().save(); // journal is durable before every following mutation
-        for(int index=start;index<end;index++){
-            var change=changes.get(index);String key=BlockWorldPrepData.posKey(change.x(),change.y(),change.z());if(!journal.changes.containsKey(key))continue;
+        var batch=List.copyOf(changes);
+        RuntimePageJournal.publish(level,journal,batch);
+        blocks.changed();level.getDataStorage().save(); // disk page + ownership are durable before every following mutation
+        RuntimePageJournal.reconcile(level,journal);
+        for(var change:changes){
             var pos=new BlockPos(change.x(),change.y(),change.z());String current=encode(level.getBlockState(pos));
-            if(current.equals(change.before())){level.setBlock(pos,decode(change.applied()),Block.UPDATE_CLIENTS);level.getChunkAt(pos).setUnsaved(true);}
+            if(current.equals(change.before())){level.setBlock(pos,decode(change.applied()),Block.UPDATE_CLIENTS);ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z()).setUnsaved(true);}
             else if(!current.equals(change.applied()))throw ownership(pos);
         }
-        var advanced=data.jobs().get(id).withCursor(end);if(end>=changes.size())advanced=advanced.withState(WorldPrepSavedData.JobState.COMPLETED);
+        var advanced=data.jobs().get(id).withCursor(end);if(end>=plan.entryCount)advanced=advanced.withState(WorldPrepSavedData.JobState.COMPLETED);
         data.jobs().put(id,advanced);data.changed();level.getDataStorage().save();
     }
 
     private static void preview(ServerLevel level,WorldPrepSavedData data,BlockWorldPrepData.Plan plan,WorldPrepSavedData.Area area,String pass,int x,int y,int z){
-        var pos=new BlockPos(x,y,z);var state=level.getBlockState(pos);boolean protectedAt=data.protectedBlock(area.dimension(),x,z)||level.getBlockEntity(pos)!=null;
+        ServerExistingChunkAccess.requireBlock(level,area,x,y,z);var pos=new BlockPos(x,y,z);var state=level.getBlockState(pos);boolean protectedAt=data.protectedBlock(area.dimension(),x,z)||level.getBlockEntity(pos)!=null;
         if(pass.equals("GEOLOGY")){
             if(!state.is(GEOLOGY)){if(protectedAt)plan.skipped++;return;}plan.eligible++;if(protectedAt){plan.skipped++;return;}
             var province=GeologyPlanner.province(level.getSeed(),x,y,z);String target=GeologyPlanner.replacement(level.getSeed(),x,y,z,province);
@@ -102,17 +108,14 @@ public final class BlockMutationRuntime {
 
     private static void rollback(ServerLevel level,WorldPrepSavedData data,BlockWorldPrepData blocks,UUID id,WorldPrepSavedData.Job job,WorldPrepSavedData.Area area,String pass,int budget){
         var journal=blocks.journals().get(job.snapshotId());if(journal==null||!journal.area.equals(area.id())||!journal.pass.equals(pass))throw new IllegalStateException("Snapshot ownership mismatch");
-        var changes=ordered(journal.changes.values());int count=BlockCheckpointPolicy.batchLength(job.cursor(),changes.size(),budget);int start=(int)job.cursor(),end=start+count;
-        for(int index=start;index<end;index++){
-            var change=changes.get(index);validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());
-            if(data.protectedBlock(area.dimension(),change.x(),change.z()))throw new IllegalStateException("Rollback location is protected");
-            String current=encode(level.getBlockState(pos));
-            if(current.equals(change.applied())){level.setBlock(pos,decode(change.before()),Block.UPDATE_CLIENTS);level.getChunkAt(pos).setUnsaved(true);}
-            else if(!current.equals(change.before()))throw ownership(pos); // before means journaled but never applied: safe no-op
-        }
-        var advanced=data.jobs().get(id).withCursor(end);if(end>=changes.size())advanced=advanced.withState(WorldPrepSavedData.JobState.COMPLETED);data.jobs().put(id,advanced);data.changed();
-        if(count>0)level.getDataStorage().save();
+        RuntimePageJournal.reconcile(level,journal);preflightBlockRollback(level,data,area,journal);
+        int[] remaining={Math.max(1,budget)},restored={0};boolean[] pending={false};
+        RuntimePageJournal.visit(level,journal,(sequence,changes)->{for(var change:changes){var pos=new BlockPos(change.x(),change.y(),change.z());String current=encode(level.getBlockState(pos));if(current.equals(change.applied())){if(remaining[0]>0){level.setBlock(pos,decode(change.before()),Block.UPDATE_CLIENTS);ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z()).setUnsaved(true);remaining[0]--;restored[0]++;}else pending[0]=true;}}});
+        var advanced=data.jobs().get(id).withCursor(job.cursor()+restored[0]);if(!pending[0])advanced=advanced.withState(WorldPrepSavedData.JobState.COMPLETED);data.jobs().put(id,advanced);data.changed();blocks.changed();level.getDataStorage().save();
     }
+
+    private static void reconcileAppliedJournal(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan,BlockWorldPrepData.Journal journal){if(journal.pageCount==0&&!java.nio.file.Files.exists(fr.proutlost.worldprep.storage.PagedJournalStore.manifestPath(RuntimePageJournal.directory(level,journal.id))))return;RuntimePageJournal.reconcile(level,journal);RuntimePageJournal.visit(level,journal,(sequence,changes)->{for(var change:changes){validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());String current=encode(level.getBlockState(pos));if(current.equals(change.before())){if(!safeAtBoundary(level,data,area,plan,change,pos))throw ownership(pos);}else if(!current.equals(change.applied()))throw ownership(pos);}});RuntimePageJournal.visit(level,journal,(sequence,changes)->{for(var change:changes){var pos=new BlockPos(change.x(),change.y(),change.z());if(encode(level.getBlockState(pos)).equals(change.before())){level.setBlock(pos,decode(change.applied()),Block.UPDATE_CLIENTS);ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z()).setUnsaved(true);}}});}
+    private static void preflightBlockRollback(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Journal journal){RuntimePageJournal.visit(level,journal,(sequence,changes)->{for(var change:changes){validateBounds(level,area,change);if(data.protectedBlock(area.dimension(),change.x(),change.z()))throw new IllegalStateException("Rollback location is protected");var pos=new BlockPos(change.x(),change.y(),change.z());ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());String current=encode(level.getBlockState(pos));if(!current.equals(change.applied())&&!current.equals(change.before()))throw ownership(pos);}});}
 
     private static boolean safeAtBoundary(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan,BlockWorldPrepData.Change change,BlockPos pos){
         if(data.protectedBlock(area.dimension(),change.x(),change.z())||level.getBlockEntity(pos)!=null)return false;
@@ -124,13 +127,38 @@ public final class BlockMutationRuntime {
     private static List<BlockWorldPrepData.Change> ordered(java.util.Collection<BlockWorldPrepData.Change> values){var result=new ArrayList<>(values);result.sort(Comparator.comparingInt(BlockWorldPrepData.Change::z).thenComparingInt(BlockWorldPrepData.Change::x).thenComparingInt(BlockWorldPrepData.Change::y));return result;}
     private static void requireCompatible(BlockWorldPrepData data){if(!data.compatible())throw new IllegalStateException("Legacy block persistence format is incompatible; block job refused");}
     private static boolean validOreTarget(String target,int y){for(var ore:ORES)if((target.equals("minecraft:"+ore.stone)||target.equals("minecraft:"+ore.deep))&&y>=ore.min&&y<=ore.max)return true;return false;}
-    private static BlockWorldPrepData.Plan requirePlan(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass){var blocks=data(level);requireCompatible(blocks);var plan=blocks.plans().get(BlockWorldPrepData.planKey(area.id(),pass));if(plan==null||plan.fingerprint.isEmpty())throw new IllegalStateException("No persisted "+pass+" preview");if(plan.changes.size()>BlockWorldPrepData.MAX_PLAN_CHANGES)throw new IllegalStateException("Block plan exceeds safe limit");if(!plan.input.equals(input(level,data,area,pass)))throw new IllegalStateException("Stale "+pass+" preview");if(pass.equals("ORES")&&!hasAppliedGeology(blocks,area.id()))throw new IllegalStateException("ORES requires applied GEOLOGY");return plan;}
+    private static BlockWorldPrepData.Plan requirePlan(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass){var blocks=data(level);requireCompatible(blocks);var plan=blocks.plans().get(BlockWorldPrepData.planKey(area.id(),pass));if(plan==null||plan.fingerprint.isEmpty())throw new IllegalStateException("No persisted "+pass+" preview");if(plan.planId==null)publish(level,data,area,plan);if(!plan.input.equals(input(level,data,area,pass)))throw new IllegalStateException("Stale "+pass+" preview");if(pass.equals("ORES")){var geology=blocks.plans().get(BlockWorldPrepData.planKey(area.id(),"GEOLOGY"));if(geology==null||plan.upstreamPlanId==null||!plan.upstreamPlanId.equals(geology.planId)||!plan.upstreamRoot.equals(geology.fingerprint))throw new IllegalStateException("ORES exact GEOLOGY plan identity is stale");if(!hasAppliedGeology(blocks,area.id()))throw new IllegalStateException("ORES requires applied GEOLOGY");}manifest(level,plan);return plan;}
     private static boolean hasAppliedGeology(BlockWorldPrepData data,String area){return data.journals().values().stream().anyMatch(j->j.area.equals(area)&&j.pass.equals("GEOLOGY"));}
-    public static String inputIdentity(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass){return input(level,data,area,pass);}
+    public static String inputIdentity(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass){if(pass.equals("ORES")){var geology=BlockMutationRuntime.data(level).plans().get(BlockWorldPrepData.planKey(area.id(),"GEOLOGY"));if(geology!=null&&geology.planId==null)publish(level,data,area,geology);}return input(level,data,area,pass);}
     public static void seal(BlockWorldPrepData.Plan plan){plan.fingerprint=fingerprint(plan);}
+    /** Publishes hand-authored acceptance-test plans through the same production sealing path. */
+    public static void publishSealed(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan){seal(plan);publish(level,data,area,plan);}
     public static String stateString(BlockState state){return encode(state);}
     private static String input(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass){long protections=data.protections().values().stream().filter(p->p.dimension().equals(area.dimension())).mapToLong(Object::hashCode).sum();String geology=pass.equals("ORES")?java.util.Optional.ofNullable(data(level).plans().get(BlockWorldPrepData.planKey(area.id(),"GEOLOGY"))).map(p->p.fingerprint).orElse(""):"";return area.dimension()+":"+area.minX()+":"+area.minZ()+":"+area.maxX()+":"+area.maxZ()+":"+level.getSeed()+":"+protections+":"+geology;}
     private static String fingerprint(BlockWorldPrepData.Plan plan){String changes=PlanFingerprint.of(plan.changes.values().stream().map(c->c.x()+","+c.y()+","+c.z()+","+c.before()+","+c.applied()).sorted().toArray(String[]::new)).value();return PlanFingerprint.of(plan.input,changes).value();}
+
+    private static void publish(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan){
+        try{
+            if(plan.planId!=null){manifest(level,plan);return;}
+            Iterable<BlockWorldPrepData.Change> entries=plan.changes.isEmpty()?plannedEntries(level,data,area,plan):ordered(plan.changes.values());
+            plan.planId=UUID.randomUUID();
+            var publication=PagedPlanStore.publish(RuntimePlanStore.root(level),plan.planId,RuntimePlanStore.pass(plan.pass),plan.area,area.dimension(),plan.profile,PlanFingerprint.of(plan.input).value(),RuntimePlanStore.ENGINE_VERSION,RuntimePlanStore.PLANNER_VERSION,RuntimePlanStore.ENTRIES_PER_PAGE,entries,RuntimePlanStore.BLOCK_CODEC);
+            plan.entryCount=publication.manifest().pages().stream().mapToLong(PlanManifest.PageReference::entryCount).sum();plan.fingerprint=publication.manifest().rootFingerprint();
+            if(plan.pass.equals("ORES")){var geology=BlockMutationRuntime.data(level).plans().get(BlockWorldPrepData.planKey(area.id(),"GEOLOGY"));if(geology==null)throw new IllegalStateException("ORES requires exact GEOLOGY plan");if(geology.planId==null)publish(level,data,area,geology);plan.upstreamPlanId=geology.planId;plan.upstreamRoot=geology.fingerprint;}
+            plan.changes.clear();
+        }catch(IOException e){throw new IllegalStateException("Plan publication failed",e);}
+    }
+    private static Iterable<BlockWorldPrepData.Change> plannedEntries(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan){return()->new Iterator<>(){
+        final long height=level.getMaxBuildHeight()-level.getMinBuildHeight(),width=(long)area.maxX()-area.minX()+1,total=width*((long)area.maxZ()-area.minZ()+1)*height;long cursor;BlockWorldPrepData.Change next;boolean ready;
+        private void advance(){while(!ready&&cursor<total){int y=level.getMinBuildHeight()+(int)(cursor%height);long column=cursor++/height;int x=area.minX()+(int)(column%width),z=area.minZ()+(int)(column/width);next=plannedChange(level,data,plan,area,x,y,z);ready=next!=null;}}
+        public boolean hasNext(){advance();return ready;}public BlockWorldPrepData.Change next(){advance();if(!ready)throw new NoSuchElementException();ready=false;return next;}
+    };}
+    private static BlockWorldPrepData.Change plannedChange(ServerLevel level,WorldPrepSavedData data,BlockWorldPrepData.Plan plan,WorldPrepSavedData.Area area,int x,int y,int z){
+        ServerExistingChunkAccess.requireBlock(level,area,x,y,z);var pos=new BlockPos(x,y,z);var state=level.getBlockState(pos);boolean protectedAt=data.protectedBlock(area.dimension(),x,z)||level.getBlockEntity(pos)!=null;
+        if(plan.pass.equals("GEOLOGY")){if(!state.is(GEOLOGY)){if(protectedAt)plan.skipped++;return null;}plan.eligible++;if(protectedAt){plan.skipped++;return null;}var province=GeologyPlanner.province(level.getSeed(),x,y,z);String target=GeologyPlanner.replacement(level.getSeed(),x,y,z,province);return id(state).equals(target)?null:new BlockWorldPrepData.Change(x,y,z,encode(state),target,province.name());}
+        boolean stone=state.is(STONE),deep=state.is(DEEPSLATE);if(!stone&&!deep){if(protectedAt)plan.skipped++;return null;}plan.eligible++;if(protectedAt){plan.skipped++;return null;}for(var ore:ORES)if(y>=ore.min&&y<=ore.max&&Math.floorMod(GeologyPlanner.mix(level.getSeed()^ore.salt^x*31L^y*131L^z*8191L),ore.rarity)==0)return new BlockWorldPrepData.Change(x,y,z,encode(state),"minecraft:"+(deep?ore.deep:ore.stone),ore.name);return null;
+    }
+    private static PlanManifest manifest(ServerLevel level,BlockWorldPrepData.Plan plan){try{var m=PagedPlanStore.readManifest(RuntimePlanStore.directory(level,plan.planId));if(!m.planId().equals(plan.planId)||m.passId()!=RuntimePlanStore.pass(plan.pass)||!m.rootFingerprint().equals(plan.fingerprint))throw new IOException("Exact plan metadata mismatch");m.requireApplicable();return m;}catch(IOException e){throw new IllegalStateException("Sealed plan manifest unavailable",e);}}
     private static String pass(WorldPrepSavedData.Operation operation){return operation.name().contains("GEOLOGY")?"GEOLOGY":"ORES";}private static boolean isApply(WorldPrepSavedData.Operation operation){return operation.name().startsWith("APPLY");}private static boolean isRollback(WorldPrepSavedData.Operation operation){return operation.name().startsWith("ROLLBACK");}
     private static TagKey<Block> tag(String path){return BlockTags.create(ResourceLocation.fromNamespaceAndPath("proutlost",path));}private static String id(BlockState state){return BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();}
     private static String encode(BlockState state){var result=new StringBuilder(id(state));if(!state.getValues().isEmpty()){result.append('[');state.getValues().entrySet().stream().sorted(Comparator.comparing(e->e.getKey().getName())).forEach(e->result.append(e.getKey().getName()).append('=').append(valueName(e.getKey(),e.getValue())).append(','));result.setCharAt(result.length()-1,']');}return result.toString();}
