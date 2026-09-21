@@ -1,55 +1,51 @@
-# WorldPrep V2 — PR #9 durable journal streaming report
+# WorldPrep V2 — environmental completion report
 
-START HEAD: `cb1375ca26f3754925fe98230f292203a8dd4262` (legitimate published paged-plan continuation; no Git remote is configured).
+BASE SHA: `9d895ecf335f2cc7770f7f89b328c48e5e3173d3`
 
-PR: #9 canonical continuation branch `codex/continuer-migration-des-plans-pagines`.
+SOILS LIVE: PARTIAL — semantic/configurable planner and generic paged pipeline participant exist; Minecraft runtime command is not wired.
 
-BIOMES PAGED PLAN: YES
+AQUATIC LIVE: PARTIAL — deterministic semantic planner and pipeline participant exist; Minecraft runtime command is not wired.
 
-BIOMES PAGED JOURNAL: YES
+STRUCTURE MATERIALIZATION ENGINE: YES — safe captured-diff canonicalization, exact block state/BlockEntity payload, chunks, groups, envelope rejection, capability gating and reservations are implemented. Entity intents and real jigsaw/template adapters remain unsupported unless verified.
 
-GEOLOGY PAGED PLAN: YES
+REAL YUNG SUPPORT: YUNG's API, Better Mineshafts, Better Dungeons, Better Jungle Temples, Better Ocean Monuments, Better Witch Huts, Better Strongholds, Better Nether Fortresses, Better End Island and YUNG's Extras are each `BLOCKED_EXTERNAL / UNVERIFIED` because no artifacts/API dependencies are present.
 
-GEOLOGY PAGED JOURNAL: YES
+STRUCTURE RESERVATION: YES
 
-ORES PAGED PLAN: YES
+FLORA LIVE: PARTIAL — exact registry-eligible reserved-zone-aware planning exists; Minecraft runtime command is not wired.
 
-ORES PAGED JOURNAL: YES
+TREES LIVE: PARTIAL — exact grouped small-tree materialization exists; Minecraft runtime command is not wired.
 
-LARGE SAVEDDATA PRODUCTION PATH REMOVED: YES
+HABITATS LIVE: PARTIAL — final planned-state classifier exists; compact durable habitat store is not wired.
 
-SAVEDDATA JOURNAL MIRRORS REMOVED: YES
+VALIDATION LIVE: PARTIAL — deterministic fatal gating covers core exact-plan and ownership conflicts; the complete requested detector set is not finished.
 
-STREAMING APPLY: PASS
+COMPLETE ENVIRONMENTAL PLANNING: PARTIAL
 
-STREAMING ROLLBACK: PASS
+NO-GENERATION: PASS — new components are pure and do not access chunks or invoke world generation.
 
-LIVE BOUNDED MEMORY: PASS — live GEOLOGY and ORES each exercise 600 plan/journal mutations over three pages, with one decoded page and at most 256 decoded entries resident. The shared journal store additionally traverses 2,100 entries over 300 pages with one page/seven decoded entries resident. BIOMES uses the same one-page visitor and persists no ownership cells in SavedData.
+BOUNDED MEMORY: PASS for generic complete graph page publication/traversal; live environmental runtime is not implemented.
 
-RESTART RECONCILIATION: PASS — recreated compact metadata with cursor behind, cursor ahead, world BEFORE, world AFTER, and world THIRD paths are covered. Durable manifest plus actual world wins; no planner is called during reconciliation.
+DETERMINISM: PASS for implemented generic planning/materialization paths.
 
-TRUE PROCESS-KILL APPLY: NOT TESTED
+TRUE PROCESS-KILL: NOT TESTED
 
-TRUE PROCESS-KILL ROLLBACK: NOT TESTED
+BIOME PROVIDER FROZEN: NO
 
-TRUE PROCESS-KILL RECOVERY: NOT TESTED
-
-DISK FAILURE TESTING: PARTIAL — missing, corrupt/trailing, conflicting orphan, exact-manifest mismatch, and atomic publication paths are tested. Filesystem-full and permission injection were not safely exercised.
-
-NO-GENERATION: PASS
-
-STATIC LEGACY BYPASS AUDIT: PASS
-
-UNIT TESTS: PASS — 67 tests.
-
-BUILD: PASS
-
-GAMETESTS: PASS — 19 tests.
+ENVIRONMENTAL PACK AUDITED: BLOCKED_EXTERNAL
 
 SAFETY INVARIANTS WEAKENED: NONE
 
-SAFE TO CONTINUE TO ECOLOGY: YES
+WORLDPREP ENVIRONMENTAL CODE COMPLETE: NO
 
-SAFE TO MERGE: YES, subject to normal human review. True process-kill remains mandatory before final River handoff.
+SAFE FOR ZERO-TOUCH FINALIZATION: NO
 
-NEXT PHASE: WorldPrep Environmental Completion: SOILS -> AQUATIC -> STRUCTURES -> FLORA -> TREES -> HABITATS.
+SAFE TO MERGE: NO — incomplete relative to this run's acceptance criteria.
+
+NEXT PHASE: Zero-Touch Compiler + Production Certification + MapDev, only after live environmental runtime completion.
+
+UNIT TESTS: PASS — 73 tests, zero failures/errors/skips.
+
+BUILD: PASS
+
+GAMETESTS: PASS — 19 required tests.

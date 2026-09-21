@@ -64,3 +64,17 @@ claim of safety certification.
 | restart reconciliation | PASS | compact metadata recreation, cursor behind/ahead, duplicate rollback, BEFORE/AFTER/THIRD |
 | true process kill | NOT TESTED | no kill -9 claim; mandatory before final River handoff |
 | disk exhaustion/permissions | PARTIAL | integrity and publication faults covered; OS resource faults not injected |
+
+## Environmental planning checkpoint
+
+| Control | Status | Evidence / limitation |
+|---|---|---|
+| exact complete dependency graph | PASS | `PassGraph` and `EnvironmentalPipeline`; every upstream UUID/root is included in semantic identity |
+| generic paged publication / bounded read | PASS | complete graph test; one decoded page and configured entry bound |
+| structure opaque-generator isolation | PASS | only captured disposable-world results enter `StructureMaterializer`; unsupported status and envelope escape refuse |
+| structure reservations | PASS | footprint, clearance, terrain-adaptation and owned-mutation zone model |
+| deterministic flora/tree/habitat planning | PASS | positional decisions, registry allow-list, reservations and exact tree groups tested |
+| deterministic complete validator | PARTIAL | missing plans, identity/profile/registry, collisions, protected/reserved zones and envelope violation implemented; biome fragmentation/density/aquatic support need production models |
+| live Minecraft environmental passes | NOT TESTED | command/runtime integration remains BIOMES/GEOLOGY/ORES only |
+| YUNG families | BLOCKED_EXTERNAL | no artifacts/APIs available in the declared dependency graph |
+| true process kill | NOT TESTED | not executed |

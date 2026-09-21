@@ -69,3 +69,10 @@
 - **BOUNDED EVIDENCE:** live GEOLOGY and ORES: 600 entries, three pages, maximum one decoded page/256 entries. Store stress: 2,100 entries, 300 pages, maximum one decoded page/seven entries. BIOMES uses identical streaming traversal and no SavedData ownership-entry mirror.
 - **RESTART EVIDENCE:** GameTests recreate compact journal metadata with zeroed advisory counters while retaining durable pages, then reconcile BEFORE/AFTER states. Duplicate rollback and cursor-ahead recovery complete safely; missing pages and third states fail closed.
 - **NOT TESTED:** true operating-system process kill, filesystem-full, and permission-denied injection. Process-kill remains mandatory before River handoff but does not block Ecology under the requested gate.
+
+## 2026-09-21 environmental planning checkpoint
+- **BASE SHA:** `9d895ecf335f2cc7770f7f89b328c48e5e3173d3` (PR #9 substrate present).
+- **IMPLEMENTED:** Exact environmental mutation model, profile/registry semantic catalog, configurable semantic soil depth, deterministic flora and exact small-tree materialization, structure sandbox-capture canonicalization with envelope enforcement, authoritative reservation zones, final habitat classification, deterministic fail-closed cross-pass validation, and complete graph publication through `PagedPlanStore` with exact upstream identities.
+- **BOUNDED EVIDENCE:** The complete eleven-stage graph model publishes all ten pre-validation plans in fixed pages; tests reread each with one resident page and the configured page-entry bound.
+- **EXTERNAL STATUS:** No YUNG artifacts or APIs are declared in this repository. Every listed YUNG family remains `BLOCKED_EXTERNAL / UNVERIFIED`; no APIs or IDs were invented.
+- **LIMITATION:** Existing Minecraft command/runtime operations still expose only BIOMES, GEOLOGY, and ORES. The new environmental components are production-safe planning primitives, but SOILS/AQUATIC/STRUCTURES/FLORA/TREES are not yet connected to live commands and the generic live executor. Accordingly this checkpoint is PARTIAL and is not represented as environmental code complete.
