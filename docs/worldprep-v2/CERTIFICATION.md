@@ -78,3 +78,14 @@ claim of safety certification.
 | live Minecraft environmental passes | NOT TESTED | command/runtime integration remains BIOMES/GEOLOGY/ORES only |
 | YUNG families | BLOCKED_EXTERNAL | no artifacts/APIs available in the declared dependency graph |
 | true process kill | NOT TESTED | not executed |
+
+## Environmental exact-artifact continuation
+
+| Control | Status | Evidence / limitation |
+|---|---|---|
+| lossless environmental plan codec | PASS | exact pass/position, BEFORE+AFTER state, BEFORE+AFTER BlockEntity type/NBT, and group UUID round-trip through paged storage |
+| mutation-group preflight | PASS (model) | complete supplied group is conflict-checked before durable journal callback and first write; duplicate positions/group mismatch refuse |
+| exact complete manifest composition | PASS | existing first four manifests reused; environmental, habitat, and validation artifacts seal in `PassGraph.order()` |
+| fatal validation gate | PASS | a fatal report cannot produce the VALIDATION manifest or sealed run |
+| live `ServerLevel` environmental apply/rollback | FAIL | generic exact executor is not yet connected to Minecraft state/NBT and paged runtime journals |
+| complete environmental gate | FAIL | preview planners, planning-world paged overlay, live commands, and end-to-end GameTests remain outstanding |
