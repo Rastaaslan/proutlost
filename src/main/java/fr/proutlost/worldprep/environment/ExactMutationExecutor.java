@@ -20,6 +20,8 @@ public final class ExactMutationExecutor {
         Snapshot read(EnvironmentalMutation.Position position);
         void write(EnvironmentalMutation.Position position, Snapshot snapshot);
         boolean writable(EnvironmentalMutation.Position position);
+        /** Preflights target materialization before any member of the group is journaled. */
+        default void validateWrite(EnvironmentalMutation.Position position, Snapshot snapshot) {}
     }
     /** Must return only after the exact complete group is durable. */
     public interface DurableJournal { void append(UUID groupId, List<EnvironmentalMutation> completeGroup); }
@@ -46,6 +48,7 @@ public final class ExactMutationExecutor {
             else if(current.equals(accepted))outcomes.add(Outcome.SAFE_NOOP);
             else throw conflict(mutation,"third state or BlockEntity ownership mismatch");
         }
+        for(int i=0;i<group.size();i++)if(outcomes.get(i)==Outcome.WRITTEN){var mutation=group.get(i);world.validateWrite(mutation.position(),direction==Direction.APPLY?after(mutation):before(mutation));}
         journal.append(expectedGroup,List.copyOf(group));
         for(int i=0;i<group.size();i++)if(outcomes.get(i)==Outcome.WRITTEN){var mutation=group.get(i);world.write(mutation.position(),direction==Direction.APPLY?after(mutation):before(mutation));}
         return List.copyOf(outcomes);
