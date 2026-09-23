@@ -89,3 +89,15 @@ claim of safety certification.
 | fatal validation gate | PASS | a fatal report cannot produce the VALIDATION manifest or sealed run |
 | live `ServerLevel` environmental apply/rollback | FAIL | generic exact executor is not yet connected to Minecraft state/NBT and paged runtime journals |
 | complete environmental gate | FAIL | preview planners, planning-world paged overlay, live commands, and end-to-end GameTests remain outstanding |
+
+## PR #12 bounded planning-view evidence
+
+| Control | Status | Evidence / limitation |
+|---|---|---|
+| exact upstream UUID/root and durable manifest | PASS | `PlanningWorldViewTest`; stale identity and manifest mismatch refuse opening |
+| missing/unrelated/duplicate dependency | PASS | opening requires exactly the consumer pass dependency set |
+| corrupt/missing upstream page | PASS | all referenced pages validate before the view is returned |
+| bounded decoded-page cache | PASS | 400 entries/136 pages with at most two resident pages per layer |
+| deterministic priority and base fallback | PASS | ordered layer lookup and caller-provided base accessor are tested |
+| production environmental preview dispatch | FAIL | the live runtime does not yet construct this view or invoke the environmental planners |
+| complete environmental gate | FAIL | live preview, habitat/validation production artifacts, command dispatch, and end-to-end GameTests remain outstanding |

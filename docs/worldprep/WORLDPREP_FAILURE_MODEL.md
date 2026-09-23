@@ -471,5 +471,8 @@ APPLY recovery streams committed journal pages and reconciles each actual value 
 
 True process-kill testing was not performed. The in-process restart reconstruction and fault injection evidence must not be represented as kill -9 certification; real subprocess termination remains mandatory before final River handoff.
 
+## 2026-09-23 bounded planning-view controls
+The planning view never treats an index or in-memory overlay as semantic authority. Before it is returned, every required upstream pass must match its expected sealed plan UUID and root, its on-disk manifest must equal the supplied manifest, and every referenced page must pass owner/pass/dimension/sequence/count/checksum validation. Missing, stale, duplicate, unrelated, or corrupt input refuses planning. Page values are decoded into a fixed-size LRU cache; cache eviction can increase I/O but cannot change lookup order or semantics. Production preview dispatch is not yet connected to this primitive, so these controls are not claimed as complete live environmental certification.
+
 ## 2026-09-22 exact environmental ownership model
 Environmental mutation serialization no longer loses BlockEntity or MutationGroup ownership: both BEFORE and AFTER state/type/NBT and the group UUID are canonical page data. The shared group executor classifies each member as BEFORE, AFTER, or conflicting, checks the entire supplied group before the durable journal callback, and performs no write when any member conflicts. This model is unit-tested, but it is not yet wired to the live `ServerLevel` runtime; consequently it must not be cited as live environmental or process-kill certification.
