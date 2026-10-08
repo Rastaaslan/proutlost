@@ -24,7 +24,10 @@ public final class WorldPrepSavedData extends SavedData {
         public boolean intersectsQuart(int qx,int qz){int x=qx<<2,z=qz<<2;return dimension.equals(this.dimension)&&x<=maxX&&x+3>=minX&&z<=maxZ&&z+3>=minZ;}
     }
     public record OverrideCell(int quartX,int quartZ,String exactBiome,String palette){}
-    public enum Operation{ANALYZE,PREVIEW_BIOMES,APPLY_BIOMES,ROLLBACK_BIOMES,PREVIEW_GEOLOGY,APPLY_GEOLOGY,ROLLBACK_GEOLOGY,PREVIEW_ORES,APPLY_ORES,ROLLBACK_ORES}
+    public enum Operation{ANALYZE,PREVIEW_BIOMES,APPLY_BIOMES,ROLLBACK_BIOMES,PREVIEW_GEOLOGY,APPLY_GEOLOGY,ROLLBACK_GEOLOGY,PREVIEW_ORES,APPLY_ORES,ROLLBACK_ORES,
+        PREVIEW_SOILS,APPLY_SOILS,ROLLBACK_SOILS,PREVIEW_AQUATIC,APPLY_AQUATIC,ROLLBACK_AQUATIC,
+        PREVIEW_STRUCTURES,APPLY_STRUCTURES,ROLLBACK_STRUCTURES,PREVIEW_FLORA,APPLY_FLORA,ROLLBACK_FLORA,
+        PREVIEW_TREES,APPLY_TREES,ROLLBACK_TREES,PREVIEW_HABITATS,PREVIEW_VALIDATION}
     public enum JobState{QUEUED,RUNNING,PAUSED,COMPLETED,CANCELLED,FAILED}
     public record Job(UUID id,Operation operation,String area,JobState state,long cursor,String error,UUID snapshotId){
         public Job withState(JobState value){return new Job(id,operation,area,value,cursor,error,snapshotId);}

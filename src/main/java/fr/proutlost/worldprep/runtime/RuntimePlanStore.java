@@ -3,6 +3,8 @@ package fr.proutlost.worldprep.runtime;
 import fr.proutlost.worldprep.persistence.BlockWorldPrepData;
 import fr.proutlost.worldprep.persistence.WorldPrepSavedData;
 import fr.proutlost.worldprep.pipeline.PassId;
+import fr.proutlost.worldprep.environment.EnvironmentalMutation;
+import fr.proutlost.worldprep.environment.EnvironmentalMutationCodec;
 import fr.proutlost.worldprep.storage.PagedPlanStore;
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -35,6 +37,7 @@ public final class RuntimePlanStore {
             return new BlockWorldPrepData.Change(in.readInt(), in.readInt(), in.readInt(), in.readUTF(), in.readUTF(), in.readUTF());
         }
     };
+    public static final PagedPlanStore.EntryCodec<EnvironmentalMutation> ENVIRONMENTAL_CODEC = EnvironmentalMutationCodec.INSTANCE;
 
     public static Path root(ServerLevel level) {
         return level.getServer().getWorldPath(LevelResource.ROOT).resolve("worldprep-v2").resolve("plans");

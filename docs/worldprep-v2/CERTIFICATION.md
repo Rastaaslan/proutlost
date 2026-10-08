@@ -64,3 +64,40 @@ claim of safety certification.
 | restart reconciliation | PASS | compact metadata recreation, cursor behind/ahead, duplicate rollback, BEFORE/AFTER/THIRD |
 | true process kill | NOT TESTED | no kill -9 claim; mandatory before final River handoff |
 | disk exhaustion/permissions | PARTIAL | integrity and publication faults covered; OS resource faults not injected |
+
+## Environmental planning checkpoint
+
+| Control | Status | Evidence / limitation |
+|---|---|---|
+| exact complete dependency graph | PASS | `PassGraph` and `EnvironmentalPipeline`; every upstream UUID/root is included in semantic identity |
+| generic paged publication / bounded read | PASS | complete graph test; one decoded page and configured entry bound |
+| structure opaque-generator isolation | PASS | only captured disposable-world results enter `StructureMaterializer`; unsupported status and envelope escape refuse |
+| structure reservations | PASS | footprint, clearance, terrain-adaptation and owned-mutation zone model |
+| deterministic flora/tree/habitat planning | PASS | positional decisions, registry allow-list, reservations and exact tree groups tested |
+| deterministic complete validator | PARTIAL | missing plans, identity/profile/registry, collisions, protected/reserved zones and envelope violation implemented; biome fragmentation/density/aquatic support need production models |
+| live Minecraft environmental passes | NOT TESTED | command/runtime integration remains BIOMES/GEOLOGY/ORES only |
+| YUNG families | BLOCKED_EXTERNAL | no artifacts/APIs available in the declared dependency graph |
+| true process kill | NOT TESTED | not executed |
+
+## Environmental exact-artifact continuation
+
+| Control | Status | Evidence / limitation |
+|---|---|---|
+| lossless environmental plan codec | PASS | exact pass/position, BEFORE+AFTER state, BEFORE+AFTER BlockEntity type/NBT, and group UUID round-trip through paged storage |
+| mutation-group preflight | PASS (model) | complete supplied group is conflict-checked before durable journal callback and first write; duplicate positions/group mismatch refuse |
+| exact complete manifest composition | PASS | existing first four manifests reused; environmental, habitat, and validation artifacts seal in `PassGraph.order()` |
+| fatal validation gate | PASS | a fatal report cannot produce the VALIDATION manifest or sealed run |
+| live `ServerLevel` environmental apply/rollback | FAIL | generic exact executor is not yet connected to Minecraft state/NBT and paged runtime journals |
+| complete environmental gate | FAIL | preview planners, planning-world paged overlay, live commands, and end-to-end GameTests remain outstanding |
+
+## PR #12 bounded planning-view evidence
+
+| Control | Status | Evidence / limitation |
+|---|---|---|
+| exact upstream UUID/root and durable manifest | PASS | `PlanningWorldViewTest`; stale identity and manifest mismatch refuse opening |
+| missing/unrelated/duplicate dependency | PASS | opening requires exactly the consumer pass dependency set |
+| corrupt/missing upstream page | PASS | all referenced pages validate before the view is returned |
+| bounded decoded-page cache | PASS | 400 entries/136 pages with at most two resident pages per layer |
+| deterministic priority and base fallback | PASS | ordered layer lookup and caller-provided base accessor are tested |
+| production environmental preview dispatch | FAIL | the live runtime does not yet construct this view or invoke the environmental planners |
+| complete environmental gate | FAIL | live preview, habitat/validation production artifacts, command dispatch, and end-to-end GameTests remain outstanding |
