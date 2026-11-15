@@ -482,6 +482,13 @@ public final class JournalStore implements DurableStore, FactBusPort, ProviderPr
             published=next; projectAudit(batch.records(),committed); probe.at("BEFORE_ACK"); return ack;
         } catch(IllegalArgumentException e) {
             if(ioStarted)throw new IOException("failure after transaction IO started",e);
+            // The store remains writable after a pre-IO refusal. Keep the
+            // actual transaction and structural/CAS reason visible; a generic
+            // WAL_UNAVAILABLE caller result must not hide the reproducible cause.
+            var mismatch=input.expectedAggregateRevisions().entrySet().stream()
+                .filter(entry->!published.revisions.getOrDefault(entry.getKey(),new Revision(0)).equals(entry.getValue()))
+                .limit(8).map(entry->entry.getKey()+" expected="+entry.getValue()+" actual="+published.revisions.getOrDefault(entry.getKey(),new Revision(0))).toList();
+            System.err.println("DIRECTOR_J04_APPEND_REFUSED tx="+input.transactionId().value()+" reason="+e.getMessage()+" mismatched="+mismatch);
             return rejected(input,AckStatus.REJECTED);
         }
     }

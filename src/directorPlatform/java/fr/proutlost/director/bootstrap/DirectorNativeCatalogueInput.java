@@ -112,6 +112,17 @@ public final class DirectorNativeCatalogueInput {
         actor();
         if(!recovered||failed||store.readOnlySafe()||!session.equals(store.session()))return waitFor("J04_NOT_READY");
         var life=DirectorStandaloneMod.directorLifecycle();
+        if(mode==ProviderMode.PRODUCTION){
+            // A resident common cut can still precede an already queued writer.
+            // Preparing from it races that writer's CAS even though every published
+            // projection agrees. Wait for the actual owners, never relax revisions.
+            if(!life.runtimeMetadataIngressQuiescent(server))
+                return waitFor("NATIVE_METADATA_WRITER_IN_FLIGHT");
+            var production=life.productionRuntime(server);
+            if(production.isEmpty()||production.get().gameplay().isEmpty()
+                ||!production.get().gameplay().orElseThrow().coordinator().worldWriterIdle())
+                return waitFor("WORLD_DECISION_WRITER_IN_FLIGHT");
+        }
         var raw=life.observationSnapshot(server);var remembered=life.runtimeMemoryView(server);
         var projected=life.memoryProjectionView(server);var observationTick=life.runtimeObservationTick(server);
         if(raw.isEmpty()||remembered.isEmpty()||projected.isEmpty()||observationTick.isEmpty()||
