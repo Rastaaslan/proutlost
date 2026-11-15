@@ -15,7 +15,7 @@ public final class DirectorNativeEventEnvelopes {
  public static final FactType TYPE=new FactType("proutlost_director:event_envelope_lease");
  private static final class Entry {
   SelectedEventStart selected;ReservationToken token,durableToken;long deadline;boolean releasing,cleanupOnly;
-  DurableBatch batch;String pendingPhase;CompletableFuture<CommitAck> pending;
+  DurableBatch batch;String pendingPhase,renewalWait;CompletableFuture<CommitAck> pending;
  }
  private final Thread actor=Thread.currentThread();private final JournalStore store;
  private final StoreSession session;private final DirectorRuntimeContent content;private final Supplier<Tick> clock;
@@ -62,12 +62,23 @@ public final class DirectorNativeEventEnvelopes {
       if(!arbiter.release(entry.token))throw new IllegalStateException("envelope release mismatch");held.remove(pair.getKey());continue;
      }
     }
-    if(entry.releasing||now.value()>=entry.deadline||now.compareTo(entry.token.expiryTick())>=0)continue;
+    if(entry.releasing)continue;
+    if(now.value()>=entry.deadline||now.compareTo(entry.token.expiryTick())>=0){
+     if(!"EXPIRED_RETAINED".equals(entry.renewalWait)){
+      entry.renewalWait="EXPIRED_RETAINED";System.out.println("DIRECTOR_ENVELOPE_RENEWAL_WAIT event="+pair.getKey().value()+" reason=EXPIRED_RETAINED tick="+now.value()+" expiry="+entry.token.expiryTick().value());
+     }
+     continue;
+    }
     if(arbiter.hasBorrowed(entry.token))continue;
     long interval=lease(entry.selected.captured().config());
     if(entry.token.expiryTick().value()-now.value()>Math.max(1,interval/2))continue;
-    try{entry.selected.refresh();}catch(SelectedEventStart.ContextUnavailable unavailable){continue;}
-    catch(IllegalStateException inadmissible){continue;}
+    try{entry.selected.refresh();entry.renewalWait=null;}catch(IllegalStateException unavailable){
+     var reason=unavailable.getClass().getSimpleName()+": "+unavailable.getMessage();
+     if(!reason.equals(entry.renewalWait)){
+      entry.renewalWait=reason;System.out.println("DIRECTOR_ENVELOPE_RENEWAL_WAIT event="+pair.getKey().value()+" reason="+reason+" tick="+now.value()+" expiry="+entry.token.expiryTick().value());
+     }
+     continue;
+    }
     long remaining=Math.min(interval,entry.deadline-now.value());
     entry.token=arbiter.renew(entry.token,now,new DurationTicks(remaining));persist(entry,"RENEWED");
    }

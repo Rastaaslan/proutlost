@@ -313,6 +313,7 @@ public final class DirectorNativePerceptionGameplay implements AutoCloseable {
   }finally{e.applyingInput=null;e.applyingSession=null;}
  }
  private void finish(Flight f,String reason){
+  System.out.println("DIRECTOR_PERCEPTION_TERMINAL event="+f.id+" reason="+reason+" steps="+f.completed.size()+"/"+f.definition.steps().size()+" started="+f.started+" tick="+now().value());
   for(var binding:f.bindings)binding.stop();
   var rows=new ArrayList<DurableRecord>();rows.add(new DurableFact(fact(END,f.id,Map.of("reason",new JsonValue.Text(reason)))));
   var terminalBlobs=new ArrayList<BlobContent>();
