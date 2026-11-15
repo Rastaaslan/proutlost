@@ -135,7 +135,7 @@ public final class DirectorNativeCatalogueInput {
         if(index.isEmpty()||!index.get().session().equals(session)||index.get().keys().isEmpty()||
             index.get().keys().size()>1024)return waitFor("CURRENT_AGGREGATES_NOT_RESIDENT");
         var cut=index.get().cut();
-        if(projected.get().lastDurableSequence()!=cut.value()||factCut.compareTo(cut)!=0)
+        if(projected.get().lastDurableSequence()>cut.value()||factCut.compareTo(cut)!=0)
             return waitFor("WAIT_COMMON_WAL_CUT");
         var query=new StoreQuery(world,index.get().keys(),new Sequence(0),Optional.empty(),1024);
         var result=store.view(query);ReadContracts.validate(result,query,session);
@@ -150,9 +150,10 @@ public final class DirectorNativeCatalogueInput {
             return waitFor("WORLD_IDENTITY_CHANGED");
         var actual=MemoryProjection.of(new ScopeSet(world,Set.of(new ScopeRef(ScopeKind.WORLD,world.value()))),states.values());
         var memory=remembered.get();
-        if(!actual.regionRecords().equals(memory.regionRecords())||!actual.locations().equals(memory.locations())||
-            !actual.anchors().equals(memory.anchors())||!new HashSet<>(actual.regions()).equals(new HashSet<>(memory.regions()))||
-            !new HashSet<>(actual.operationalPlayers()).equals(new HashSet<>(memory.operationalPlayers())))
+        // Non-memory lease/audit facts may advance the WAL without changing any
+        // memory row. The complete current-cut query above is authoritative:
+        // compare every memory field instead of waiting forever for equal cursors.
+        if(!verifiedMemoryAtCut(actual,memory,new Sequence(projected.get().lastDurableSequence()),cut))
             return waitFor("MEMORY_NOT_AT_CAPTURE");
         var current=wa.value();
         ConfigView selectedConfig=profiles.isEmpty()?config:fr.proutlost.director.runtime.AdminWorldControlHandler.configuration(current,profiles);
@@ -215,6 +216,15 @@ public final class DirectorNativeCatalogueInput {
         var decisionState=new DecisionState(worldAtTick,profiles.isEmpty()?budget:fr.proutlost.director.runtime.CatalogueBudgetProjection.from(selectedConfig,states.values()),new OwnershipView(owners),cooldowns,unique,List.copyOf(facts.values()),events,chains,disasters);
         diagnostic="READY cut="+cut.value()+" players="+context.players().size()+" regions="+context.regions().size();
         return Optional.of(new Capture(new DecisionInput(sample,memory,catalog,selectedConfig,actualRequests,chains,seed,decisionState,Optional.empty()),cut));
+    }
+    static boolean verifiedMemoryAtCut(MemoryView current,MemoryView projected,Sequence projectedCut,Sequence captureCut){
+        return projectedCut.compareTo(captureCut)<=0
+            &&current.scopes().equals(projected.scopes())&&current.revisions().equals(projected.revisions())
+            &&current.regionRecords().equals(projected.regionRecords())&&current.locations().equals(projected.locations())
+            &&current.anchors().equals(projected.anchors())
+            &&new HashSet<>(current.regions()).equals(new HashSet<>(projected.regions()))
+            &&new HashSet<>(current.operationalPlayers()).equals(new HashSet<>(projected.operationalPlayers()))
+            &&new HashSet<>(current.significantPlayers()).equals(new HashSet<>(projected.significantPlayers()));
     }
     public Optional<List<DirectorFact>> factsAt(Sequence cut){actor();return recovered&&!failed&&factCut.equals(cut)?Optional.of(List.copyOf(observedFacts.values())):Optional.empty();}
     public String diagnostic(){actor();return diagnostic;}

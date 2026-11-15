@@ -80,6 +80,12 @@ public final class DirectorNativeEventEnvelopes {
   var previous=held.get(selected.eventId());
   if(previous!=null){
    if(!previous.selected.plan().equals(selected.plan())||!previous.selected.captured().equals(selected.captured())||!previous.selected.parentChain().equals(selected.parentChain())||previous.selected.mode()!=selected.mode())throw new IllegalArgumentException("held envelope identity changed");
+   // An expired logical lease cannot become current by waiting. Reject only this
+   // still-pre-driver admission; the executor journals its real no-invocation
+   // abort before retirement releases any claim. Never infer physical cleanup here.
+   var now=clock.get();
+   if(now.value()>=previous.deadline||now.compareTo(previous.token.expiryTick())>=0)
+    return new DirectorNativeCatalogueExecution.GateResult(DirectorNativeCatalogueExecution.GateStatus.REJECTED,"GLOBAL_ENVELOPE_EXPIRED_BEFORE_DRIVER");
    return forwardAllowed(selected.eventId())?new DirectorNativeCatalogueExecution.GateResult(DirectorNativeCatalogueExecution.GateStatus.READY,"GLOBAL_ENVELOPE_DURABLE"):waiting("WAIT_GLOBAL_ENVELOPE_ACK_OR_SAFE_EXIT");
   }
   var queued=ready.get(selected.eventId());

@@ -273,7 +273,11 @@ public final class DirectorNativeCatalogueRuntime {
                         System.out.println("DIRECTOR_NATIVE_CATALOGUE_DRIVER_REJECTED event="+dispatch.eventId()+" detail="+dispatch.detail());
                         cancel(job,"NATIVE_DRIVER_REJECTED");return;
                     }
-                    job.nextTry=clock.getAsLong()+RETRY_TICKS;current=null;return;
+                    // Audited admission is actor-owned metadata polling, not a new
+                    // decision. A full RETRY_TICKS sleep can equal the reservation
+                    // lease and expire it before this same plan reaches its driver.
+                    // Keep the original audit/intent and poll again next actor tick.
+                    job.nextTry=clock.getAsLong();current=null;return;
                 }
             }
             var invalid=invalid(job);if(invalid!=null){cancel(job,invalid);return;}
