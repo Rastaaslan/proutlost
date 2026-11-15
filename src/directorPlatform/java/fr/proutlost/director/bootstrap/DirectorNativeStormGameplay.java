@@ -604,7 +604,8 @@ public final class DirectorNativeStormGameplay implements AutoCloseable {
      if(f.markerIndex<f.markers.size()){
       var m=f.markers.get(f.markerIndex);
       if(m.work==null){
-       if(f.stop||!loaded(f)||!siteReady(f)||!audience().equals(f.audience)||!sameLease(f)){stabilize(f);return;}
+       // Check the existing warning deadline before a capture that may keep waiting.
+       if(now().value()>=f.markerDeadline||f.stop||!loaded(f)||!siteReady(f)||!audience().equals(f.audience)||!sameLease(f)){stabilize(f);return;}
        EffectPreparation captured;try{captured=m.binding.capture(m.intent,snapshot(f));}catch(SelectedEventStart.ContextUnavailable waiting){return;}
        catch(RuntimeException stale){System.out.println("DIRECTOR_STORM_PREPARE_REFUSED event="+f.id+" phase="+f.phase+" cause="+stale);f.stop=true;stabilize(f);return;}
        m.work=run(f,captured,m.binding,false);return;
@@ -636,7 +637,8 @@ public final class DirectorNativeStormGameplay implements AutoCloseable {
      if(f.windIndex<f.winds.size()){
       var w=f.winds.get(f.windIndex);
       if(w.work==null){
-       if(!contextSafe(f)){stabilize(f);return;}
+       // A missing forward context must not hide this same finite warning window.
+       if(now().value()>=f.markerDeadline||!contextSafe(f)){stabilize(f);return;}
        EffectPreparation captured;
        try{captured=w.binding.capture(w.intent,snapshot(f));}
        catch(SelectedEventStart.ContextUnavailable waiting){return;}
