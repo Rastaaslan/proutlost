@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "content_revision": 1,
+  "id": "proutlost:controlled_landslide",
+  "calibration": "DEFAULT_FOR_TESTING",
+  "category": "AMBIENT",
+  "families": [
+    "DANGER",
+    "DISASTER",
+    "MEMORY"
+  ],
+  "enabled": true,
+  "selection": {
+    "base_weight": "@test:event.default.weight",
+    "score_floor": "@test:event.default.score_floor"
+  },
+  "target": {
+    "scope": "REGION",
+    "region_tags": [],
+    "player_policy": "FAIR",
+    "roles": {
+      "witness": {
+        "min": "@test:event.role.one",
+        "max": "@test:event.role.group_max",
+        "overlap": false
+      }
+    }
+  },
+  "eligibility": {
+    "type": "risk_minimum",
+    "risk_id": "proutlost:landslide",
+    "minimum": "@test:event.disaster.risk_min"
+  },
+  "timing": {
+    "max_duration_ticks": "@test:event.disaster.duration_ticks",
+    "cooldowns": {
+      "world_ticks": "@test:event.default.cooldown_world_ticks",
+      "region_ticks": "@test:event.default.cooldown_region_ticks",
+      "player_ticks": "@test:event.default.cooldown_player_ticks"
+    }
+  },
+  "uniqueness": {
+    "scope": "REPEATABLE",
+    "consume_on": "EFFECT_CONFIRMED"
+  },
+  "budget": {
+    "global_units": "@test:event.disaster.global_units",
+    "region_units": "@test:event.disaster.region_units",
+    "server_ms_per_tick": "@test:event.default.server_ms_per_tick",
+    "entity_slots": "@test:event.default.entity_slots",
+    "mutation_units": "@test:event.disaster.mutation_units",
+    "client_units": "@test:event.default.client_units"
+  },
+  "conflicts": {
+    "claims": [
+      "BLOCKS:FOOTPRINT",
+      "DANGER:FOOTPRINT"
+    ],
+    "compatibility_tags": [],
+    "allow_merge_with": [],
+    "priority": "DANGER",
+    "preemption": "YIELD_BEFORE_COMMIT"
+  },
+  "safety": {
+    "risk": "CONTROLLED_DANGER",
+    "required_capabilities": [
+      "mutation.terrain_v1",
+      "danger.debris_v1",
+      "warning.readable_v1"
+    ],
+    "mutation_profile": "proutlost:test_bounded_landslide",
+    "warning_profile": "proutlost:test_landslide_warning",
+    "player_edit_policy": "YIELD",
+    "journal_policy": "PLAYER_OPT_IN",
+    "participant_loss": "ABORT_IF_MIN_LOST"
+  },
+  "steps": [
+    {
+      "id": "warn",
+      "after": [],
+      "delay_ticks": "@test:event.default.delay_ticks",
+      "primitive": "proutlost:warning",
+      "args": {
+        "role": "witness",
+        "profile": "proutlost:test_landslide_warning",
+        "minimum_lead_ticks": "@test:event.disaster.warning_ticks"
+      },
+      "on_failure": "ABORT_SAFE"
+    },
+    {
+      "id": "impact",
+      "after": [
+        "warn"
+      ],
+      "delay_ticks": "@test:event.disaster.warning_ticks",
+      "primitive": "proutlost:landslide",
+      "args": {
+        "recipe": "proutlost:test_bounded_landslide",
+        "max_blocks": "@test:event.disaster.max_blocks",
+        "damage_profile": "proutlost:test_debris_damage"
+      },
+      "on_failure": "PARTIAL_AND_STABILIZE"
+    }
+  ],
+  "recovery": {
+    "mode": "RECOVER",
+    "deadline_ticks": "@test:scheduler.recovery_deadline_ticks"
+  },
+  "completion": {
+    "fact_type": "proutlost:controlled_landslide_observed",
+    "durable_trace": "proutlost:landslide_scar",
+    "persistence_probability": "@test:event.disaster.trace_persistence_probability"
+  }
+}

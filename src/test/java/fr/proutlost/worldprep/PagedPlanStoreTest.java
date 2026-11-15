@@ -38,6 +38,10 @@ class PagedPlanStoreTest {
         assertThrows(IOException.class,()->PagedPlanStore.read(publication.directory(),publication.manifest(),INTS,x->fail()));
         Files.write(first,original);byte[] changed=original.clone();changed[12]^=1;Files.write(first,changed);
         assertThrows(IOException.class,()->PagedPlanStore.read(publication.directory(),publication.manifest(),INTS,x->fail()));
+        var id=UUID.randomUUID();var writing=PagedPlanStore.begin(root,id,PassId.BIOMES,"proutlost:test","minecraft:overworld","development",
+            PlanFingerprint.of("incomplete").value(),"2","2",2,INTS);writing.append(1);writing.append(2);
+        Files.delete(PagedPlanStore.pagePath(writing.directory(),0));assertThrows(IOException.class,()->writing.finish(1));
+        assertEquals(fr.proutlost.worldprep.storage.PlanManifest.State.WRITING,PagedPlanStore.readManifest(writing.directory()).state());
     }
 
     @Test void exactManifestAndLifecycleAreFailClosedAndNonDestructive() throws Exception {
@@ -59,6 +63,17 @@ class PagedPlanStoreTest {
         var a=new ArrayList<Integer>();var b=new ArrayList<Integer>();
         PagedPlanStore.read(small.directory(),small.manifest(),INTS,a::add);PagedPlanStore.read(large.directory(),large.manifest(),INTS,b::add);
         assertEquals(entries,a);assertEquals(a,b);
+        var id=UUID.randomUUID();
+        var writer=PagedPlanStore.begin(root,id,PassId.ORES,"proutlost:test","minecraft:overworld","development",
+            PlanFingerprint.of("semantic",PassId.ORES.name()).value(),"2","2",7,INTS);
+        var values=IntStream.range(0,101).boxed().toList();for(var value:values)writer.append(value);
+        var writing=PagedPlanStore.readManifest(writer.directory());assertEquals(fr.proutlost.worldprep.storage.PlanManifest.State.WRITING,writing.state());
+        assertThrows(IllegalStateException.class,writing::requireApplicable);
+        int slices=0;java.util.Optional<PagedPlanStore.Publication> sealed;
+        do{sealed=writer.finish(1);slices++;}while(sealed.isEmpty());
+        assertTrue(slices>1);var observed=new ArrayList<Integer>();
+        PagedPlanStore.read(sealed.orElseThrow().directory(),sealed.orElseThrow().manifest(),INTS,observed::add);assertEquals(values,observed);
+        assertEquals(sealed,writer.finish(1));assertThrows(IllegalStateException.class,()->writer.append(102));
     }
 
     private PagedPlanStore.Publication publish(UUID id,PassId pass,int pageSize,Iterable<Integer> values)throws IOException{

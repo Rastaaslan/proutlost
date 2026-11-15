@@ -36,6 +36,61 @@ public final class PagedPlanStore {
         public boolean healthy() { return temporaryFiles.isEmpty() && missingReferencedPages.isEmpty(); }
     }
 
+    /** One-page preview writer. WRITING is never applicable; validation is sliced before sealing. */
+    public static final class Writer<T> {
+        private final Path directory;
+        private final PlanManifest writing;
+        private final int entriesPerPage;
+        private final EntryCodec<T> codec;
+        private final ArrayList<T> batch;
+        private final List<PlanManifest.PageReference> references = new ArrayList<>();
+        private boolean inputComplete;
+        private int validatedPages;
+        private Publication publication;
+        private Writer(Path root,UUID planId,PassId pass,String area,String dimension,String profile,
+                String digest,String engine,String planner,int pageSize,EntryCodec<T> codec)throws IOException{
+            if(pageSize<1)throw new IllegalArgumentException("entriesPerPage must be positive");
+            this.codec=Objects.requireNonNull(codec);entriesPerPage=pageSize;batch=new ArrayList<>(pageSize);
+            directory=root.resolve(planId.toString());
+            if(Files.exists(directory))throw new IOException("Preview plan directory already exists");
+            Files.createDirectories(directory);
+            writing=PlanManifest.create(DurablePageStore.FORMAT_VERSION,planId,pass,area,dimension,profile,digest,
+                engine,planner,PlanManifest.State.WRITING,List.of());
+            publishManifest(manifestPath(directory),writing);
+        }
+        public Path directory(){return directory;}
+        public void append(T entry)throws IOException{
+            if(inputComplete)throw new IllegalStateException("Preview input is already complete");
+            batch.add(Objects.requireNonNull(entry));if(batch.size()==entriesPerPage)flush();
+        }
+        private void flush()throws IOException{
+            if(batch.isEmpty())return;
+            references.add(writePage(directory,writing.planId(),writing.passId(),writing.dimension(),references.size(),batch,codec));
+            batch.clear();
+        }
+        /** Finishes at most pageBudget validation pages; the manifest stays WRITING until all pass. */
+        public Optional<Publication> finish(int pageBudget)throws IOException{
+            if(pageBudget<1)throw new IllegalArgumentException("Positive page budget required");
+            if(publication!=null)return Optional.of(publication);
+            if(!inputComplete){flush();inputComplete=true;}
+            int remaining=pageBudget;
+            while(validatedPages<references.size()&&remaining-->0){
+                requirePage(directory,writing,references.get(validatedPages));validatedPages++;
+            }
+            if(validatedPages<references.size())return Optional.empty();
+            if(!readManifest(directory).equals(writing))throw new IOException("Preview WRITING manifest changed");
+            var sealed=PlanManifest.create(writing.planFormatVersion(),writing.planId(),writing.passId(),writing.areaId(),
+                writing.dimension(),writing.profile(),writing.semanticInputDigest(),writing.engineVersion(),writing.plannerVersion(),
+                PlanManifest.State.SEALED,references);
+            publishManifest(manifestPath(directory),sealed,true);
+            publication=new Publication(directory,readManifest(directory));return Optional.of(publication);
+        }
+    }
+    public static <T> Writer<T> begin(Path root,UUID planId,PassId pass,String area,String dimension,String profile,
+            String semanticInputDigest,String engineVersion,String plannerVersion,int entriesPerPage,EntryCodec<T> codec)throws IOException{
+        return new Writer<>(root,planId,pass,area,dimension,profile,semanticInputDigest,engineVersion,plannerVersion,entriesPerPage,codec);
+    }
+
     public static <T> Publication publish(Path root, UUID planId, PassId pass, String area,
             String dimension, String profile, String semanticInputDigest, String engineVersion,
             String plannerVersion, int entriesPerPage, Iterable<T> entries, EntryCodec<T> codec)
@@ -167,14 +222,17 @@ public final class PagedPlanStore {
         catch(EOFException exception){throw new IOException("Truncated plan page payload",exception);}
     }
 
-    private static void publishManifest(Path target,PlanManifest manifest)throws IOException{
+    private static void publishManifest(Path target,PlanManifest manifest)throws IOException{publishManifest(target,manifest,false);}
+    private static void publishManifest(Path target,PlanManifest manifest,boolean replace)throws IOException{
+        DurablePageStore.forceDirectory(target.toAbsolutePath().getParent());
         Path temporary=target.resolveSibling(target.getFileName()+".tmp-"+UUID.randomUUID());
         try{try(var channel=FileChannel.open(temporary,StandardOpenOption.CREATE_NEW,StandardOpenOption.WRITE);var raw=java.nio.channels.Channels.newOutputStream(channel);var out=new DataOutputStream(new BufferedOutputStream(raw))){
                 out.writeInt(MANIFEST_MAGIC);out.writeInt(MANIFEST_FORMAT);out.writeInt(manifest.planFormatVersion());out.writeLong(manifest.planId().getMostSignificantBits());out.writeLong(manifest.planId().getLeastSignificantBits());
                 out.writeUTF(manifest.passId().name());out.writeUTF(manifest.areaId());out.writeUTF(manifest.dimension());out.writeUTF(manifest.profile());out.writeUTF(manifest.semanticInputDigest());out.writeUTF(manifest.engineVersion());out.writeUTF(manifest.plannerVersion());out.writeUTF(manifest.state().name());out.writeInt(manifest.pages().size());
                 for(var page:manifest.pages()){out.writeLong(page.sequence());out.writeInt(page.chunkX());out.writeInt(page.chunkZ());out.writeInt(page.entryCount());out.writeUTF(page.checksum());}out.writeUTF(manifest.rootFingerprint());out.flush();channel.force(true);}
-            Files.move(temporary,target,StandardCopyOption.ATOMIC_MOVE);
-        }catch(AtomicMoveNotSupportedException exception){Files.move(temporary,target);}finally{Files.deleteIfExists(temporary);}
+            if(replace)Files.move(temporary,target,StandardCopyOption.ATOMIC_MOVE,StandardCopyOption.REPLACE_EXISTING);else Files.move(temporary,target,StandardCopyOption.ATOMIC_MOVE);
+            DurablePageStore.forceDirectory(target.toAbsolutePath().getParent());
+        }finally{Files.deleteIfExists(temporary);}
     }
     private static <E extends Enum<E>>E enumValue(Class<E> type,String value)throws IOException{try{return Enum.valueOf(type,value);}catch(IllegalArgumentException exception){throw new IOException("Unknown persisted enum "+value,exception);}}
     private PagedPlanStore(){}

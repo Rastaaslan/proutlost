@@ -1,1 +1,17 @@
-{"replace":false,"values":[]}
+{
+  "replace": false,
+  "values": [
+    "minecraft:rabbit",
+    "minecraft:sheep",
+    "minecraft:chicken",
+    "minecraft:cod",
+    {
+      "id": "reanimal:butterfly",
+      "required": false
+    },
+    {
+      "id": "reanimal:dragonfly",
+      "required": false
+    }
+  ]
+}

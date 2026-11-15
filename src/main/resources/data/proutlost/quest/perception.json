@@ -1,0 +1,27 @@
+{
+  "assetStatus": "VANILLA_SOUND_AND_TEXT_PLACEHOLDERS",
+  "sounds": [
+    "aigu",
+    "grave",
+    "moyen"
+  ],
+  "symbols": [
+    "ICI",
+    "VOIR",
+    "LIER"
+  ],
+  "supportPitch": {
+    "ICI": "grave",
+    "VOIR": "moyen",
+    "LIER": "aigu",
+    "AILLEURS": "grave",
+    "ENTENDRE": "moyen",
+    "REPETER": "aigu",
+    "PARTIR": "grave"
+  },
+  "sequence": [
+    "LIER",
+    "ICI",
+    "VOIR"
+  ]
+}

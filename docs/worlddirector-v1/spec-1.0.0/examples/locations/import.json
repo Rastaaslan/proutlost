@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "world_id": "2c9a92c5-d852-4bb8-af70-47d9a45e08cd",
+  "source_namespace": "worldprep:export",
+  "export_revision": "1",
+  "export_digest": "47e08be4a6d8fa5df5bbc39ccccf6cb28de8a31f2ba61ea9d66a8087fdc16219",
+  "regions": [
+    {
+      "region_id": "61c343be-f1bb-4537-beb8-638b7b39cfcf",
+      "dimension": "minecraft:overworld",
+      "bounds": {
+        "min_x": -32,
+        "min_y": 50,
+        "min_z": -32,
+        "max_x_exclusive": 33,
+        "max_y_exclusive": 100,
+        "max_z_exclusive": 33
+      },
+      "tags": [
+        "proutlost:clearing"
+      ]
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "192eb170-fd6e-42a3-b2b1-fc61fda2ce12",
+      "external_id": "test-clearing",
+      "region_ids": [
+        "61c343be-f1bb-4537-beb8-638b7b39cfcf"
+      ],
+      "dimension": "minecraft:overworld",
+      "bounds": {
+        "min_x": -32,
+        "min_y": 50,
+        "min_z": -32,
+        "max_x_exclusive": 33,
+        "max_y_exclusive": 100,
+        "max_z_exclusive": 33
+      },
+      "tags": [
+        "proutlost:clearing"
+      ]
+    }
+  ],
+  "anchors": [
+    {
+      "anchor_id": "b2f2b6f4-43c3-4c8c-9cf1-443c778b180d",
+      "location_id": "192eb170-fd6e-42a3-b2b1-fc61fda2ce12",
+      "dimension": "minecraft:overworld",
+      "position": {
+        "x": 0,
+        "y": 65,
+        "z": 0
+      },
+      "tags": [
+        "proutlost:clearing",
+        "proutlost:signal_anchor"
+      ]
+    }
+  ]
+}

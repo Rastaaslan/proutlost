@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "content_revision": 1,
+  "id": "proutlost_director:candidate/parallel_steps",
+  "calibration": "DEFAULT_FOR_TESTING",
+  "category": "AMBIENT",
+  "families": [
+    "PERCEPTION",
+    "SOLO"
+  ],
+  "enabled": true,
+  "selection": {
+    "base_weight": "@test:event.default.weight",
+    "score_floor": "@test:event.default.score_floor"
+  },
+  "target": {
+    "scope": "SOLO",
+    "region_tags": [],
+    "player_policy": "FAIR",
+    "roles": {
+      "witness": {
+        "min": "@test:event.role.one",
+        "max": "@test:event.role.one",
+        "overlap": false
+      }
+    }
+  },
+  "eligibility": {
+    "type": "solo_ready",
+    "minimum_isolated_ticks": "@test:event.solo.isolated_ticks"
+  },
+  "timing": {
+    "max_duration_ticks": "@test:event.default.duration_ticks",
+    "cooldowns": {
+      "world_ticks": "@test:event.default.cooldown_world_ticks",
+      "region_ticks": "@test:event.default.cooldown_region_ticks",
+      "player_ticks": "@test:event.default.cooldown_player_ticks"
+    }
+  },
+  "uniqueness": {
+    "scope": "ONCE_PER_PLAYER",
+    "consume_on": "EFFECT_CONFIRMED"
+  },
+  "budget": {
+    "global_units": "@test:event.default.global_units",
+    "region_units": "@test:event.default.region_units",
+    "server_ms_per_tick": "@test:event.default.server_ms_per_tick",
+    "entity_slots": "@test:event.default.entity_slots",
+    "mutation_units": "@test:event.default.mutation_units",
+    "client_units": "@test:event.default.client_units"
+  },
+  "conflicts": {
+    "claims": [
+      "PERCEPTION:WITNESS"
+    ],
+    "compatibility_tags": [],
+    "allow_merge_with": [],
+    "priority": "AMBIENT",
+    "preemption": "YIELD_BEFORE_COMMIT"
+  },
+  "safety": {
+    "risk": "SAFE",
+    "required_capabilities": [
+      "perception.sound_v1",
+      "perception.silhouette_v1"
+    ],
+    "mutation_profile": null,
+    "warning_profile": null,
+    "player_edit_policy": "YIELD",
+    "journal_policy": "PLAYER_OPT_IN",
+    "participant_loss": "ABORT_IF_MIN_LOST"
+  },
+  "steps": [
+    {
+      "id": "steps",
+      "after": [],
+      "delay_ticks": "@test:event.default.delay_ticks",
+      "primitive": "proutlost:target_sound",
+      "args": {
+        "role": "witness",
+        "sound": "minecraft:block.gravel.step",
+        "volume": "@test:event.micro.volume",
+        "radius_blocks": "@test:event.micro.radius_blocks",
+        "repeats": "@test:event.micro.repeats"
+      },
+      "on_failure": "ABORT_SAFE"
+    },
+    {
+      "id": "apparition",
+      "after": [
+        "steps"
+      ],
+      "delay_ticks": "@test:event.default.delay_ticks",
+      "primitive": "proutlost:apparition",
+      "args": {
+        "role": "witness",
+        "model": "proutlost:test_silhouette",
+        "follow_ticks": "@test:event.solo.follow_ticks",
+        "max_distance_blocks": "@test:event.solo.max_distance_blocks"
+      },
+      "on_failure": "ABORT_SAFE"
+    }
+  ],
+  "recovery": {
+    "mode": "CLEANUP",
+    "deadline_ticks": "@test:scheduler.recovery_deadline_ticks"
+  },
+  "completion": {
+    "fact_type": "proutlost:parallel_steps_observed",
+    "durable_trace": null,
+    "persistence_probability": "@test:event.default.trace_persistence_probability"
+  }
+}

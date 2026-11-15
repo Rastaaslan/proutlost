@@ -1,0 +1,1283 @@
+# Mission Work — Proutlost Saison 2
+
+## Définition complète de la spécification technique du World Director
+
+**Priorité : CRITIQUE**
+
+**Nature de la mission : conception technique uniquement**
+
+**Mode d’exécution : autonome pour les arbitrages purement techniques ; aucune modification des décisions produit/gameplay déjà validées.**
+
+---
+
+# 1. Objectif
+
+Produire la **spécification technique canonique et suffisamment détaillée pour permettre ensuite le développement parallèle complet du World Director de Proutlost Saison 2**.
+
+Cette mission ne doit PAS développer le World Director.
+
+Elle doit transformer les décisions fonctionnelles déjà arrêtées en une architecture technique :
+
+- cohérente ;
+- modulaire ;
+- testable ;
+- persistante ;
+- performante ;
+- parallélisable ;
+- compatible avec Minecraft/NeoForge ;
+- exploitable par plusieurs jobs Codex/Work sans ambiguïté ;
+- capable d'évoluer sans remettre en cause les règles de gameplay.
+
+Le livrable final doit être suffisamment précis pour qu'un second fil Work puisse recevoir :
+
+> « Implémente cette spec »
+
+sans devoir réinventer les contrats fondamentaux.
+
+---
+
+# 2. Autorité des décisions
+
+Les décisions fonctionnelles ci-dessous sont **figées**.
+
+Le fil Work n'est PAS autorisé à les remplacer par des choix techniques plus simples.
+
+Si une contrainte technique rend réellement impossible une décision fonctionnelle, documenter :
+
+```text
+TECHNICAL_CONFLICT
+Decision affected:
+Reason:
+Alternatives:
+Gameplay impact:
+Recommended resolution:
+```
+
+et continuer les autres parties de la spec.
+
+Ne pas modifier silencieusement le comportement attendu.
+
+---
+
+# 3. Doctrine fondamentale
+
+## 3.1 Le World Director est autonome
+
+Le World Director constitue le système vivant de l'île.
+
+Il fonctionne même lorsqu'aucune quête n'est active.
+
+Une manifestation du monde ne signifie pas automatiquement :
+
+> « Ceci est une quête. »
+
+Les quêtes sont des consommatrices possibles des faits produits par le Director.
+
+Architecture conceptuelle obligatoire :
+
+```text
+Minecraft World
+      ↓
+Observation
+      ↓
+World Context
+      ↓
+World Memory
+      ↓
+Candidate Generation
+      ↓
+Eligibility
+      ↓
+Scoring
+      ↓
+Selection / Optional AI Assistance
+      ↓
+Hard Safety Validation
+      ↓
+Execution
+      ↓
+Outcome / Memory / World State
+      ↓
+Fact/Event Bus
+      ↓
+Optional consumers
+    ├─ Quest Core
+    ├─ Dashboard
+    └─ other Proutlost systems
+```
+
+Le Quest Core ne possède pas le Director.
+
+---
+
+# 4. Événements
+
+Trois grandes catégories :
+
+```text
+AMBIENT
+HYBRID
+NARRATIVE
+```
+
+## AMBIENT
+
+Existe indépendamment des quêtes.
+
+## HYBRID
+
+Peut exister naturellement et devenir exploitable par une quête si le contexte le permet.
+
+## NARRATIVE
+
+Peut être demandé explicitement par le système narratif.
+
+---
+
+# 5. Relation avec le système de quêtes
+
+Une quête peut produire deux types de requêtes :
+
+```text
+PREFER
+REQUIRE
+```
+
+## PREFER
+
+Augmente la préférence d'un événement ou d'une famille d'événements.
+
+Le Director conserve toute sa liberté de sélection.
+
+## REQUIRE
+
+L'événement doit être produit pour permettre une progression.
+
+Cependant le Director conserve la responsabilité de :
+
+- choisir un moment sûr ;
+- choisir une cible admissible ;
+- respecter les cooldowns de sécurité ;
+- ne pas créer une situation techniquement dangereuse ;
+- sélectionner une variante compatible avec le contexte.
+
+Une obligation narrative ne contourne jamais les validations de sécurité.
+
+---
+
+# 6. Rythme du monde
+
+## 6.1 Activité variable
+
+Le Director doit alterner :
+
+- périodes calmes ;
+- activité subtile ;
+- phases plus animées ;
+- événements exceptionnels.
+
+## 6.2 Présence minimale
+
+Le monde ne doit pas rester totalement inerte indéfiniment.
+
+Si aucun véritable événement n'est admissible alors qu'une présence minimale devient nécessaire, utiliser une famille dédiée :
+
+```text
+SAFE_MICRO_EVENT
+```
+
+Elle doit être :
+
+- légère ;
+- non intrusive ;
+- sûre ;
+- non narrative par défaut.
+
+Ne jamais forcer un événement normalement invalide.
+
+## 6.3 Zones fortement fréquentées
+
+Lorsque des joueurs restent longtemps au même endroit :
+
+- réduction progressive de certaines manifestations ;
+- changement de familles d'événements ;
+- éviter la répétition.
+
+---
+
+# 7. Concurrence d'événements
+
+Plusieurs événements peuvent être actifs simultanément.
+
+La limite doit utiliser :
+
+- budget global ;
+- budgets régionaux ;
+- intensité ;
+- compatibilité ;
+- coût serveur.
+
+Pas de limite arbitraire « un événement serveur à la fois ».
+
+---
+
+# 8. Régions
+
+Le système doit utiliser des **régions logiques dynamiques**, pas uniquement les chunks Minecraft.
+
+Une région peut :
+
+- apparaître ;
+- gagner ou perdre de l'importance ;
+- être associée à plusieurs anchors ;
+- fusionner légèrement avec une autre zone si nécessaire ;
+- changer de personnalité.
+
+Un lieu initialement insignifiant peut devenir important parce que les joueurs :
+
+- construisent un village ;
+- installent un camp ;
+- utilisent régulièrement une route ;
+- développent une ferme ;
+- créent un lieu social.
+
+---
+
+# 9. Mémoire régionale
+
+La mémoire doit distinguer les informations à différentes durées de vie.
+
+Les détails anodins peuvent s'effacer.
+
+Les événements significatifs peuvent devenir durables.
+
+Chaque type de mémoire doit avoir sa propre politique de decay.
+
+Exemples :
+
+```text
+RegionMemory
+VisitMemory
+CampMemory
+RouteMemory
+ActivityMemory
+EventMemory
+WorldChangeMemory
+SocialMemory
+DisasterMemory
+NarrativeFactMemory
+```
+
+Ne pas enregistrer chaque déplacement joueur.
+
+---
+
+# 10. Mémoire individuelle des joueurs
+
+Deux niveaux sont requis.
+
+## Mémoire opérationnelle légère
+
+Exemples :
+
+- dernier ciblage ;
+- événements récemment reçus ;
+- dernière région visitée ;
+- cooldowns personnels.
+
+## Mémoire significative détaillée
+
+Pour les interactions Director importantes :
+
+- événement vécu ;
+- rôle perceptif ;
+- conséquences ;
+- lieu ;
+- réactions techniques observables pertinentes.
+
+Interdiction d'en faire un profil psychologique ou comportemental exhaustif.
+
+---
+
+# 11. Détection d'habitudes
+
+Le Director doit reconnaître progressivement :
+
+- camps ;
+- chemins souvent empruntés ;
+- raccourcis ;
+- zones de travail ;
+- zones d'exploitation ;
+- lieux sociaux ;
+- lieux progressivement abandonnés.
+
+Premier pattern obligatoire :
+
+```text
+CAMP_ROUTINE
+```
+
+Autour d'un feu/camp :
+
+- fréquence ;
+- nombre approximatif de joueurs ;
+- zones relatives récurrentes ;
+- plages d'activité ;
+- confiance du modèle.
+
+Pas de stockage des trajectoires exactes.
+
+---
+
+# 12. Sélection d'événements
+
+La méthode principale doit être :
+
+> sélection pondérée parmi les meilleurs candidats admissibles.
+
+Pas :
+
+- meilleur score systématique ;
+- random pur.
+
+Un événement moins bien classé peut exceptionnellement être retenu afin d'éviter une prévisibilité excessive.
+
+---
+
+# 13. Scoring
+
+Définir une architecture permettant un score composé, par exemple :
+
+```text
+baseWeight
+contextCompatibility
+memoryRelevance
+regionPersonality
+playerSuitability
+globalTension
+localIntensity
+novelty
+cooldown
+storyPreference
+chainRelevance
+performanceBudget
+```
+
+La formule précise doit être proposée par la spec.
+
+Les poids exacts doivent être configurables.
+
+---
+
+# 14. Nouveauté
+
+Prévoir :
+
+- cooldowns ;
+- pénalité progressive de répétition ;
+- historique d'exposition.
+
+Pas d'interdiction totale de répétition jusqu'à épuisement du catalogue.
+
+---
+
+# 15. Tension globale
+
+Le Director connaît un état global simple, par exemple :
+
+```text
+CALM
+UNUSUAL
+TENSE
+EXCEPTIONAL
+```
+
+Il influence les probabilités mais ne remplace pas le contexte local.
+
+La phase narrative peut légèrement influencer cette tension ou les probabilités.
+
+Elle ne pilote pas directement le Director.
+
+---
+
+# 16. Personnalité émergente des régions
+
+Chaque région doit pouvoir développer progressivement un caractère issu de son histoire.
+
+Exemples conceptuels :
+
+```text
+familiar
+social
+wild
+quiet
+strange
+active
+damaged
+recovering
+```
+
+Ces traits ne doivent pas être codés comme scénario fixe d'une région.
+
+Ils émergent des événements et de l'activité.
+
+Le caractère :
+
+- évolue lentement ;
+- peut changer plus fortement après des événements majeurs.
+
+---
+
+# 17. Perceptions
+
+Le Director peut produire :
+
+- sons ciblés ;
+- particules ciblées ;
+- manifestations visuelles non physiques ;
+- symboles ;
+- faux objets/blocs client-side si techniquement propre ;
+- messages ciblés ;
+- silhouettes.
+
+Les perceptions complémentaires hors quête sont une mécanique normale mais non permanente.
+
+Un joueur peut vivre seul une manifestation qui ne sera jamais expliquée.
+
+Une perception hors quête n'est enregistrée dans un journal que si le joueur choisit de la relever.
+
+---
+
+# 18. Manifestations visuelles
+
+Autoriser :
+
+- particules ;
+- silhouettes ;
+- apparitions ;
+- faux objets/blocs non physiques côté client.
+
+Une apparition peut :
+
+- observer brièvement un joueur ;
+- éventuellement le suivre quelques secondes.
+
+Éviter les poursuites prolongées sans événement explicitement conçu pour cela.
+
+---
+
+# 19. Transformations physiques
+
+Le Director est autorisé à effectuer des **modifications substantielles mais contrôlées du monde**.
+
+Cela exige impérativement un système de :
+
+```text
+ownership
+mutation journal
+pre-state
+post-state
+rollback
+conflict detection
+```
+
+---
+
+# 20. Ownership
+
+Un élément créé/modifié par le Director doit pouvoir être attribué au Director.
+
+Si un joueur modifie volontairement ensuite une trace Director :
+
+> par défaut le Director abandonne sa propriété et respecte l'action du joueur.
+
+Des exceptions explicites peuvent exister pour certains événements.
+
+---
+
+# 21. Conflits d'événements
+
+Si plusieurs événements souhaitent intervenir sur la même zone :
+
+utiliser :
+
+- priorité ;
+- compatibilité ;
+- ownership ;
+- fusion lorsque explicitement autorisée.
+
+Ne pas utiliser uniquement « premier arrivé ».
+
+---
+
+# 22. Faune
+
+Le Director peut :
+
+- ajuster la présence animale ;
+- modifier les règles contextuelles de spawn ;
+- influencer certains déplacements ;
+- créer de vraies migrations ;
+- réellement faire apparaître un grand nombre d'animaux lorsque l'événement le justifie.
+
+Cependant des garde-fous obligatoires doivent exister :
+
+```text
+entityBudget
+regionalEntityBudget
+serverEntityBudget
+TPSGuard
+cleanupPolicy
+```
+
+Les migrations ne doivent jamais reproduire les problèmes de surcharge de hordes observés sur d'autres modpacks.
+
+---
+
+# 23. Lifecycle des entités Director
+
+Les entités appartenant à un événement possèdent un lifecycle dédié.
+
+Prévoir :
+
+- ownership ;
+- spawn ;
+- persistance si nécessaire ;
+- cleanup ;
+- reboot recovery ;
+- prévention des doublons.
+
+---
+
+# 24. Météo
+
+Le Director peut :
+
+- influencer la météo globale ;
+- créer des ambiances météorologiques locales ;
+- utiliser la météo pour préparer occasionnellement un événement.
+
+---
+
+# 25. Catastrophes naturelles
+
+Les catastrophes naturelles appartiennent explicitement au World Director.
+
+Elles peuvent être :
+
+- physiques ;
+- substantielles ;
+- contrôlées ;
+- réversibles lorsque nécessaire ;
+- parfois porteuses de conséquences durables.
+
+Exemples possibles :
+
+- tempête ;
+- inondation ;
+- incendie localisé ;
+- séisme simulé ;
+- éboulement/glissement ;
+- événements équivalents compatibles avec les mods.
+
+Une catastrophe peut être construite dynamiquement à partir de plusieurs facteurs.
+
+Exemple conceptuel :
+
+```text
+longRain
++ saturatedTerrain
++ slope
++ recentActivity
+→ landslideRisk
+```
+
+Le Director doit utiliser uniquement des primitives sûres connues.
+
+---
+
+# 26. Danger
+
+Le Director peut produire de vrais dangers contrôlés.
+
+Un événement dangereux doit présenter des signes lisibles.
+
+Le joueur peut ne pas connaître exactement :
+
+- la nature ;
+- l'ampleur ;
+- la conséquence exacte.
+
+Mais il ne doit pas subir arbitrairement un danger majeur impossible à anticiper.
+
+---
+
+# 27. Conséquences persistantes
+
+Certaines manifestations peuvent modifier durablement le monde.
+
+La probabilité et l'importance de la persistance dépendent notamment de l'intensité.
+
+Une conséquence persistante peut devenir la cause d'un futur événement.
+
+Boucle centrale autorisée :
+
+```text
+EVENT
+ ↓
+TRACE
+ ↓
+MEMORY
+ ↓
+NEW CONTEXT
+ ↓
+NEW EVENT
+```
+
+---
+
+# 28. Chaînes d'événements
+
+Support obligatoire :
+
+- petits arcs de 2 à 4 événements ;
+- chaînes dynamiques plus longues.
+
+Les chaînes longues doivent pouvoir :
+
+- continuer tant qu'elles restent pertinentes ;
+- s'interrompre ;
+- bifurquer ;
+- laisser une conséquence durable ;
+- devenir un état local persistant.
+
+Elles peuvent émerger complètement hors storyline.
+
+---
+
+# 29. Événements uniques
+
+Prévoir des scopes :
+
+```text
+REPEATABLE
+ONCE_PER_PLAYER
+ONCE_PER_REGION
+ONCE_PER_WORLD
+```
+
+Le Director doit savoir si un joueur a déjà vécu un événement important.
+
+---
+
+# 30. Jour / nuit
+
+La nuit n'est pas automatiquement plus active.
+
+Elle peut être davantage mystérieuse.
+
+Le jour peut contenir autant d'étrangeté mais sous d'autres formes.
+
+---
+
+# 31. Humour
+
+Le Director doit également produire :
+
+- situations absurdes ;
+- comportements animaux incongrus ;
+- petits événements sonores amusants ;
+- situations communautaires légères.
+
+L'humour ne doit pas être exceptionnel au point d'être invisible.
+
+Pendant une phase narrative tendue, il devient beaucoup plus rare.
+
+---
+
+# 32. Événements sociaux
+
+Le Director peut :
+
+- réagir à un rassemblement ;
+- favoriser une activité collective ;
+- produire une petite situation nécessitant de la coopération.
+
+---
+
+# 33. Événements solo
+
+Les événements solo constituent une famille importante à part entière.
+
+Le Director doit éviter de ne vivre qu'autour des grands groupes.
+
+---
+
+# 34. Objets
+
+Les événements peuvent produire :
+
+- traces examinables ;
+- objets temporaires manipulables ;
+- objets persistants appartenant au monde.
+
+Le Director peut déplacer un objet appartenant à un joueur uniquement :
+
+- si l'objet est décoratif ;
+- si l'action est sûre ;
+- si elle est réversible.
+
+---
+
+# 35. IA légère
+
+Le Director doit pouvoir fonctionner complètement sans IA.
+
+L'IA est une couche facultative.
+
+Elle peut intervenir pour :
+
+- départager ou pondérer des événements déjà admissibles ;
+- aider au scoring contextuel ;
+- composer de petits ou grands arcs à partir de primitives existantes.
+
+Elle ne peut PAS inventer librement :
+
+- commande ;
+- mutation ;
+- événement physique ;
+- action Minecraft inconnue du moteur.
+
+Pipeline obligatoire :
+
+```text
+DETERMINISTIC ENGINE
+      ↓
+SAFE CANDIDATES
+      ↓
+OPTIONAL AI
+      ↓
+PROPOSED SELECTION / ARC
+      ↓
+HARD VALIDATOR
+      ↓
+EXECUTION
+```
+
+En cas d'IA :
+
+- indisponible ;
+- timeout ;
+- erreur ;
+- sortie invalide ;
+
+fallback immédiat sur le moteur déterministe.
+
+---
+
+# 36. Degré d'opacité
+
+Le Director doit :
+
+- rester explicable après audit ;
+- pouvoir sembler extrêmement difficile à comprendre côté joueur ;
+- utiliser une légère couche d'IA non parfaitement prévisible.
+
+Mais aucune décision de sécurité ne doit dépendre d'une IA opaque.
+
+---
+
+# 37. Administration
+
+Le système doit fournir dès la v1 un **dashboard admin simple**.
+
+Fonctions minimales :
+
+- état Director ;
+- pause/resume ;
+- niveau de tension ;
+- intensité ;
+- événements actifs ;
+- chaînes actives ;
+- catastrophes actives ;
+- dernières décisions ;
+- mémoire régionale ;
+- inspection d'un joueur ;
+- raison du choix d'un événement ;
+- forçage d'un événement pour test ;
+- réglage global de l'intensité.
+
+Pas besoin d'une UI sophistiquée v1.
+
+Mais le dashboard est obligatoire.
+
+---
+
+# 38. Debug / simulation
+
+Prévoir :
+
+- forcer un event ID ;
+- choisir région ;
+- choisir joueur/groupe cible ;
+- injecter un contexte ;
+- simuler uniquement le scoring ;
+- rejouer une décision depuis son audit sans nécessairement exécuter les effets.
+
+---
+
+# 39. Observabilité
+
+Obligatoire :
+
+- logs ;
+- commandes d'inspection ;
+- audit machine-readable JSON.
+
+Pour une décision significative, conserver au minimum :
+
+```text
+context summary
+candidate list
+eligibility decisions
+scores
+optional AI contribution
+selected event
+targets
+safety result
+execution result
+memory changes
+world mutations
+```
+
+Pas de snapshot complet du serveur à chaque événement.
+
+---
+
+# 40. Performance
+
+La spec doit définir une stratégie précise afin que le Director ne scanne pas continuellement tout le monde.
+
+Attentes :
+
+- observation incrémentale ;
+- caches ;
+- partitions/régions ;
+- cadence différente selon capteur ;
+- travail lourd hors server thread lorsque sûr ;
+- commits monde sur thread approprié ;
+- budgets CPU/tick ;
+- backpressure.
+
+Prévoir un mode :
+
+```text
+DEGRADED
+```
+
+si le serveur commence à souffrir.
+
+En mode dégradé :
+
+- suspendre événements coûteux ;
+- réduire observations lourdes ;
+- conserver les fonctions critiques.
+
+---
+
+# 41. Crash / reboot
+
+Définir le comportement exact lorsque le serveur redémarre au milieu :
+
+- d'un événement ;
+- d'une catastrophe ;
+- d'une chaîne ;
+- d'une migration ;
+- d'une transformation physique.
+
+Un événement doit pouvoir devenir :
+
+```text
+RECOVER
+CLEANUP
+COMPLETE_FROM_STATE
+ABORT_SAFE
+```
+
+Pas d'état zombie.
+
+---
+
+# 42. Intégration WorldPrep
+
+Le Director ne doit pas dépendre de WorldPrep.
+
+WorldPrep est probablement un outil de préparation one-shot.
+
+Le Director doit fonctionner sur la carte finale via :
+
+```text
+region_id
+location_id
+anchor_id
+world coordinates
+dimension
+tags
+```
+
+Il ne doit pas importer l'architecture interne de WorldPrep.
+
+---
+
+# 43. Intégration Quest Core
+
+Définir un contrat technique minimal et stable.
+
+Exemples conceptuels :
+
+```text
+DirectorFact
+DirectorEvent
+DirectorPreference
+DirectorRequirement
+DirectorObservation
+DirectorWorldState
+```
+
+La spec doit précisément définir :
+
+- producteurs ;
+- consommateurs ;
+- persistance ;
+- idempotence ;
+- ordering ;
+- scopes.
+
+---
+
+# 44. Data-driven
+
+Le maximum raisonnable doit être data-driven :
+
+- définition événement ;
+- poids ;
+- cooldowns ;
+- compatibilités ;
+- intensité ;
+- tags région ;
+- coûts ;
+- actions ;
+- facts ;
+- chaînes.
+
+Java/logic doit rester responsable notamment :
+
+- safety ;
+- persistence ;
+- state machine ;
+- scheduling ;
+- concurrency ;
+- validation ;
+- transactions ;
+- ownership ;
+- networking.
+
+---
+
+# 45. Travail demandé au fil Work
+
+À partir de ces règles, produire la **spécification technique complète**.
+
+Le fil Work doit choisir lui-même les détails purement techniques, notamment :
+
+- packages ;
+- classes/interfaces ;
+- services ;
+- modèles Java ;
+- formats JSON/data ;
+- stockage ;
+- algorithmes ;
+- scheduling ;
+- event bus ;
+- concurrency ;
+- locking ;
+- transaction model ;
+- rollback ;
+- API internes ;
+- network packets ;
+- séparation client/server ;
+- versioning de sauvegarde ;
+- erreurs ;
+- metrics ;
+- dashboard backend ;
+- dashboard frontend minimal ;
+- tests.
+
+---
+
+# 46. Arbitrages techniques autorisés
+
+Le fil Work peut décider sans demander :
+
+- noms de classes ;
+- découpage packages ;
+- records/interfaces ;
+- format de fichiers ;
+- type exact de sérialisation ;
+- structures de données ;
+- index ;
+- caches ;
+- algorithmes ;
+- bibliothèques déjà compatibles ;
+- cadence technique initiale ;
+- conventions de logs ;
+- conventions de tests.
+
+---
+
+# 47. Arbitrages interdits
+
+Le fil Work doit remonter toute décision qui changerait :
+
+- ce qu'un joueur peut voir ;
+- ce qu'un joueur peut subir ;
+- la fréquence relative ressentie de manière majeure ;
+- les dégâts/dangers ;
+- la mémoire visible du monde ;
+- les catastrophes ;
+- la liberté des joueurs ;
+- le rôle des quêtes ;
+- l'autonomie du Director ;
+- la portée de l'IA ;
+- la persistance narrative ;
+- la capacité du monde à modifier des constructions.
+
+---
+
+# 48. Livrables obligatoires
+
+Créer au minimum :
+
+## A — `WORLD_DIRECTOR_TECH_SPEC.md`
+
+Spécification technique canonique complète.
+
+## B — `WORLD_DIRECTOR_ARCHITECTURE.md`
+
+Architecture modules/services/dataflows.
+
+Inclure diagrammes Mermaid ou ASCII.
+
+## C — `WORLD_DIRECTOR_DATA_MODEL.md`
+
+Définition précise de :
+
+- world state ;
+- region memory ;
+- player memory ;
+- event state ;
+- chain state ;
+- disaster state ;
+- mutations ;
+- ownership ;
+- facts ;
+- cooldowns ;
+- audit.
+
+## D — `WORLD_DIRECTOR_EVENT_CONTRACT.md`
+
+Schéma d'un événement data-driven.
+
+Inclure au moins 5 exemples complets de définitions.
+
+## E — `WORLD_DIRECTOR_PERSISTENCE_AND_RECOVERY.md`
+
+Sauvegarde, migrations, crash consistency, reboot.
+
+## F — `WORLD_DIRECTOR_PERFORMANCE.md`
+
+Budgets, threads, TPS guards, backpressure.
+
+## G — `WORLD_DIRECTOR_AI_LAYER.md`
+
+Contrat exact de la couche IA facultative + fallback.
+
+## H — `WORLD_DIRECTOR_ADMIN_V1.md`
+
+Dashboard et commandes admin v1.
+
+## I — `WORLD_DIRECTOR_TEST_PLAN.md`
+
+Tests :
+
+- unitaires ;
+- intégration ;
+- GameTests ;
+- soak tests ;
+- crash tests ;
+- performance ;
+- multijoueur ;
+- catastrophes ;
+- chaînes ;
+- IA down ;
+- persistance.
+
+## J — `WORLD_DIRECTOR_IMPLEMENTATION_PLAN.md`
+
+Découpage futur du développement en jobs parallèles.
+
+Pour chaque job :
+
+```text
+ID
+Scope
+Dependencies
+File ownership
+Interfaces consumed
+Interfaces produced
+Acceptance criteria
+Tests
+Integration gate
+```
+
+---
+
+# 49. Parallélisation de la future implémentation
+
+La spec doit explicitement déterminer :
+
+- quelles interfaces doivent être créées avant parallélisation ;
+- quels blocs peuvent commencer simultanément ;
+- ownership strict des packages/fichiers ;
+- ordre des gates d'intégration ;
+- maximum de jobs parallèles utile.
+
+Objectif attendu :
+
+**6 à 8 workstreams simultanés sans conflits majeurs.**
+
+---
+
+# 50. Catalogue d'événements
+
+La spec doit définir les **familles et contrats**, mais il n'est pas nécessaire d'écrire le catalogue final complet avant développement.
+
+Cependant fournir un MVP suffisamment concret avec au minimum des exemples :
+
+- ambiance ;
+- faune ;
+- mémoire ;
+- perception ;
+- social ;
+- solo ;
+- humour ;
+- danger ;
+- catastrophe ;
+- chaîne dynamique.
+
+---
+
+# 51. Hypothèses et calibrations
+
+Tous les nombres non encore validés doivent être explicitement classés :
+
+```text
+DEFAULT_FOR_TESTING
+```
+
+et non présentés comme décisions définitives.
+
+Exemples :
+
+- cooldown 20 min ;
+- TPS threshold ;
+- entity cap ;
+- mémoire 7 jours ;
+- score threshold.
+
+Ils doivent être centralisés et configurables.
+
+---
+
+# 52. Audit final de la spec
+
+Avant de déclarer la mission terminée, effectuer une revue croisée :
+
+## Architecture
+Aucun cycle de dépendances majeur.
+
+## Gameplay
+Aucune décision validée n'a été modifiée.
+
+## Quêtes
+Le Director fonctionne sans elles.
+
+## IA
+Le système fonctionne sans IA.
+
+## Safety
+Aucune décision opaque ne peut contourner les validations.
+
+## Persistence
+Crash/reboot couverts.
+
+## Performance
+Le Director ne requiert pas un scan monde complet permanent.
+
+## Parallel dev
+La spec peut être répartie entre plusieurs développeurs/agents.
+
+## Testing
+Chaque composant critique possède un moyen de validation.
+
+---
+
+# 53. Critère de fin
+
+La mission n'est terminée que lorsque :
+
+1. tous les livrables existent ;
+2. les contrats entre modules sont explicites ;
+3. les arbitrages purement techniques ont été décidés ;
+4. toutes les décisions gameplay sont respectées ;
+5. les paramètres encore ouverts sont clairement identifiés comme calibration ;
+6. le plan de développement parallèle est directement exécutable ;
+7. aucune question technique structurante n'est laissée à « décider pendant le dev ».
+
+Le résultat attendu est :
+
+> **WORLD DIRECTOR — THEORY + TECH SPEC = 100 %**
+
+À ce moment seulement, préparer le giga-ticket de développement.
+
+---
+
+# 54. Non-objectifs de cette mission
+
+Ne pas :
+
+- développer le Director ;
+- modifier le mod Proutlost ;
+- modifier WorldPrep ;
+- intervenir sur la génération écologique ;
+- lancer une campagne de tests Minecraft réelle ;
+- créer les assets audio/visuels définitifs ;
+- implémenter les quêtes ;
+- lancer des jobs Codex de développement ;
+- faire du refactoring non nécessaire.
+
+Cette mission est exclusivement une mission de **conception technique exhaustive**.
+
+---
+
+# 55. Règle finale d'autonomie
+
+Si un problème peut être résolu sans modifier l'expérience joueur :
+
+> choisir la meilleure solution technique et la documenter.
+
+Si plusieurs solutions sont techniquement valides mais changent l'expérience joueur :
+
+> ne pas trancher silencieusement ; documenter l'arbitrage requis.
+
+Le fil Work doit viser une spec suffisamment précise pour que la phase suivante soit principalement de l'exécution, et non une nouvelle phase de conception.

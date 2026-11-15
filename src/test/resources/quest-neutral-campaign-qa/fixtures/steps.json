@@ -1,0 +1,86 @@
+﻿[
+    {
+        "id":  "QA-00",
+        "kind":  "START",
+        "title":  "TEST 00",
+        "requirements":  [
+
+                         ],
+        "result":  "QA_READY"
+    },
+    {
+        "id":  "QA-01A",
+        "kind":  "PRIVATE_AUDIO",
+        "title":  "TEST 01 A",
+        "requirements":  [
+                             "QA-00"
+                         ],
+        "payload":  [
+                        "ALPHA",
+                        "BRAVO",
+                        "CHARLIE"
+                    ],
+        "visibility":  "PLAYER_A_ONLY"
+    },
+    {
+        "id":  "QA-01B",
+        "kind":  "PRIVATE_SYMBOLS",
+        "title":  "TEST 01 B",
+        "requirements":  [
+                             "QA-00"
+                         ],
+        "payload":  [
+                        "SIGN-A",
+                        "SIGN-B",
+                        "SIGN-C"
+                    ],
+        "visibility":  "PLAYER_B_ONLY"
+    },
+    {
+        "id":  "QA-02",
+        "kind":  "EXPLICIT_SHARE_COMPARE",
+        "title":  "TEST 02",
+        "requirements":  [
+                             "QA-01A",
+                             "QA-01B"
+                         ],
+        "result":  "QA_COMBINED"
+    },
+    {
+        "id":  "QA-03",
+        "kind":  "NEUTRAL_RENDERER",
+        "title":  "TEST 03",
+        "requirements":  [
+                             "QA-02"
+                         ],
+        "effects":  [
+                        "WEATHER",
+                        "PARTICLES",
+                        "SOUND",
+                        "PLAYER_LOCAL_TEXT"
+                    ],
+        "result":  "QA_RENDERED"
+    },
+    {
+        "id":  "QA-04",
+        "kind":  "COLLECTIVE_VOTE",
+        "title":  "TEST 04",
+        "requirements":  [
+                             "QA-03"
+                         ],
+        "options":  [
+                        "OPTION_A",
+                        "OPTION_B"
+                    ],
+        "result":  "QA_VOTED"
+    },
+    {
+        "id":  "QA-05",
+        "kind":  "FINISH_AND_PERSIST",
+        "title":  "TEST 05",
+        "requirements":  [
+                             "QA-04"
+                         ],
+        "result":  "QA_COMPLETE"
+    }
+]

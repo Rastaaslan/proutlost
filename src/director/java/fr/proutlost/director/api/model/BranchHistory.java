@@ -1,0 +1,9 @@
+package fr.proutlost.director.api.model;
+
+import java.util.*;
+import static fr.proutlost.director.api.model.Checks.*;
+
+/** Immutable G0 contract; carries data, never execution authority. */
+public record BranchHistory(ResourceId transitionId, FactId factId, Tick tick) {
+ public BranchHistory { Objects.requireNonNull(transitionId); Objects.requireNonNull(factId); Objects.requireNonNull(tick);  }
+}

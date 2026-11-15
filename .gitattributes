@@ -3,3 +3,22 @@
 # are changed when only line endings change.
 src/generated/**/.cache/* text eol=lf
 src/generated/**/*.json text eol=lf
+
+# Native Docker ext4 tests must archive exact LF bytes, including on Git for Windows.
+# Default core.autocrlf=true was exporting CRLF into gradlew and these hash-bound schemas.
+gradlew text eol=lf
+src/director/resources/schemas/*.json text eol=lf
+
+# J02/J01 pin byte-exact SHA256 of these data assets. git archive on
+# Windows must never rewrite LF to CRLF, including the candidate graph.
+src/director/resources/data/proutlost_director/director/candidate-manifest.json text eol=lf
+src/director/resources/data/proutlost_director/director/profiles/*.json text eol=lf
+src/director/resources/data/proutlost_director/director/events/candidate/*.json text eol=lf
+src/director/resources/data/proutlost_director/director/chains/candidate/*.json text eol=lf
+
+# Normative contract and test-only calibration fixtures are SHA256-pinned,
+# and cannot be normalized by Windows archive's core.autocrlf.
+docs/worlddirector-v1/spec-1.0.0/*.json text eol=lf
+docs/worlddirector-v1/spec-1.0.0/**/*.json text eol=lf
+src/directorTest/resources/catalog/*.json text eol=lf
+src/directorTest/resources/catalog/**/*.json text eol=lf

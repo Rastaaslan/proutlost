@@ -1,0 +1,760 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:proutlost:director:director-message:1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "message_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "world_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "producer_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+    },
+    "producer_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "WORLD",
+            "REGION",
+            "PLAYER",
+            "LOCATION",
+            "EVENT"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "correlation_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "causation_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uuid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "producer_sequence": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$"
+    },
+    "created_tick": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$"
+    },
+    "world_sequence": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "payload_type": {
+      "enum": [
+        "DirectorRequest",
+        "DirectorFact",
+        "DirectorEvent",
+        "DirectorObservation",
+        "DirectorWorldState"
+      ]
+    },
+    "payload_version": {
+      "const": 1
+    },
+    "payload": {}
+  },
+  "required": [
+    "schema_version",
+    "message_id",
+    "world_id",
+    "producer_id",
+    "producer_key",
+    "scope",
+    "correlation_id",
+    "causation_id",
+    "producer_sequence",
+    "created_tick",
+    "world_sequence",
+    "payload_type",
+    "payload_version",
+    "payload"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "fact_predicate": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "all"
+            },
+            "predicates": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/fact_predicate"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "type",
+            "predicates"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "any"
+            },
+            "predicates": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/fact_predicate"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "type",
+            "predicates"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "not"
+            },
+            "predicate": {
+              "$ref": "#/$defs/fact_predicate"
+            }
+          },
+          "required": [
+            "type",
+            "predicate"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "fact_match"
+            },
+            "fact_type": {
+              "type": "string",
+              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+            },
+            "scope_match": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "WORLD",
+                    "REGION",
+                    "PLAYER",
+                    "LOCATION",
+                    "EVENT"
+                  ]
+                },
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "kind",
+                "id"
+              ],
+              "additionalProperties": false
+            },
+            "required_evidence": {
+              "const": "CONFIRMED"
+            },
+            "payload_equals": {
+              "type": "object",
+              "additionalProperties": {
+                "type": [
+                  "string",
+                  "number",
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          },
+          "required": [
+            "type",
+            "fact_type",
+            "scope_match",
+            "required_evidence",
+            "payload_equals"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "const": "DirectorRequest"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "PREFER"
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "selector": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "ANY_OF"
+                          },
+                          "event_ids": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+                            },
+                            "minItems": 1,
+                            "uniqueItems": true
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "event_ids"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "ALL_TAGS"
+                          },
+                          "family_tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+                            },
+                            "minItems": 1,
+                            "uniqueItems": true
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "family_tags"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "bounded_weight_bias": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      {
+                        "type": "string",
+                        "pattern": "^@test:[a-z0-9_.]+$"
+                      }
+                    ]
+                  },
+                  "expires_tick": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9][0-9]*)$"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "request_id",
+                  "selector",
+                  "bounded_weight_bias",
+                  "expires_tick"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "REQUIRE"
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "selector": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "ANY_OF"
+                          },
+                          "event_ids": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+                            },
+                            "minItems": 1,
+                            "uniqueItems": true
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "event_ids"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "ALL_TAGS"
+                          },
+                          "family_tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+                            },
+                            "minItems": 1,
+                            "uniqueItems": true
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "family_tags"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "target_constraints": {
+                    "type": "object",
+                    "properties": {
+                      "region_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "minItems": 0,
+                        "uniqueItems": true
+                      },
+                      "player_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "minItems": 0,
+                        "uniqueItems": true
+                      }
+                    },
+                    "required": [
+                      "region_ids",
+                      "player_ids"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "required_fact_predicate": {
+                    "$ref": "#/$defs/fact_predicate"
+                  },
+                  "fulfillment_mode": {
+                    "enum": [
+                      "NEW_EXECUTION",
+                      "ALLOW_EXISTING_FACT"
+                    ]
+                  }
+                },
+                "required": [
+                  "kind",
+                  "request_id",
+                  "selector",
+                  "target_constraints",
+                  "required_fact_predicate",
+                  "fulfillment_mode"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "CANCEL"
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "expected_revision": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9][0-9]*)$"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "request_id",
+                  "expected_revision"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "const": "DirectorFact"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "fact_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "fact_type": {
+                "type": "string",
+                "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+              },
+              "subject_refs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "WORLD",
+                        "REGION",
+                        "PLAYER",
+                        "LOCATION",
+                        "EVENT"
+                      ]
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "id"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1
+              },
+              "event_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "evidence_status": {
+                "enum": [
+                  "CONFIRMED",
+                  "POSSIBLE"
+                ]
+              },
+              "durable": {
+                "type": "boolean"
+              },
+              "payload": {
+                "type": "object"
+              },
+              "supersedes_fact_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "fact_id",
+              "fact_type",
+              "subject_refs",
+              "event_id",
+              "evidence_status",
+              "durable",
+              "payload",
+              "supersedes_fact_id"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "const": "DirectorEvent"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "instance_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "transition": {
+                "type": "string"
+              },
+              "outcome": {
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "scopes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "WORLD",
+                        "REGION",
+                        "PLAYER",
+                        "LOCATION",
+                        "EVENT"
+                      ]
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "id"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "instance_id",
+              "transition",
+              "outcome",
+              "scopes"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "const": "DirectorObservation"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "observation_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "type": {
+                "type": "string",
+                "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+              },
+              "coarse_scope": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "WORLD",
+                      "REGION",
+                      "PLAYER",
+                      "LOCATION",
+                      "EVENT"
+                    ]
+                  },
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id"
+                ],
+                "additionalProperties": false
+              },
+              "tick": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "aggregate_delta": {
+                "type": "object"
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "observation_id",
+              "type",
+              "coarse_scope",
+              "tick",
+              "aggregate_delta",
+              "confidence"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payload_type": {
+            "const": "DirectorWorldState"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "tension": {
+                "enum": [
+                  "CALM",
+                  "UNUSUAL",
+                  "TENSE",
+                  "EXCEPTIONAL"
+                ]
+              },
+              "pacing": {
+                "enum": [
+                  "REST",
+                  "SUBTLE",
+                  "ACTIVE",
+                  "PEAK",
+                  "RECOVERY"
+                ]
+              },
+              "health": {
+                "enum": [
+                  "NORMAL",
+                  "DEGRADED",
+                  "CRITICAL",
+                  "READ_ONLY_SAFE"
+                ]
+              },
+              "public_region_state_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "minItems": 0,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "revision",
+              "tension",
+              "pacing",
+              "health",
+              "public_region_state_refs"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ]
+}

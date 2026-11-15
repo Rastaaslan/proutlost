@@ -9,7 +9,8 @@ import net.minecraft.world.level.chunk.LevelChunk;
  * The only production WorldPrep gateway to a live chunk.  {@code getChunkNow}
  * never creates a ticket, loads from disk, generates, or promotes a chunk.
  * Consequently an existing but currently unloaded chunk is a clean refusal;
- * operators must explicitly load and preflight the candidate before compiling.
+ * the optional candidate batch loader must finish its verified lease before
+ * this gateway is called. Direct commands retain the loaded-only behavior.
  */
 public final class ServerExistingChunkAccess {
     public enum Refusal {

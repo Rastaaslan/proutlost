@@ -1,0 +1,4 @@
+{
+  "replace": false,
+  "values": ["proutlost_director:controlled_water", "proutlost_director:flowing_controlled_water"]
+}

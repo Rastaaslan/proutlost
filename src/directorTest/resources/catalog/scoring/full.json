@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "definition_id": "proutlost:safe_micro",
+  "definition_revision": 1,
+  "content_revision": 1,
+  "calibration": "DEFAULT_FOR_TESTING",
+  "context_affinities": {
+    "test:players_present": "@test:score.neutral_feature"
+  },
+  "region_traits": {
+    "WILD": "@test:pattern.camp_confidence_min"
+  },
+  "tension_affinities": {
+    "TENSE": "@test:pacing.humour_tense_multiplier"
+  },
+  "desired_local_intensity": "@test:score.neutral_feature",
+  "habitation_sensitive": true
+}

@@ -76,6 +76,7 @@ public final class DurablePageStore {
 
     public static void publish(Path target, Page page) throws IOException {
         Files.createDirectories(target.toAbsolutePath().getParent());
+        forceDirectory(target.toAbsolutePath().getParent());
         Path temporary = target.resolveSibling(target.getFileName() + ".tmp-" + UUID.randomUUID());
         try {
             try (FileChannel channel = FileChannel.open(temporary, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
@@ -93,11 +94,7 @@ public final class DurablePageStore {
                     || !reread.checksum().equals(page.checksum()) || !Arrays.equals(reread.payload(), page.payload())) {
                 throw new IOException("Temporary page validation failed");
             }
-            try {
-                Files.move(temporary, target, StandardCopyOption.ATOMIC_MOVE);
-            } catch (AtomicMoveNotSupportedException exception) {
-                Files.move(temporary, target);
-            }
+            Files.move(temporary, target, StandardCopyOption.ATOMIC_MOVE);
             forceDirectory(target.toAbsolutePath().getParent());
         } finally {
             Files.deleteIfExists(temporary);
@@ -173,11 +170,19 @@ public final class DurablePageStore {
         }
     }
 
-    private static void forceDirectory(Path directory) {
-        try (FileChannel channel = FileChannel.open(directory, StandardOpenOption.READ)) {
-            channel.force(true);
-        } catch (IOException | UnsupportedOperationException ignored) {
-            // Directory fsync is best-effort on filesystems that do not expose it.
+    /**
+     * Confirms the directory entry and every ancestor, including newly created mkdir links.
+     * Unsupported directory forcing is a controlled refusal, never a durability ACK.
+     */
+    public static void forceDirectory(Path directory) throws IOException {
+        for (Path current = Objects.requireNonNull(directory, "directory").toAbsolutePath().normalize();
+             current != null; current = current.getParent()) {
+            if (!Files.isDirectory(current)) throw new IOException("Not a durability directory: " + current);
+            try (FileChannel channel = FileChannel.open(current, StandardOpenOption.READ)) {
+                channel.force(true);
+            } catch (IOException | UnsupportedOperationException exception) {
+                throw new IOException("Cannot durably confirm directory: " + current, exception);
+            }
         }
     }
 

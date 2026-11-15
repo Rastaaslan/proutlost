@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "id": "proutlost:camp_short_arc",
+  "content_revision": 1,
+  "calibration": "DEFAULT_FOR_TESTING",
+  "mode": "SHORT_ARC",
+  "scope": "REGION",
+  "entry_state": "CAMP_CHANGED",
+  "states": [
+    "CAMP_CHANGED",
+    "WITNESS_READY",
+    "SHARED_CHOICE",
+    "COMPLETE"
+  ],
+  "planning_horizon": "@test:chain.planning_horizon",
+  "minimum_step_gap_ticks": "@test:chain.step_gap_ticks",
+  "relevance_minimum": "@test:chain.relevance_min",
+  "transitions": [
+    {
+      "id": "proutlost:camp_to_witness",
+      "from": "CAMP_CHANGED",
+      "to": "WITNESS_READY",
+      "on_fact": "proutlost:camp_regrowth_observed",
+      "event_id": "proutlost:parallel_steps",
+      "condition": {
+        "type": "players_present",
+        "minimum": "@test:event.role.one"
+      },
+      "consume_fact_once": true,
+      "settle_state_tag": null
+    },
+    {
+      "id": "proutlost:witness_to_choice",
+      "from": "WITNESS_READY",
+      "to": "SHARED_CHOICE",
+      "on_fact": "proutlost:parallel_steps_observed",
+      "event_id": "proutlost:shared_choice",
+      "condition": {
+        "type": "region_tag",
+        "tag": "proutlost:clearing"
+      },
+      "consume_fact_once": true,
+      "settle_state_tag": null
+    },
+    {
+      "id": "proutlost:choice_to_complete",
+      "from": "SHARED_CHOICE",
+      "to": "COMPLETE",
+      "on_fact": "proutlost:shared_choice_observed",
+      "event_id": null,
+      "condition": {
+        "type": "region_tag",
+        "tag": "proutlost:clearing"
+      },
+      "consume_fact_once": true,
+      "settle_state_tag": "proutlost:remembered_camp"
+    }
+  ],
+  "terminal_states": [
+    "COMPLETE"
+  ],
+  "recovery": "RECOVER"
+}

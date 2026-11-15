@@ -1,0 +1,260 @@
+{
+  "status": "CANDIDATE_BINDINGS_NOT_QUALIFIED",
+  "primitives": {
+    "proutlost:fauna_migrate": {
+      "argument_fields": [
+        "arrival_policy",
+        "cohort_size",
+        "corridor_tag",
+        "species"
+      ],
+      "binding_owner": "J05/J06 via Work; normative ID, no implementation imported"
+    },
+    "proutlost:camp_growth": {
+      "argument_fields": [
+        "anchor_tag",
+        "max_blocks",
+        "recipe"
+      ],
+      "binding_owner": "J05/J06 via Work; normative ID, no implementation imported"
+    },
+    "proutlost:warning": {
+      "argument_fields": [
+        "minimum_lead_ticks",
+        "profile",
+        "role"
+      ],
+      "binding_owner": "J05/J06 via Work; normative ID, no implementation imported"
+    },
+    "proutlost:landslide": {
+      "argument_fields": [
+        "damage_profile",
+        "max_blocks",
+        "recipe"
+      ],
+      "binding_owner": "J05/J06 via Work; normative ID, no implementation imported"
+    },
+    "proutlost:goat_visit": {
+      "argument_fields": [
+        "anchor_tag",
+        "role"
+      ],
+      "binding_owner": "J05/J06 via Work; normative ID, no implementation imported"
+    },
+    "proutlost:local_weather": {
+      "argument_fields": [
+        "profile",
+        "role"
+      ],
+      "binding_owner": "J05/J06 via Work; normative ID, no implementation imported"
+    },
+    "proutlost:target_sound": {
+      "argument_fields": [
+        "radius_blocks",
+        "repeats",
+        "role",
+        "sound",
+        "volume"
+      ],
+      "binding_owner": "J05/J06 via Work; normative ID, no implementation imported"
+    },
+    "proutlost:apparition": {
+      "argument_fields": [
+        "follow_ticks",
+        "max_distance_blocks",
+        "model",
+        "role"
+      ],
+      "binding_owner": "J05/J06 via Work; normative ID, no implementation imported"
+    },
+    "proutlost:trace": {
+      "argument_fields": [
+        "anchor_tag",
+        "persistent",
+        "state_tag"
+      ],
+      "binding_owner": "J05/J06 via Work; normative ID, no implementation imported"
+    },
+    "proutlost:shared_choice": {
+      "argument_fields": [
+        "anchor_tag",
+        "choice_ids",
+        "roles",
+        "timeout_policy"
+      ],
+      "binding_owner": "J05/J06 via Work; normative ID, no implementation imported"
+    }
+  },
+  "event_references": {
+    "proutlost_director:candidate/animal_migration": {
+      "required_capabilities": [
+        "entity.migration_v1",
+        "habitat.corridor_v1"
+      ],
+      "mutation_profile": null,
+      "warning_profile": null,
+      "steps": [
+        {
+          "primitive": "proutlost:fauna_migrate",
+          "references": {
+            "species": "minecraft:sheep",
+            "corridor_tag": "proutlost:fauna_corridor"
+          }
+        }
+      ]
+    },
+    "proutlost_director:candidate/camp_regrowth": {
+      "required_capabilities": [
+        "mutation.plants_v1"
+      ],
+      "mutation_profile": "proutlost:test_camp_plants",
+      "warning_profile": null,
+      "steps": [
+        {
+          "primitive": "proutlost:camp_growth",
+          "references": {
+            "anchor_tag": "proutlost:abandoned_camp",
+            "recipe": "proutlost:test_camp_plants"
+          }
+        }
+      ]
+    },
+    "proutlost_director:candidate/controlled_landslide": {
+      "required_capabilities": [
+        "mutation.terrain_v1",
+        "danger.debris_v1",
+        "warning.readable_v1"
+      ],
+      "mutation_profile": "proutlost:test_bounded_landslide",
+      "warning_profile": "proutlost:test_landslide_warning",
+      "steps": [
+        {
+          "primitive": "proutlost:warning",
+          "references": {
+            "profile": "proutlost:test_landslide_warning"
+          }
+        },
+        {
+          "primitive": "proutlost:landslide",
+          "references": {
+            "recipe": "proutlost:test_bounded_landslide",
+            "damage_profile": "proutlost:test_debris_damage"
+          }
+        }
+      ]
+    },
+    "proutlost_director:candidate/goat_guest": {
+      "required_capabilities": [
+        "entity.goat_v1"
+      ],
+      "mutation_profile": null,
+      "warning_profile": null,
+      "steps": [
+        {
+          "primitive": "proutlost:goat_visit",
+          "references": {
+            "anchor_tag": "proutlost:camp"
+          }
+        }
+      ]
+    },
+    "proutlost_director:candidate/local_mist": {
+      "required_capabilities": [
+        "perception.local_weather_v1"
+      ],
+      "mutation_profile": null,
+      "warning_profile": null,
+      "steps": [
+        {
+          "primitive": "proutlost:local_weather",
+          "references": {
+            "profile": "proutlost:test_mist"
+          }
+        }
+      ]
+    },
+    "proutlost_director:candidate/parallel_steps": {
+      "required_capabilities": [
+        "perception.sound_v1",
+        "perception.silhouette_v1"
+      ],
+      "mutation_profile": null,
+      "warning_profile": null,
+      "steps": [
+        {
+          "primitive": "proutlost:target_sound",
+          "references": {
+            "sound": "minecraft:block.gravel.step"
+          }
+        },
+        {
+          "primitive": "proutlost:apparition",
+          "references": {
+            "model": "proutlost:test_silhouette"
+          }
+        }
+      ]
+    },
+    "proutlost_director:candidate/required_signal": {
+      "required_capabilities": [
+        "anchor.state_v1"
+      ],
+      "mutation_profile": null,
+      "warning_profile": null,
+      "steps": [
+        {
+          "primitive": "proutlost:trace",
+          "references": {
+            "anchor_tag": "proutlost:signal_anchor",
+            "state_tag": "proutlost:signal_revealed"
+          }
+        }
+      ]
+    },
+    "proutlost_director:candidate/safe_micro": {
+      "required_capabilities": [
+        "perception.sound_v1"
+      ],
+      "mutation_profile": null,
+      "warning_profile": null,
+      "steps": [
+        {
+          "primitive": "proutlost:target_sound",
+          "references": {
+            "sound": "minecraft:block.campfire.crackle"
+          }
+        }
+      ]
+    },
+    "proutlost_director:candidate/shared_choice": {
+      "required_capabilities": [
+        "interaction.shared_anchor_v1",
+        "perception.symbol_v1"
+      ],
+      "mutation_profile": null,
+      "warning_profile": null,
+      "steps": [
+        {
+          "primitive": "proutlost:shared_choice",
+          "references": {
+            "anchor_tag": "proutlost:clearing"
+          }
+        }
+      ]
+    }
+  },
+  "definition_id_mapping": {
+    "proutlost:safe_micro": "proutlost_director:candidate/safe_micro",
+    "proutlost:animal_migration": "proutlost_director:candidate/animal_migration",
+    "proutlost:controlled_landslide": "proutlost_director:candidate/controlled_landslide",
+    "proutlost:shared_choice": "proutlost_director:candidate/shared_choice",
+    "proutlost:camp_regrowth": "proutlost_director:candidate/camp_regrowth",
+    "proutlost:parallel_steps": "proutlost_director:candidate/parallel_steps",
+    "proutlost:required_signal": "proutlost_director:candidate/required_signal",
+    "proutlost:goat_guest": "proutlost_director:candidate/goat_guest",
+    "proutlost:local_mist": "proutlost_director:candidate/local_mist",
+    "proutlost:living_scar": "proutlost_director:candidate/living_scar",
+    "proutlost:camp_short_arc": "proutlost_director:candidate/camp_short_arc"
+  },
+  "runtime_manifest": "src/director/resources/data/proutlost_director/director/candidate-manifest.json"
+}

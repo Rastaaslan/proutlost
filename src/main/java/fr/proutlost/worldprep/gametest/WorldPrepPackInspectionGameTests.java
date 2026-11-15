@@ -20,7 +20,8 @@ public final class WorldPrepPackInspectionGameTests {
             var snapshot = new EnvironmentalPackInspector().inspect(helper.getLevel(), Map.of(
                     "minecraft", ContentClassification.ENVIRONMENT_SEMANTIC,
                     "neoforge", ContentClassification.RUNTIME_ONLY,
-                    "proutlost", ContentClassification.ENVIRONMENT_SEMANTIC), List.of(), List.of());
+                    "proutlost", ContentClassification.ENVIRONMENT_SEMANTIC,
+                    "proutlost_director", ContentClassification.RUNTIME_ONLY), List.of(), List.of());
             snapshot.requireClassified();
             if (snapshot.registries().size() != 8 || snapshot.fingerprint().length() != 64) {
                 helper.fail("runtime pack snapshot was incomplete");

@@ -38,3 +38,10 @@ run/
 **/src/generated/**/.cache/
 repo/
 !**/src/**/repo/
+
+# Native NeoForge / local test runtime logs
+logs/
+
+# Python QA tooling caches are local build artifacts, never source inputs.
+__pycache__/
+*.pyc

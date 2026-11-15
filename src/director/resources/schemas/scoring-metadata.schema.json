@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:proutlost:director:scoring-metadata:candidate-1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "definition_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+    },
+    "definition_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "content_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "calibration": {
+      "enum": [
+        "DEFAULT_FOR_TESTING",
+        "APPROVED"
+      ]
+    },
+    "context_affinities": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          {
+            "type": "string",
+            "pattern": "^@test:[a-z0-9_.]+$"
+          }
+        ]
+      }
+    },
+    "region_traits": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "FAMILIAR",
+          "SOCIAL",
+          "WILD",
+          "QUIET",
+          "STRANGE",
+          "ACTIVE",
+          "DAMAGED",
+          "RECOVERING"
+        ]
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          {
+            "type": "string",
+            "pattern": "^@test:[a-z0-9_.]+$"
+          }
+        ]
+      }
+    },
+    "tension_affinities": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "CALM",
+          "UNUSUAL",
+          "TENSE",
+          "EXCEPTIONAL"
+        ]
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          {
+            "type": "string",
+            "pattern": "^@test:[a-z0-9_.]+$"
+          }
+        ]
+      }
+    },
+    "desired_local_intensity": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        {
+          "type": "string",
+          "pattern": "^@test:[a-z0-9_.]+$"
+        }
+      ]
+    },
+    "habitation_sensitive": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "definition_id",
+    "definition_revision",
+    "content_revision",
+    "calibration"
+  ],
+  "additionalProperties": false
+}

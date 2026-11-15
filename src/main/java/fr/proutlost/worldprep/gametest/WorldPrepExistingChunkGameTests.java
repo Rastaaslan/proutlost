@@ -10,6 +10,11 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder("proutlost")
 @PrefixGameTestTemplate(false)
 public final class WorldPrepExistingChunkGameTests {
+    @GameTest(templateNamespace="minecraft",template="village/plains/houses/plains_small_house_1",timeoutTicks=40)
+    public static void pinnedLoadingGraphFitsVerifiedHalo(GameTestHelper helper) {
+        fr.proutlost.worldprep.runtime.ExistingChunkLoader.requirePinnedLoadingGraph();
+        helper.succeed();
+    }
     private static final String TEMPLATE = "village/plains/houses/plains_small_house_1";
 
     @GameTest(templateNamespace="minecraft", template=TEMPLATE, timeoutTicks=40)

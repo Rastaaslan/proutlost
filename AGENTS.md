@@ -12,3 +12,9 @@
 - Director Core must remain mod-agnostic; optional adapters are isolated and semantic. Immersive Portals is outside Director integration scope.
 - Story and season content must be data-driven where practical; do not invent production canon unless the task explicitly authorizes it.
 - Default project-owner diagnostics and reports must respect the MINIMAL / PLAYER-SAFE spoiler policy.
+
+## Current execution
+
+- Continue PLS2-FULLSTACK-P0-005 from the existing fullstack checkpoint. One owner and no concurrent Work.
+- Preserve the retained QA worlds, uncommitted sources and historical evidence. No live deployment without explicit authorization.
+- FULLSTACK_ACCEPTED requires authentic Contra integration, real qualification and required human acceptance; compilation alone never qualifies the CDC.

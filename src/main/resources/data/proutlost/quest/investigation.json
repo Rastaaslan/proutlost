@@ -1,0 +1,186 @@
+{
+  "assetStatus": "ORIGINAL_TEXT_PLACEHOLDERS",
+  "supports": [
+    {
+      "id": "daily_1",
+      "quest": "A1",
+      "siteKind": "OLD_CAMP",
+      "factType": "CAMILLE_DAILY_1",
+      "text": "Ce matin, j’ai réparé le toit et rangé ma tasse bleue. « Encore un tour avant la nuit. » Camille Derval."
+    },
+    {
+      "id": "daily_2",
+      "quest": "A1",
+      "siteKind": "OLD_CAMP",
+      "factType": "CAMILLE_DAILY_2",
+      "text": "J’ai partagé la soupe près du foyer. Demain, je reprendrai la couture de la voile. Camille Derval."
+    },
+    {
+      "id": "signature",
+      "quest": "A1",
+      "siteKind": "OLD_CAMP",
+      "factType": "CAMILLE_SIGNATURE",
+      "text": "Journal de Camille Derval. Née en 1740 ; enfant unique. Je n’ai jamais quitté mon village avant ce voyage."
+    },
+    {
+      "id": "other_camille",
+      "quest": "A2",
+      "siteKind": "ARCHIVE",
+      "factType": "SECOND_CAMILLE",
+      "text": "Registre de 2010 : Camille Derval, née en 1980, a grandi avec ses deux frères. Elle archive des enregistrements et voyage régulièrement depuis l’enfance."
+    },
+    {
+      "id": "other_story_1",
+      "quest": "A3",
+      "siteKind": "OLD_SHELTER",
+      "factType": "OTHER_STORY_1",
+      "text": "Une autre écriture, un autre nom : « Encore un tour avant la nuit. » La tasse bleue repose cette fois dans l’atelier, loin du foyer."
+    },
+    {
+      "id": "other_story_2",
+      "quest": "A3",
+      "siteKind": "ARCHIVE",
+      "factType": "OTHER_STORY_2",
+      "text": "Un autre récit parle d’une voile recousue puis d’une soupe partagée : ces gestes appartiennent ici à deux personnes différentes dans deux lieux distincts."
+    },
+    {
+      "id": "departure_1",
+      "quest": "D2",
+      "siteKind": "ARCHIVE",
+      "factType": "DEPARTURE_STORY_1",
+      "text": "La corde est prête au petit embarcadère. Nous partirons à la première lueur. La page suivante s’arrête avant le départ."
+    },
+    {
+      "id": "departure_2",
+      "quest": "D2",
+      "siteKind": "OLD_SHELTER",
+      "factType": "DEPARTURE_STORY_2",
+      "text": "Les sacs et les balises sont prêts. Demain, nous prendrons le passage. La dernière page décrit à nouveau le repas près du même feu."
+    },
+    {
+      "id": "departure_trace",
+      "quest": "D2",
+      "siteKind": "PASSAGE",
+      "factType": "DEPARTURE_PHYSICAL_TRACE",
+      "text": "Le support préparé conserve corde, sacs et marques orientées vers une sortie."
+    },
+    {
+      "id": "signal_original",
+      "quest": "E2",
+      "siteKind": "TRANSMITTER",
+      "factType": "SIGNAL_ORIGINAL",
+      "text": "ENTENDRE — ICI — PARTIR — AILLEURS"
+    },
+    {
+      "id": "signal_masked",
+      "quest": "E2",
+      "siteKind": "TRANSMITTER",
+      "factType": "SIGNAL_MASKED",
+      "text": "ENTENDRE — ICI — [masqué] — AILLEURS"
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "dates",
+      "quest": "A2",
+      "firstType": "CAMILLE_SIGNATURE",
+      "secondType": "SECOND_CAMILLE",
+      "siteKind": "ARCHIVE",
+      "results": [
+        "CONTRADICTION_1"
+      ],
+      "summary": "Les dates de naissance et les époques apparentes diffèrent."
+    },
+    {
+      "id": "family",
+      "quest": "A2",
+      "firstType": "CAMILLE_SIGNATURE",
+      "secondType": "SECOND_CAMILLE",
+      "siteKind": "ARCHIVE",
+      "results": [
+        "CONTRADICTION_2"
+      ],
+      "summary": "Enfant unique et présence de deux frères sont incompatibles."
+    },
+    {
+      "id": "objects",
+      "quest": "A3",
+      "firstType": "CAMILLE_DAILY_1",
+      "secondType": "OTHER_STORY_1",
+      "siteKind": "OLD_SHELTER",
+      "results": [
+        "RECOMBINATION_1"
+      ],
+      "summary": "Une expression et la tasse bleue réapparaissent ailleurs, sous un autre nom."
+    },
+    {
+      "id": "habits",
+      "quest": "A3",
+      "firstType": "CAMILLE_DAILY_2",
+      "secondType": "OTHER_STORY_2",
+      "siteKind": "ARCHIVE",
+      "results": [
+        "RECOMBINATION_2"
+      ],
+      "summary": "Les mêmes gestes sont réattribués dans plusieurs récits."
+    },
+    {
+      "id": "departures",
+      "quest": "D2",
+      "firstType": "DEPARTURE_STORY_1",
+      "secondType": "DEPARTURE_STORY_2",
+      "siteKind": "PASSAGE",
+      "results": [
+        "INTERRUPTION_COMPARED"
+      ],
+      "summary": "Les deux récits interrompent le départ ou reviennent à un état familier."
+    },
+    {
+      "id": "missing",
+      "quest": "E2",
+      "firstType": "SIGNAL_ORIGINAL",
+      "secondType": "SIGNAL_MASKED",
+      "siteKind": "TRANSMITTER",
+      "results": [
+        "MISSING_PARTIR_COMPARED"
+      ],
+      "summary": "Le concept PARTIR a été masqué dans la seconde version."
+    }
+  ],
+  "ordinaryItems": {
+    "minecraft:stick": "bâton",
+    "minecraft:cobblestone": "pierre",
+    "minecraft:flint": "silex",
+    "minecraft:oak_planks": "planche de chêne",
+    "minecraft:feather": "plume"
+  },
+  "texts": {
+    "campaign.daily_scene.base": "Trois pas près du feu, puis le bruit d’une tasse posée.",
+    "campaign.daily_scene.recent_prefix": " Cette fois, la scène reprend votre trace : ",
+    "campaign.passage.repair": "Conserver le passage et rendre les traces historiques plus lisibles.",
+    "campaign.passage.detour": "Aménager un détour : transformer le secteur et ouvrir une nouvelle exploration.",
+    "campaign.transmission.final": "Alpa… si tu m’entends, on est là. Une porte, des pas dans une pièce. Une autre voix : Alpa est dans le coma. L’archipel et ses habitants appartiennent à son monde intérieur associatif.",
+    "campaign.transmission.filtered": "Fragment court filtré : le signal devient plus lisible et reste stable.",
+    "campaign.transmission.disturbed": "Parasites et pression sonore. Rejoignez le point de repli déjà identifié.",
+    "campaign.transmission.amplified": "Réponse plus longue, traversée de parasites. La transmission est conservée.",
+    "campaign.signal.base": "grave · bref · long",
+    "campaign.signal.extended": " — une composante presque vocale, sans mots intelligibles",
+    "campaign.arrangement.default_item": "objet ordinaire",
+    "vote.D3.consequences": "Réparer : ancien passage et traces conservés. Détour : secteur transformé et nouvelle exploration.",
+    "vote.D3.established": "Les deux options ont été explorées.",
+    "vote.D3.warning": "Certaines conséquences restent inconnues. Après deux égalités avec participation suffisante : tirage auditable.",
+    "vote.F3.consequences": "Réunir : mémoire centralisée. Répartir : mémoires locales. Les deux permettent le réveil.",
+    "vote.F3.established": "Les témoignages collectifs restent conservés.",
+    "vote.F3.warning": "Certaines conséquences restent inconnues. Après deux égalités avec participation suffisante : tirage auditable.",
+    "epilogue.awakening": "Alpa se réveille.",
+    "epilogue.passage_prefix": "Passage : ",
+    "epilogue.not_recorded": "non enregistré",
+    "epilogue.memory_prefix": "Témoignages : ",
+    "epilogue.scar_prefix": "Cicatrice : ",
+    "epilogue.camps_prefix": "Camps : ",
+    "epilogue.places_prefix": "Lieux transformés : ",
+    "epilogue.traces_prefix": "Traces relevées : ",
+    "epilogue.open_ending": "Le devenir des personnages reste ouvert.",
+    "early.examine.observation": "Une fleur gribouillée dont un pétale est carré."
+  }
+}

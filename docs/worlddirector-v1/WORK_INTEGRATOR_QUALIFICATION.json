@@ -1,0 +1,17 @@
+{
+  "gate": "G0_QUALIFIED",
+  "source_digest": "e769c9748318deffa7f81ad5352f4453e26e961ddb76abdbb969cbc1bcfbcbb2",
+  "api_version": "1.0.0",
+  "base_commit": "9d895ecf335f2cc7770f7f89b328c48e5e3173d3",
+  "operator_evidence": "EVIDENCE/G0_OPERATOR_BUNDLE_21.json",
+  "contract_assertions": 69043,
+  "jar": {
+    "path": "/home/damien/world-director-s2-development/source/build/libs/proutlost-0.1.0-director-contracts.jar",
+    "sha256": "5f5343deecbe44dc1507d0331425ea4abeaea7fcc0e849ece90052fa3d5bf1b3",
+    "bytes": 603982,
+    "entries": 506,
+    "testkit_worldprep_platform_probe_excluded": true
+  },
+  "scope": "CONTRACTS_FOUNDATION_ONLY_NOT_FUNCTIONAL_RELEASE",
+  "no_push_or_deploy": true
+}

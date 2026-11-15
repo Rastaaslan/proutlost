@@ -1,0 +1,308 @@
+{
+  "spec_version": "1.0.0",
+  "api_version": "1.0.0",
+  "state": "CANDIDATE_NOT_FROZEN",
+  "gate": "Integrator must verify qualified G0_PASS before launching any J01-J08",
+  "integrator_exclusive": [
+    "src/director/java/fr/proutlost/director/api/**",
+    "src/director/java/fr/proutlost/director/bootstrap/**",
+    "src/director/java/fr/proutlost/director/config/**",
+    "src/directorTest/java/fr/proutlost/director/testkit/**",
+    "src/directorPlatform/**",
+    "build.gradle",
+    "settings.gradle",
+    "gradle/**",
+    "scripts/*director*",
+    "docs/worlddirector-v1/**"
+  ],
+  "jobs": {
+    "J01": {
+      "write": [
+        "src/director/java/fr/proutlost/director/memory/**",
+        "src/director/java/fr/proutlost/director/adapter/neoforge/server/observation/**",
+        "src/directorTest/java/fr/proutlost/director/memory/**",
+        "src/directorTest/java/fr/proutlost/director/adapter/neoforge/server/observation/**"
+      ],
+      "read_only": [
+        "src/director/java/fr/proutlost/director/api/**",
+        "src/director/java/fr/proutlost/director/bootstrap/**",
+        "src/director/java/fr/proutlost/director/config/**",
+        "src/directorTest/java/fr/proutlost/director/testkit/**",
+        "src/directorPlatform/**",
+        "build.gradle",
+        "settings.gradle",
+        "gradle/**",
+        "scripts/*director*",
+        "docs/worlddirector-v1/**"
+      ],
+      "consumed_contracts": [
+        "ObservationPort",
+        "DurableStore",
+        "ClockSource",
+        "DirectorClock",
+        "ObservationContext",
+        "MemoryView"
+      ],
+      "produced_ports_or_dtos": [
+        "MemoryPort",
+        "SnapshotBatch",
+        "Reduction"
+      ],
+      "dependency": "G0 only for isolated development; real integration gates per normative IMPLEMENTATION_PLAN"
+    },
+    "J02": {
+      "write": [
+        "src/director/java/fr/proutlost/director/catalog/**",
+        "src/directorTest/java/fr/proutlost/director/catalog/**",
+        "src/director/resources/data/*/director/**",
+        "src/director/resources/schemas/**",
+        "src/directorTest/resources/catalog/**"
+      ],
+      "read_only": [
+        "src/director/java/fr/proutlost/director/api/**",
+        "src/director/java/fr/proutlost/director/bootstrap/**",
+        "src/director/java/fr/proutlost/director/config/**",
+        "src/directorTest/java/fr/proutlost/director/testkit/**",
+        "src/directorPlatform/**",
+        "build.gradle",
+        "settings.gradle",
+        "gradle/**",
+        "scripts/*director*",
+        "docs/worlddirector-v1/**"
+      ],
+      "consumed_contracts": [
+        "PrimitiveDescriptor",
+        "EventDefinition",
+        "ChainDefinition",
+        "ConfigRegistry"
+      ],
+      "produced_ports_or_dtos": [
+        "CatalogPort",
+        "CatalogSnapshot"
+      ],
+      "dependency": "G0 only for isolated development; real integration gates per normative IMPLEMENTATION_PLAN"
+    },
+    "J03": {
+      "write": [
+        "src/director/java/fr/proutlost/director/engine/**",
+        "src/directorTest/java/fr/proutlost/director/engine/**"
+      ],
+      "read_only": [
+        "src/director/java/fr/proutlost/director/api/**",
+        "src/director/java/fr/proutlost/director/bootstrap/**",
+        "src/director/java/fr/proutlost/director/config/**",
+        "src/directorTest/java/fr/proutlost/director/testkit/**",
+        "src/directorPlatform/**",
+        "build.gradle",
+        "settings.gradle",
+        "gradle/**",
+        "scripts/*director*",
+        "docs/worlddirector-v1/**"
+      ],
+      "consumed_contracts": [
+        "MemoryView",
+        "CatalogPort",
+        "QuestDirectorPort",
+        "AiAdvisorPort",
+        "ClockSource",
+        "DeterministicRandom",
+        "BudgetView"
+      ],
+      "produced_ports_or_dtos": [
+        "DecisionPort",
+        "DecisionProposal",
+        "AuditDecision"
+      ],
+      "dependency": "G0 only for isolated development; real integration gates per normative IMPLEMENTATION_PLAN"
+    },
+    "J04": {
+      "write": [
+        "src/director/java/fr/proutlost/director/persistence/**",
+        "src/director/java/fr/proutlost/director/adapter/neoforge/server/storage/**",
+        "src/directorTest/java/fr/proutlost/director/persistence/**",
+        "src/directorTest/java/fr/proutlost/director/adapter/neoforge/server/storage/**"
+      ],
+      "read_only": [
+        "src/director/java/fr/proutlost/director/api/**",
+        "src/director/java/fr/proutlost/director/bootstrap/**",
+        "src/director/java/fr/proutlost/director/config/**",
+        "src/directorTest/java/fr/proutlost/director/testkit/**",
+        "src/directorPlatform/**",
+        "build.gradle",
+        "settings.gradle",
+        "gradle/**",
+        "scripts/*director*",
+        "docs/worlddirector-v1/**"
+      ],
+      "consumed_contracts": [
+        "DurableBatch",
+        "MutationRecord",
+        "OwnershipRecord",
+        "WorldEffectPort",
+        "CanonicalJsonV1",
+        "CommitPermit.Authority"
+      ],
+      "produced_ports_or_dtos": [
+        "DurableStore",
+        "FactBusPort",
+        "CommitAck"
+      ],
+      "dependency": "G0 only for isolated development; real integration gates per normative IMPLEMENTATION_PLAN"
+    },
+    "J05": {
+      "write": [
+        "src/director/java/fr/proutlost/director/runtime/**",
+        "src/director/java/fr/proutlost/director/adapter/neoforge/server/effects/**",
+        "src/director/java/fr/proutlost/director/adapter/neoforge/server/ownership/**",
+        "src/directorTest/java/fr/proutlost/director/runtime/**",
+        "src/directorTest/java/fr/proutlost/director/adapter/neoforge/server/effects/**",
+        "src/directorTest/java/fr/proutlost/director/adapter/neoforge/server/ownership/**",
+        "src/directorGameTest/java/fr/proutlost/director/runtime/**",
+        "src/directorGameTest/resources/data/proutlost_director/**"
+      ],
+      "read_only": [
+        "src/director/java/fr/proutlost/director/api/**",
+        "src/director/java/fr/proutlost/director/bootstrap/**",
+        "src/director/java/fr/proutlost/director/config/**",
+        "src/directorTest/java/fr/proutlost/director/testkit/**",
+        "src/directorPlatform/**",
+        "build.gradle",
+        "settings.gradle",
+        "gradle/**",
+        "scripts/*director*",
+        "docs/worlddirector-v1/**"
+      ],
+      "consumed_contracts": [
+        "CatalogPort",
+        "DurableStore",
+        "ObservationPort",
+        "ClockSource",
+        "BudgetVector",
+        "PerceptionPort",
+        "CommitPermit"
+      ],
+      "produced_ports_or_dtos": [
+        "AdmissionPort",
+        "WorldEffectPort",
+        "DirectorPrimitive"
+      ],
+      "dependency": "G0 only for isolated development; real integration gates per normative IMPLEMENTATION_PLAN"
+    },
+    "J06": {
+      "write": [
+        "src/director/java/fr/proutlost/director/adapter/neoforge/network/**",
+        "src/director/java/fr/proutlost/director/client/perception/**",
+        "src/directorTest/java/fr/proutlost/director/adapter/neoforge/network/**",
+        "src/directorTest/java/fr/proutlost/director/client/perception/**",
+        "src/director/resources/assets/proutlost_director/textures/perception/**",
+        "src/director/resources/assets/proutlost_director/sounds/perception/**",
+        "src/director/resources/assets/proutlost_director/sounds.json",
+        "src/director/resources/assets/proutlost_director/particles/**"
+      ],
+      "read_only": [
+        "src/director/java/fr/proutlost/director/api/**",
+        "src/director/java/fr/proutlost/director/bootstrap/**",
+        "src/director/java/fr/proutlost/director/config/**",
+        "src/directorTest/java/fr/proutlost/director/testkit/**",
+        "src/directorPlatform/**",
+        "build.gradle",
+        "settings.gradle",
+        "gradle/**",
+        "scripts/*director*",
+        "docs/worlddirector-v1/**"
+      ],
+      "consumed_contracts": [
+        "PerceptionIntent",
+        "SessionIdentity",
+        "PerceptionUpsert",
+        "PerceptionStop",
+        "PerceptionReset",
+        "Capabilities",
+        "PerceptionAck",
+        "RecordObservation",
+        "AnchorInteraction",
+        "AdminSnapshot",
+        "AdminCommandResult",
+        "AdminDelta"
+      ],
+      "produced_ports_or_dtos": [
+        "PerceptionPort"
+      ],
+      "dependency": "G0 only for isolated development; real integration gates per normative IMPLEMENTATION_PLAN"
+    },
+    "J07": {
+      "write": [
+        "src/director/java/fr/proutlost/director/admin/server/**",
+        "src/director/java/fr/proutlost/director/admin/client/**",
+        "src/director/java/fr/proutlost/director/adapter/neoforge/server/commands/**",
+        "src/directorTest/java/fr/proutlost/director/admin/server/**",
+        "src/directorTest/java/fr/proutlost/director/admin/client/**",
+        "src/directorTest/java/fr/proutlost/director/adapter/neoforge/server/commands/**",
+        "src/director/resources/assets/proutlost_director/textures/gui/**",
+        "src/director/resources/assets/proutlost_director/lang/*.json"
+      ],
+      "read_only": [
+        "src/director/java/fr/proutlost/director/api/**",
+        "src/director/java/fr/proutlost/director/bootstrap/**",
+        "src/director/java/fr/proutlost/director/config/**",
+        "src/directorTest/java/fr/proutlost/director/testkit/**",
+        "src/directorPlatform/**",
+        "build.gradle",
+        "settings.gradle",
+        "gradle/**",
+        "scripts/*director*",
+        "docs/worlddirector-v1/**"
+      ],
+      "consumed_contracts": [
+        "AdminPort",
+        "AdminData",
+        "AdminQuery",
+        "AdminCommand",
+        "AdmissionPort"
+      ],
+      "produced_ports_or_dtos": [
+        "AdminPort"
+      ],
+      "dependency": "G0 only for isolated development; real integration gates per normative IMPLEMENTATION_PLAN"
+    },
+    "J08": {
+      "write": [
+        "src/director/java/fr/proutlost/director/integration/quest/**",
+        "src/director/java/fr/proutlost/director/integration/locations/**",
+        "src/director/java/fr/proutlost/director/integration/ai/**",
+        "src/directorTest/java/fr/proutlost/director/integration/quest/**",
+        "src/directorTest/java/fr/proutlost/director/integration/locations/**",
+        "src/directorTest/java/fr/proutlost/director/integration/ai/**"
+      ],
+      "read_only": [
+        "src/director/java/fr/proutlost/director/api/**",
+        "src/director/java/fr/proutlost/director/bootstrap/**",
+        "src/director/java/fr/proutlost/director/config/**",
+        "src/directorTest/java/fr/proutlost/director/testkit/**",
+        "src/directorPlatform/**",
+        "build.gradle",
+        "settings.gradle",
+        "gradle/**",
+        "scripts/*director*",
+        "docs/worlddirector-v1/**"
+      ],
+      "consumed_contracts": [
+        "DirectorEnvelope",
+        "DirectorMessageCodec",
+        "DurableStore",
+        "FactBusPort",
+        "LocationImport",
+        "AiInput",
+        "AiProposal",
+        "AiTransport"
+      ],
+      "produced_ports_or_dtos": [
+        "QuestDirectorPort",
+        "LocationImportPort",
+        "AiAdvisorPort"
+      ],
+      "dependency": "G0 only for isolated development; real integration gates per normative IMPLEMENTATION_PLAN"
+    }
+  },
+  "mod_id": "proutlost_director"
+}

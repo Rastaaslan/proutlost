@@ -1,0 +1,124 @@
+{
+  "source_digest": "e769c9748318deffa7f81ad5352f4453e26e961ddb76abdbb969cbc1bcfbcbb2",
+  "compile": "PASS_JAVA21_DIRECT",
+  "pinned_api_compile": "PASS",
+  "contracts": "PASS",
+  "schema": "PASS",
+  "bootstrap": "PASS",
+  "gradle_local": "FAIL_ENVIRONMENT_BEFORE_PROJECT_CONFIGURATION",
+  "gradle_operator_prior_snapshot": "PASS_REPORTED_BY_WORK: dcb035f5..., 2124 assertions, directorBootstrap/directorJar and compileDirectorPlatformJava; not final-source qualification",
+  "gradle_final_snapshot": "PASS_OPERATOR_EXACT_SOURCE",
+  "gradle_final_task_graph": "PASS_OPERATOR: no compileJava/processResources/generateModMetadata/classes main",
+  "packaging_guard": "PASS",
+  "native": "NOT_RUN",
+  "client": "NOT_RUN",
+  "gametests": "NOT_RUN",
+  "logs": [
+    {
+      "path": "build/director/bootstrap.log",
+      "sha256": "2d16d153bbb298d0207e72bb48f8f4acf191802f8762b80fc186d72e3317fda4",
+      "bytes": 218
+    },
+    {
+      "path": "build/director/compile.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/director/contracts.log",
+      "sha256": "5cf74f19a633329728078350e7314491ffc3e8160741be70aae6ef3466c51fb0",
+      "bytes": 108
+    },
+    {
+      "path": "build/director/gradle-dry-run.log",
+      "sha256": "6a18f21a229a54dd5afb93707446ffb8e46ec4f139985f9f10abb01fe641db77",
+      "bytes": 495
+    },
+    {
+      "path": "build/director/gradle.log",
+      "sha256": "543b8273bdb95b624855f31420b8df1d857e69c7d1758fa8c607bf713649615e",
+      "bytes": 766
+    },
+    {
+      "path": "build/director/packaging.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/director/platform-compile.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/director/schema.log",
+      "sha256": "252f5aea020e2f4eec811b96a704dc90188c5ee2b83fac1cdcb0c1cf7f52ef05",
+      "bytes": 262
+    },
+    {
+      "path": "docs/worlddirector-v1/operator-logs/G0_GRADLE_REVIEW_14_dry_run.log",
+      "sha256": "cc9796ef13885555e812d4bd8a85b3a2d17eac48aea9460e68935a771e9f53fa",
+      "bytes": 1329
+    },
+    {
+      "path": "docs/worlddirector-v1/operator-logs/G0_GRADLE_REVIEW_14_build.log",
+      "sha256": "e896d325f9513118e54fb6e379eab86d75640976e49a55e7f7c8a612054ce1b0",
+      "bytes": 1873
+    },
+    {
+      "path": "build/director/evidence-regression.log",
+      "sha256": "d660987dca212adfbb05ff756c7618e094aaba4793260e2f5483f69088555e7b",
+      "bytes": 127
+    },
+    {
+      "path": "docs/worlddirector-v1/operator-logs/G0_GRADLE_REVIEW_21_dry_run.log",
+      "sha256": "a8cd7a70685428edcca96f340deb81ccf0c0d3fd5780659164566a6cd5d3f2cd",
+      "bytes": 1329
+    },
+    {
+      "path": "docs/worlddirector-v1/operator-logs/G0_GRADLE_REVIEW_21_build.log",
+      "sha256": "daad9a74bee29c289f40ef1b8ef855f91be016bf00e4c69b97b8d4c2139622bb",
+      "bytes": 1873
+    },
+    {
+      "path": "docs/worlddirector-v1/operator-logs/G0_EVIDENCE_REGRESSION_HOST_21.log",
+      "sha256": "d660987dca212adfbb05ff756c7618e094aaba4793260e2f5483f69088555e7b",
+      "bytes": 127
+    }
+  ],
+  "qualification": "SOURCE_READ_ONLY_WORK_INTEGRATION: G0 foundation validated; Work owns commit and G0_PASS",
+  "operator_evidence": {
+    "path": "docs/worlddirector-v1/OPERATOR_GRADLE_EVIDENCE.json",
+    "sha256": "352c637c9013b0067c5664f4d8062c192679dcdaafbadc0ab8ea78c44e36d88a",
+    "source_digest": "e769c9748318deffa7f81ad5352f4453e26e961ddb76abdbb969cbc1bcfbcbb2",
+    "provenance": "Authentic Work bundle supplied through authorized job channel; stdout hashes verified locally",
+    "contract_assertions": 69043,
+    "platform_compile": "UP-TO-DATE (valid cache, operator attested)",
+    "evidence_regression": "PASS_OPERATOR_EXIT_0"
+  },
+  "review17": {
+    "previous_source_digest": "b4196a26d5f798edb9a7aba22a852eec61c6d781eaecdef35b49735936cfd8a3",
+    "contract_assertions": 68942,
+    "commands": "build/director/executions.json",
+    "changes": "Nonnegative TargetSound volume/radius and TargetParticles radius; constructor/codec negative rejection and zero roundtrip fixtures"
+  },
+  "review18": {
+    "previous_source_digest": "dcc13554443fd3cc00f22c86a8f9686be6fa3ac18fc3fadde598c35191d530e2",
+    "contract_assertions": 68950,
+    "commands": "build/director/executions.json",
+    "changes": "Nonnegative Apparition maxDistanceBlocks; constructor/codec negative rejection and zero roundtrip fixtures"
+  },
+  "review20": {
+    "previous_source_digest": "82de69ef8b7aae1153456ee722ae17a42506c5bc7738388b95ea3a46e999e2ea",
+    "contract_assertions": 69043,
+    "commands": "build/director/executions.json",
+    "changes": "Schema shape guards for SharedChoice, EventStep, ChainDefinition and ImportedLocation; isolated constructor/codec mutation fixtures",
+    "jar_sha256": "669400e1198acdf49d34392cdec946dc0e1f8b3f577cbe6ff54a9b30b6e68588"
+  },
+  "review21": {
+    "previous_source_digest": "bed080ee38357b779654f055221ac3ed80a275ae66517ff8261f035bc22a8e57",
+    "contract_assertions": 69043,
+    "commands": "build/director/executions.json",
+    "changes": "Evidence generation rejects additions, removals and edits outside the compiled Java inventory; isolated regression fixture covers all three source roots",
+    "jar_sha256": "7f023597d51a2993ef95d64480c04a2f78c77b602dc660c0866377ada531f499"
+  }
+}

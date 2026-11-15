@@ -28,7 +28,7 @@ sourceSets.main.resources {
 }
 
 repositories {
-    // Add here additional repositories if required by some of the dependencies below.
+    maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' }
 }
 
 base {
@@ -69,7 +69,16 @@ neoForge {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             type = "gameTestServer"
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id + ",minecraft"
+            // Dedicated quest campaign worlds never share progress with targeted fixture tests.
+            if (project.hasProperty('questCampaign')) {
+                systemProperty 'neoforge.enabledGameTestNamespaces', 'cb213campaign'
+                systemProperty 'proutlost.quest.campaignGameTest', 'true'
+                systemProperty 'proutlost.quest.campaignVariant', project.property('questCampaign')
+                systemProperty 'proutlost.quest.restartVerification', project.findProperty('questRestart') ?: 'false'
+                gameDirectory = project.file('build/quest-gradle-' + project.property('questCampaign'))
+            } else {
+                systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id + ",minecraft"
+            }
         }
 
         data {
@@ -195,6 +204,588 @@ idea {
 }
 
 
+def minecraftArtifactsForTests = tasks.named('createMinecraftArtifacts', net.neoforged.nfrtgradle.CreateMinecraftArtifacts)
 tasks.named('test', Test).configure {
     useJUnitPlatform()
+    classpath += files(minecraftArtifactsForTests.flatMap { it.resourcesArtifact })
+    doFirst { systemProperty 'proutlost.forkedRuntimeClasspath', classpath.asPath }
 }
+
+// G0 is an independent pure-Java contract/bootstrap component. No WorldPrep dependency.
+sourceSets {
+    director {
+        java.srcDir 'src/director/java'
+        // Platform APIs only, never main.output / WorldPrep implementation classes.
+        compileClasspath += configurations.compileClasspath
+        runtimeClasspath += configurations.runtimeClasspath
+    }
+    directorTest {
+        java.srcDir 'src/directorTest/java'
+        compileClasspath += sourceSets.director.output + sourceSets.director.compileClasspath
+        runtimeClasspath += sourceSets.director.output + sourceSets.director.runtimeClasspath
+    }
+    directorPlatform {
+        java.srcDir 'src/directorPlatform/java'
+        // Adapter depends on the Director contract; the contract must never
+        // import a Minecraft SavedData or depend back on its adapter.
+        compileClasspath += sourceSets.director.output + sourceSets.director.compileClasspath + configurations.compileClasspath
+        runtimeClasspath += sourceSets.director.output + sourceSets.director.runtimeClasspath
+    }
+}
+// WDQ optional compile-only Director adapter; still two independent JARs.
+sourceSets.main.compileClasspath += sourceSets.director.output + sourceSets.directorPlatform.output
+sourceSets.test.compileClasspath += sourceSets.director.output + sourceSets.directorPlatform.output
+sourceSets.test.runtimeClasspath += sourceSets.director.output + sourceSets.directorPlatform.output
+tasks.register('directorContractTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.testkit.ContractTests'
+    args providers.gradleProperty('directorSpec').getOrElse('build/director-input/spec-1.0.0')
+    jvmArgs '-ea', '-Xmx512m'
+}
+// G5 must check every approved event step, physical provider, and chain
+// reference on every normal contract run, not just in manual JDK21 probes.
+// Diagnostic-only: it never authorizes world mutation or Minecraft startup.
+tasks.register('directorReleaseDiagnosticTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.bootstrap.DirectorReleaseDiagnosticTests'
+    jvmArgs '-ea', '-Xmx128m', '-XX:ActiveProcessorCount=1'
+}
+tasks.named('directorContractTest') {
+    dependsOn tasks.named('directorReleaseDiagnosticTest')
+}
+// J07 administrative actor/security regression was not part of ContractTests.
+// Run it explicitly so typed failures and authority revocation are covered.
+tasks.register('directorAdminServerTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.admin.server.AdminServerTests'
+    jvmArgs '-ea', '-Xmx512m'
+}
+// Exercise the independent J07 runtime, client state, and command grammar
+// instead of silently counting their compilation as a test PASS.
+[
+    directorAdminRuntimeTest: 'fr.proutlost.director.runtime.AdminRuntimeTests',
+    directorAdminClientStateTest: 'fr.proutlost.director.admin.client.AdminClientStateTests',
+    directorAdminCommandTreeTest: 'fr.proutlost.director.adapter.neoforge.server.commands.AdminCommandTreeTests',
+    directorAdminWireFenceTest: 'fr.proutlost.director.adapter.neoforge.network.AdminQueryReplyFenceTests',
+    directorAdminReadCommandTest: 'fr.proutlost.director.admin.server.NativeReadCommandFenceTests',
+    directorAdminActiveWalProjectionTest: 'fr.proutlost.director.admin.server.AdminActiveWalProjectionTests'
+].each { taskName, testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn tasks.named('directorTestClasses')
+        classpath = sourceSets.directorTest.runtimeClasspath
+        mainClass = testClass
+        jvmArgs '-ea', '-Xmx512m'
+    }
+}
+// J08 recovered execution bindings are authorization evidence; never accept
+// malformed WAL facts or partially publish restored indexes.
+tasks.register('directorJ08BindingRestoreSafetyTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.integration.quest.J08BindingRestoreSafetyTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+// Cancellation receipts are replay credentials too: test WAL restoration
+// against fabricated ACK, producer-key/hash, missing target and wrong scope.
+tasks.register('directorJ08CancellationRestoreSafetyTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.integration.quest.J08CancellationRestoreSafetyTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+// WAL duplicates with divergent credentials/state are corruption, not last-writer-wins.
+tasks.register('directorJ08RestoreDuplicateSafetyTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.integration.quest.J08RestoreDuplicateSafetyTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+// Previously J08's real actor scenarios only compiled, they did not execute
+// on the normal contract gate. Pure memory-only tests run safely on Windows.
+tasks.register('directorJ08InMemoryIntegrationTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.integration.quest.J08InMemoryIntegrationTests'
+    jvmArgs '-ea', '-Xmx384m', '-XX:ActiveProcessorCount=1'
+}
+// J01/J04 region/camp pure integration gate against the same compiled
+// API 1.0.2 source set used by the standalone native mod. The legacy
+// pinned API 1.0.1 script is not a valid test runner for this worktree.
+tasks.register('directorMemoryIntegrationTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.memory.MemoryIntegrationTest'
+    args providers.gradleProperty('directorTestProfile').getOrElse(
+        'build/director-input/spec-1.0.0/DEFAULT_FOR_TESTING.json')
+    jvmArgs '-ea', '-Xmx384m', '-XX:ActiveProcessorCount=1'
+}
+// Stage the frozen normative fixtures from the repository, independently of the host OS.
+tasks.register('stageDirectorSpecFixtures', Copy) {
+    from layout.projectDirectory.dir('docs/worlddirector-v1/spec-1.0.0')
+    into layout.buildDirectory.dir('director-input/spec-1.0.0')
+}
+// Fail-closed J03 admission validation is an executed gate, not merely
+// compiled as part of directorTestClasses. It must run on every contract pass.
+tasks.register('directorAdmissionTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.runtime.AdmissionTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+// Exercise J05/J04 actor lifecycle, disaster WAL fences and deferred result
+// integrity on every contract gate; compilation alone is not a test.
+tasks.register('directorRuntimeLifecycleTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.runtime.RuntimeLifecycleTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+// J05 decorative physical ownership and recovery proofs must be checked
+// independently of the large API contract fixture run (pure Java, no world).
+tasks.register('directorDecorativeOwnershipFenceTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.adapter.neoforge.server.effects.DecorativeOwnershipFenceTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+// Weather leases must bind a durable J04 owner snapshot, not just an epoch.
+tasks.register('directorWeatherOwnershipFenceTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.adapter.neoforge.server.effects.WeatherOwnershipFenceTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+// Durable J04 BLOCK owner proofs must fence PRE and real POST generations.
+tasks.register('directorBlockOwnershipFenceTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.adapter.neoforge.server.effects.BlockOwnershipFenceTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+// Navigation may only start from the exact J04-hydrated route, claim, and PRE digest.
+// This is a pure safety test; it does NOT qualify a live animal or its arrival.
+tasks.register('directorFaunaNavigationWalFenceTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.adapter.neoforge.server.effects.FaunaNavigationWalFenceTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+// An animal spawn must bind its exact reserved/present pair to the WAL claim.
+tasks.register('directorFaunaSpawnWalFenceTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.adapter.neoforge.server.effects.FaunaSpawnWalFenceTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+
+// Validate the exact J03->J04 durable ACK against its immutable submitted
+// transaction and boot authority; no synthetic ACK may unlock admission.
+tasks.register('directorDecisionJournalAckFenceTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.bootstrap.DirectorDecisionJournalAckFenceTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=2'
+}
+
+// J04 recovery must accept exactly the refs forced by its durable records;
+// duplicates, omitted refs and favorable unreferenced extras fail closed.
+tasks.register('directorJournalBlobAttestationFenceTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.persistence.JournalBlobAttestationFenceTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+
+tasks.register('directorStabilizationDispatchTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.runtime.StabilizationTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+tasks.named('directorContractTest') {
+    dependsOn tasks.named('directorDecisionJournalAckFenceTest'),
+        tasks.named('directorJournalBlobAttestationFenceTest'),
+        tasks.named('directorStabilizationDispatchTest'),
+        tasks.named('directorDecorativeOwnershipFenceTest'),
+        tasks.named('directorWeatherOwnershipFenceTest'),
+        tasks.named('directorBlockOwnershipFenceTest'),
+        tasks.named('directorFaunaNavigationWalFenceTest'),
+        tasks.named('directorFaunaSpawnWalFenceTest'),
+        tasks.named('stageDirectorSpecFixtures'),
+        tasks.named('directorAdmissionTest'),
+        tasks.named('directorRuntimeLifecycleTest'),
+        tasks.named('directorAdminServerTest'),
+        tasks.named('directorAdminRuntimeTest'),
+        tasks.named('directorAdminClientStateTest'),
+        tasks.named('directorAdminCommandTreeTest'),
+        tasks.named('directorAdminWireFenceTest'),
+        tasks.named('directorAdminReadCommandTest'),
+        tasks.named('directorAdminActiveWalProjectionTest'),
+        tasks.named('directorJ08InMemoryIntegrationTest'),
+        tasks.named('directorJ08CancellationRestoreSafetyTest'),
+        tasks.named('directorJ08RestoreDuplicateSafetyTest')
+}
+tasks.named('directorMemoryIntegrationTest') { dependsOn tasks.named('stageDirectorSpecFixtures') }
+
+tasks.register('directorBootstrap', JavaExec) {
+    dependsOn tasks.named('directorClasses')
+    classpath = sourceSets.director.runtimeClasspath
+    mainClass = 'fr.proutlost.director.bootstrap.DirectorBootstrap'
+    jvmArgs '-Xmx128m'
+}
+// Standalone Director artifact. WorldPrep/main and TEST_ONLY outputs are never inputs.
+def directorVersion = providers.gradleProperty('directorVersion').getOrElse('1.0.0')
+sourceSets.director.resources.setSrcDirs(['src/director/resources'])
+tasks.named('processDirectorResources', ProcessResources).configure {
+    inputs.property('director_version', directorVersion)
+    filesMatching('META-INF/neoforge.mods.toml') { expand(director_version: directorVersion) }
+}
+tasks.register('directorJar', Jar) {
+    dependsOn tasks.named('directorClasses'), tasks.named('directorPlatformClasses')
+    archiveBaseName = 'proutlost-director'
+    archiveVersion = directorVersion
+    archiveClassifier = ''
+    from sourceSets.director.output
+    from sourceSets.directorPlatform.output
+    // A copied Linux QA worktree can carry stale Gradle task history: in
+    // practice a changed compiled AdminCommandState.class was served from
+    // the prior revision's JAR despite successful tests. Repack each time.
+    outputs.upToDateWhen { false }
+    outputs.doNotCacheIf('Never reuse a stale Director release archive', { true })
+    exclude 'fr/proutlost/director/testkit/**'
+    exclude 'fr/proutlost/director/platform/**'
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    manifest { attributes 'Implementation-Title': 'Proutlost World Director S2',
+            'Implementation-Version': directorVersion, 'World-Director-API-Version': '1.0.2' }
+    // Configuration-cache-safe check: read the JAR itself. zipTree is a
+    // Project API and cannot be called from a cached task action.
+    doLast {
+        new java.util.zip.ZipFile(archiveFile.get().asFile).withCloseable { archive ->
+            def entries = java.util.Collections.list(archive.entries())*.name
+            def forbidden = entries.findAll { it.contains('/testkit/') || it.contains('/worldprep/') || it.endsWith('/PinnedApiProbe.class') }
+            if (!forbidden.isEmpty()) throw new GradleException("Non-production content in Director JAR: ${forbidden}")
+            // The archive is the real deliverable, not Gradle's successful
+            // class compilation. Compare EVERY class payload with the
+            // compiled inputs so a copied build cache cannot ship old code.
+            def compiled = new TreeMap<String, byte[]>()
+            source.visit { item ->
+                if (!item.directory && item.relativePath.pathString.endsWith('.class')) {
+                    def relative = item.relativePath.pathString.replace('\\', '/')
+                    if (!relative.startsWith('fr/proutlost/director/testkit/') &&
+                        !relative.startsWith('fr/proutlost/director/platform/')) {
+                        def data = java.nio.file.Files.readAllBytes(item.file.toPath())
+                        if (compiled.putIfAbsent(relative, data) != null)
+                            throw new GradleException("Duplicate Director source class: ${relative}")
+                    }
+                }
+            }
+            def packed = entries.findAll { it.endsWith('.class') }.toSet()
+            if (compiled.keySet() != packed)
+                throw new GradleException("Director JAR class inventory differs from compiled inputs")
+            compiled.each { name, data ->
+                def packedEntry = archive.getEntry(name)
+                def actual = archive.getInputStream(packedEntry).withCloseable { it.readAllBytes() }
+                if (!java.util.Arrays.equals(data, actual))
+                    throw new GradleException("Director JAR stale class bytecode: ${name}")
+            }
+            println "DIRECTOR_JAR_CLASS_PARITY_PASS count=${compiled.size()}"
+        }
+    }
+}
+
+// Native test code is a distinct source set and is never packaged in directorJar.
+sourceSets {
+    directorGameTest {
+        java.setSrcDirs(['src/directorGameTest/java', 'src/directorPlatform/gameTest/java'])
+        resources.setSrcDirs(['src/directorGameTest/resources', 'src/directorPlatform/gameTest/resources'])
+        compileClasspath += sourceSets.director.output + sourceSets.director.compileClasspath + sourceSets.directorPlatform.output + sourceSets.directorPlatform.compileClasspath
+        runtimeClasspath += sourceSets.director.output + sourceSets.director.runtimeClasspath + sourceSets.directorPlatform.output + sourceSets.directorPlatform.runtimeClasspath
+    }
+}
+// Optional provider is compile-only and never shaded into Director. Fullpack
+// stages the separately locked/hash-verified WeatherCore 0.1.2 artifact.
+def weatherCoreLocalJar = providers.gradleProperty('proutlostWeatherCoreJar').orNull
+dependencies {
+    if (weatherCoreLocalJar != null) {
+        def pinned = file(weatherCoreLocalJar)
+        if (!pinned.isFile() || java.security.MessageDigest.getInstance('SHA-256').digest(pinned.bytes).encodeHex().toString() != '6e08ebcf55818a6265cc959be828a04ef25daaeef98c12f0a7c45832bd088655')
+            throw new GradleException('WeatherCore 0.1.2 local artifact pin mismatch')
+        directorPlatformCompileOnly files(pinned)
+        directorGameTestCompileOnly files(pinned)
+    } else {
+        directorPlatformCompileOnly 'maven.modrinth:weathercore:0.1.2'
+        directorGameTestCompileOnly 'maven.modrinth:weathercore:0.1.2'
+    }
+}
+tasks.register('directorWeatherCoreStateTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.adapter.neoforge.server.effects.WeatherCoreLeaseStateTests'
+    jvmArgs '-ea', '-Xmx128m', '-XX:ActiveProcessorCount=1'
+}
+tasks.register('directorWeatherCoreExpiryFenceTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.adapter.neoforge.server.effects.WeatherCoreExpiryPolicyTests'
+    jvmArgs '-ea', '-Xmx128m', '-XX:ActiveProcessorCount=1'
+}
+tasks.register('directorWeatherCoreRegionalStateTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.adapter.neoforge.server.effects.WeatherCoreRegionalStateTests'
+    jvmArgs '-ea', '-Xmx128m', '-XX:ActiveProcessorCount=1'
+}
+tasks.register('directorRegionalWeatherArgsCodecTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.adapter.neoforge.server.effects.RegionalWeatherArgsCodecTests'
+    jvmArgs '-ea', '-Xmx128m', '-XX:ActiveProcessorCount=1'
+}
+neoForge.addModdingDependenciesTo(sourceSets.director)
+neoForge.addModdingDependenciesTo(sourceSets.directorPlatform)
+neoForge.addModdingDependenciesTo(sourceSets.directorGameTest)
+def standaloneDirector = neoForge.mods.create('proutlost_director') {
+    sourceSet(sourceSets.director)
+    sourceSet(sourceSets.directorPlatform)
+    sourceSet(sourceSets.directorGameTest)
+}
+neoForge.runs {
+    directorServer {
+        server()
+        sourceSet = sourceSets.directorPlatform
+        loadedMods = [standaloneDirector]
+        // A dedicated smoke test must never inherit another run's world,
+        // server.properties, J04 WAL, or restored player identity.
+        def labId = providers.gradleProperty('directorLabServerId').getOrElse('')
+        if (!labId.isEmpty() && !(labId ==~ /[a-z0-9-]{1,32}/))
+            throw new GradleException('unsafe isolated Director server lab id')
+        gameDirectory = layout.buildDirectory.dir(
+            labId.isEmpty() ? 'director-runs/server'
+                : 'director-runs/server-' + labId)
+        def durableLab = providers.gradleProperty('directorNativeServerLab')
+            .getOrElse('false').equalsIgnoreCase('true')
+        if (durableLab && labId.isEmpty())
+            throw new GradleException('durable J04 lab requires isolated server id')
+        if (durableLab)
+            jvmArgument '-Dproutlost.director.nativeLab=true'
+        programArgument '--nogui'
+        jvmArgument '-Xmx3G'
+        jvmArgument '-XX:ActiveProcessorCount=2'
+        systemProperty 'neoforge.enabledGameTestNamespaces', 'proutlost_director'
+        logLevel = org.slf4j.event.Level.INFO
+    }
+    directorClient {
+        client()
+        sourceSet = sourceSets.directorPlatform
+        loadedMods = [standaloneDirector]
+        gameDirectory = layout.buildDirectory.dir('director-runs/client')
+        jvmArgument '-Xmx3G'
+        jvmArgument '-XX:ActiveProcessorCount=2'
+        logLevel = org.slf4j.event.Level.INFO
+    }
+    directorGameTestServer {
+        type = 'gameTestServer'
+        sourceSet = sourceSets.directorGameTest
+        loadedMods = [standaloneDirector]
+        jvmArgument '-Dproutlost.director.nativeLab=true'
+        jvmArgument '-Dproutlost.director.nativeGameTests=true'
+        // Isolate the WHOLE SavedData world together with its J04 WAL.
+        // Reusing one world while rotating only the WAL is correctly
+        // refused by DirectorStorageIdentityGate.
+        def runId = providers.gradleProperty('directorTestRunId').getOrElse('')
+        if (!runId.isEmpty() && !(runId ==~ /[a-z0-9-]{1,32}/))
+            throw new GradleException('unsafe standalone GameTest run id')
+        gameDirectory = layout.buildDirectory.dir(
+            runId.isEmpty() ? 'director-runs/gametest'
+                : 'director-runs/gametest-' + runId)
+        jvmArgument '-Xmx3G'
+        jvmArgument '-XX:ActiveProcessorCount=2'
+        // NeoForge filters generated TestFunctions by their structure namespace.
+        def weatherCycleOnly = providers.gradleProperty('directorWeatherCycleOnly')
+            .getOrElse('false').equalsIgnoreCase('true')
+        def fireProviderOnly = providers.gradleProperty('directorFireProviderOnly')
+            .getOrElse('false').equalsIgnoreCase('true')
+        if (weatherCycleOnly && fireProviderOnly)
+            throw new GradleException('select one isolated native GameTest namespace')
+        systemProperty 'neoforge.enabledGameTestNamespaces',
+            fireProviderOnly ? 'proutlost_director_fire_provider' :
+                weatherCycleOnly ? 'proutlost_director_weather_cycle' : 'proutlost_director'
+        if (weatherCycleOnly)
+            systemProperty 'proutlost.director.nativeWeatherCycleGameTest', 'true'
+        if (fireProviderOnly) {
+            systemProperty 'proutlost.director.nativeFireProviderGameTest', 'true'
+            systemProperty 'proutlost.director.nativeFireProviderRecoveryOnly',
+                providers.gradleProperty('directorFireProviderRecoveryOnly').getOrElse('false')
+            systemProperty 'proutlost.director.nativeFireProviderPartialRecovery',
+                providers.gradleProperty('directorFireProviderPartialRecovery').getOrElse('false')
+            def partialFireEvent = providers.gradleProperty('directorFireProviderPartialEvent').getOrElse('')
+            if (!partialFireEvent.isEmpty())
+                systemProperty 'proutlost.director.nativeFireProviderPartialEvent', partialFireEvent
+            def fireFixture = providers.gradleProperty('directorFireProviderFixture').getOrElse('')
+            if (!fireFixture.isEmpty())
+                systemProperty 'proutlost.director.nativeFireProviderFixture', fireFixture
+        }
+        logLevel = org.slf4j.event.Level.INFO
+    }
+}
+
+// Enforce independent Director task graph, including operator --dry-run verification.
+gradle.taskGraph.whenReady { graph ->
+    def requested = gradle.startParameter.taskNames.collect { it.tokenize(':').last() }
+    def isolated = ['directorContractTest', 'directorBootstrap', 'directorJar', 'compileDirectorJava', 'compileDirectorPlatformJava', 'compileDirectorGameTestJava', 'runDirectorServer', 'runDirectorClient', 'runDirectorGameTestServer']
+    if (!requested.isEmpty() && requested.every { isolated.contains(it) || it.startsWith('director') || it.startsWith('compileDirector') || it.startsWith('processDirector') || it.startsWith('runDirector') }) {
+        def forbidden = ['compileJava', 'processResources', 'generateModMetadata', 'classes']
+        def leaked = graph.allTasks.findAll { it.project == project && forbidden.contains(it.name) }
+        if (!leaked.isEmpty()) throw new GradleException("Director task graph includes main/WorldPrep tasks: ${leaked*.path}")
+    }
+}
+
+// Pure catalogue gate; consumes only the independent Director source sets.
+tasks.register('directorCatalogTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.catalog.CatalogTests'
+    workingDir = project.projectDir
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+
+// J06 transport tests are intentionally a separate executable gate: the
+// 69,923 ContractTests assertions do NOT implicitly run NetworkTests. This
+// catches authentication/rate-fence regressions in the real native adapter's
+// transport dependency without loading or mutating a Minecraft world.
+tasks.register('directorNetworkTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.adapter.neoforge.network.NetworkTests'
+    workingDir = project.projectDir
+    jvmArgs '-ea', '-Xmx384m', '-XX:ActiveProcessorCount=1'
+}
+
+// J02 packaged candidate and scoring publication are separate executed gates.
+[directorCatalogContentTest: 'fr.proutlost.director.catalog.RuntimeCandidateTests',
+ directorCatalogScoringTest: 'fr.proutlost.director.catalog.ScoringMetadataTests'].each { taskName, testMain ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn tasks.named('directorTestClasses')
+        classpath = sourceSets.directorTest.runtimeClasspath
+        mainClass = testMain
+        workingDir = project.projectDir
+        jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+    }
+}
+
+// P14 targeted chain, J08 and durable consumer regressions.
+// Core-only test mains; no Minecraft launch or approval is implied by these tasks.
+[
+    directorChainConditionKnowledgeTest: 'fr.proutlost.director.runtime.ChainConditionKnowledgeTests',
+    directorChainDispatchRecoveryAbortTest: 'fr.proutlost.director.runtime.ChainDispatchRecoveryAbortTests',
+    directorJ08ScheduledAggregateRestoreTest: 'fr.proutlost.director.integration.quest.J08ScheduledAggregateRestoreTests'
+].each { taskName, testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn tasks.named('directorTestClasses')
+        classpath = sourceSets.directorTest.runtimeClasspath
+        mainClass = testClass
+        workingDir = project.projectDir
+        jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+    }
+}
+// This test creates a real JournalStore, forces WAL, closes and reopens the
+// SAME private pure-test directory. Run on actual Linux FS, never Windows.
+tasks.register('directorJournalConsumerCursorRecoveryTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.persistence.JournalConsumerCursorRecoveryTests'
+    workingDir = project.projectDir
+    def cursorRecoveryOutput = providers.gradleProperty('directorP14ConsumerCursorOutput').orNull
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+    doFirst {
+        if (!System.getProperty('os.name').toLowerCase(java.util.Locale.ROOT).contains('linux'))
+            throw new GradleException('Consumer cursor real fsync/reopen test requires actual Linux FS')
+        def output = cursorRecoveryOutput
+        if (output == null || !new File(output).isAbsolute() || new File(output).exists())
+            throw new GradleException('Pass a NEW absolute -PdirectorP14ConsumerCursorOutput directory')
+        setArgs([output])
+        println('P14_CONSUMER_CURSOR_LINUX_FSYNC_START output=' + output)
+    }
+}
+
+// Full D0 admission uses the real existing J04 implementation in disposable test-only stores.
+tasks.register('directorPhysicalCatalogJournalAdmissionTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.persistence.PhysicalCatalogJournalAdmissionTests'
+    maxHeapSize = '512m'
+    jvmArgs '-ea', '-XX:ActiveProcessorCount=1'
+}
+
+tasks.register('directorWeatherCoreRegionalWitnessTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.adapter.neoforge.server.effects.WeatherCoreRegionalWitnessTests'
+    jvmArgs '-ea', '-Xmx128m', '-XX:ActiveProcessorCount=1'
+}
+
+tasks.register('directorRegionalWeatherJournalTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.persistence.RegionalWeatherJournalTests'
+    jvmArgs '-ea', '-Xmx512m', '-XX:ActiveProcessorCount=1'
+}
+
+tasks.register('directorPhysicalEventRetentionTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.persistence.PhysicalEventRetentionTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+
+tasks.register('directorGlobalReservationBorrowTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.runtime.GlobalReservationBorrowTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+
+tasks.register('directorPhysicalResourceCapacityTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.runtime.PhysicalResourceCapacityTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+
+tasks.register('directorRegionalWeatherScopeIdentityTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.runtime.RegionalWeatherScopeIdentityTests'
+    jvmArgs '-ea', '-Xmx128m', '-XX:ActiveProcessorCount=1'
+}
+
+tasks.register('directorMetadataAppendAcknowledgementTest', JavaExec) {
+ dependsOn tasks.named('directorTestClasses')
+ classpath = sourceSets.directorTest.runtimeClasspath
+ mainClass = 'fr.proutlost.director.runtime.MetadataAppendAcknowledgementTests'
+ jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+
+tasks.register('directorWeatherRecoveryRoutingTest', JavaExec) {
+ dependsOn tasks.named('directorTestClasses')
+ classpath = sourceSets.directorTest.runtimeClasspath
+ mainClass = 'fr.proutlost.director.runtime.WeatherRecoveryRoutingTests'
+ jvmArgs '-ea', '-Xmx128m', '-XX:ActiveProcessorCount=1'
+}
+
+tasks.register('directorWeatherEventCompletionTest', JavaExec) {
+ dependsOn tasks.named('directorTestClasses')
+ classpath = sourceSets.directorTest.runtimeClasspath
+ mainClass = 'fr.proutlost.director.runtime.WeatherEventCompletionTests'
+ jvmArgs '-ea', '-Xmx128m', '-XX:ActiveProcessorCount=1'
+}
+
+ tasks.register('directorObservedWeatherArgumentsTest', JavaExec) {
+  dependsOn tasks.named('directorTestClasses')
+  classpath = sourceSets.directorTest.runtimeClasspath
+  mainClass = 'fr.proutlost.director.runtime.ObservedWeatherArgumentsTests'
+ }

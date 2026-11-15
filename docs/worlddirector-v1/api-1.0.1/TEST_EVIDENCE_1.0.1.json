@@ -1,0 +1,182 @@
+{
+  "source_digest": "c94f65e6e3618a96498588e9995818673955169e1ac914e74be57e5133e12b5b",
+  "command": "python3 scripts/test-director.py --platform",
+  "checks": [
+    {
+      "name": "compile",
+      "exit_code": 0,
+      "log": "docs/worlddirector-v1/api-1.0.1/logs/compile.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "command": [
+        "nice",
+        "-n",
+        "19",
+        "ionice",
+        "-c",
+        "3",
+        "javac",
+        "-J-Xmx1g",
+        "--release",
+        "21",
+        "-Xlint:all",
+        "-Werror",
+        "-d",
+        "/var/lib/codexbridge/worktrees/CB-202/build/director/classes",
+        "@/var/lib/codexbridge/worktrees/CB-202/build/director/sources.txt"
+      ]
+    },
+    {
+      "name": "contracts",
+      "exit_code": 0,
+      "log": "docs/worlddirector-v1/api-1.0.1/logs/contracts.log",
+      "log_sha256": "6cc25c948c98b42c911884029e681b6b6599a47dd446716acfcd138650c23f31",
+      "command": [
+        "nice",
+        "-n",
+        "19",
+        "ionice",
+        "-c",
+        "3",
+        "java",
+        "-Xmx512m",
+        "-ea",
+        "-cp",
+        "/var/lib/codexbridge/worktrees/CB-202/build/director/classes",
+        "fr.proutlost.director.testkit.ContractTests",
+        "/var/lib/codexbridge/worktrees/CB-202/build/director-input/spec-1.0.0"
+      ]
+    },
+    {
+      "name": "packaging",
+      "exit_code": 0,
+      "log": "docs/worlddirector-v1/api-1.0.1/logs/packaging.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "command": [
+        "nice",
+        "-n",
+        "19",
+        "ionice",
+        "-c",
+        "3",
+        "jar",
+        "--create",
+        "--file",
+        "/var/lib/codexbridge/worktrees/CB-202/build/director/director-contracts.jar",
+        "-C",
+        "/var/lib/codexbridge/worktrees/CB-202/build/director/jar-input",
+        "."
+      ]
+    },
+    {
+      "name": "bootstrap",
+      "exit_code": 0,
+      "log": "docs/worlddirector-v1/api-1.0.1/logs/bootstrap.log",
+      "log_sha256": "aa668d67aabc348ec6558e9ad3bf8488979e2ff6dc2d3e35d173e33733551454",
+      "command": [
+        "nice",
+        "-n",
+        "19",
+        "ionice",
+        "-c",
+        "3",
+        "java",
+        "-Xmx128m",
+        "-cp",
+        "/var/lib/codexbridge/worktrees/CB-202/build/director/classes",
+        "fr.proutlost.director.bootstrap.DirectorBootstrap"
+      ]
+    },
+    {
+      "name": "platform-compile",
+      "exit_code": 0,
+      "log": "docs/worlddirector-v1/api-1.0.1/logs/platform-compile.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "command": [
+        "exact invocation in build/director/API_1.0.1_EXECUTIONS_c94f65e6e3618a96498588e9995818673955169e1ac914e74be57e5133e12b5b.json",
+        "reproduce with python3 scripts/test-director.py --platform"
+      ]
+    }
+  ],
+  "assertions": 69339,
+  "schema_check": {
+    "command": "nice -n 19 ionice -c 3 python3 scripts/verify-director-spec.py",
+    "status": "PASS",
+    "authentic_files": 40,
+    "schema_count": 5,
+    "calibration_keys": 231
+  },
+  "regression_check": {
+    "command": "nice -n 19 ionice -c 3 python3 scripts/test-director-evidence.py",
+    "status": "PASS"
+  },
+  "inventory_check": {
+    "command": "python3 scripts/director-evidence.py --verify-only",
+    "status": "PASS"
+  },
+  "diff_check": {
+    "command": "git diff --check",
+    "status": "PASS"
+  },
+  "logs": [
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/bootstrap.log",
+      "sha256": "aa668d67aabc348ec6558e9ad3bf8488979e2ff6dc2d3e35d173e33733551454",
+      "bytes": 218
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/compile.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/contracts.log",
+      "sha256": "6cc25c948c98b42c911884029e681b6b6599a47dd446716acfcd138650c23f31",
+      "bytes": 108
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/evidence-regression.log",
+      "sha256": "d660987dca212adfbb05ff756c7618e094aaba4793260e2f5483f69088555e7b",
+      "bytes": 127
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/inventory.log",
+      "sha256": "7ef02b9af86d4aa386e4f855be7238d11c7743d857c906817bac9550c8440fd1",
+      "bytes": 56
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/packaging.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/platform-compile.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/schema.log",
+      "sha256": "252f5aea020e2f4eec811b96a704dc90188c5ee2b83fac1cdcb0c1cf7f52ef05",
+      "bytes": 262
+    }
+  ],
+  "exact_execution_attachment": {
+    "path": "build/director/API_1.0.1_EXECUTIONS_c94f65e6e3618a96498588e9995818673955169e1ac914e74be57e5133e12b5b.json",
+    "sha256": "e719924e6e4ba26da0d02d7e5909d09c53fcb3592e17b6e42796ae22ae95fbc1",
+    "bytes": 100277
+  },
+  "pinned_dependencies_attachment": {
+    "path": "build/director/platform-dependencies.json",
+    "sha256": "fae119f57c477765b956eaf824b39348dd1efa4a69082a0456f1b3a73d2d9c61",
+    "bytes": 37635
+  },
+  "native": "NOT_RUN",
+  "client": "NOT_RUN",
+  "gametests": "NOT_RUN",
+  "gradle_1_0_1": "NOT_RUN_WORK_QUALIFICATION_PENDING",
+  "historical_g0_unchanged": true,
+  "contracts_jar": {
+    "path": "build/director/API_1.0.1_CONTRACTS_c94f65e6e3618a96498588e9995818673955169e1ac914e74be57e5133e12b5b.jar",
+    "sha256": "a670ff5ea985882a6c90f4fc30aca5d898e7af82661e154df1255e21047f2259",
+    "bytes": 609788
+  }
+}

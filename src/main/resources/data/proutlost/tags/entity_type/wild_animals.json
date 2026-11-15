@@ -1,1 +1,47 @@
-{"replace":false,"values":[]}
+{
+  "replace": false,
+  "values": [
+    "minecraft:fox",
+    "minecraft:wolf",
+    "minecraft:rabbit",
+    "minecraft:bee",
+    "minecraft:polar_bear",
+    "minecraft:dolphin",
+    {
+      "id": "reanimal:capybara",
+      "required": false
+    },
+    {
+      "id": "reanimal:hedgehog",
+      "required": false
+    },
+    {
+      "id": "reanimal:crocodile",
+      "required": false
+    },
+    {
+      "id": "reanimal:butterfly",
+      "required": false
+    },
+    {
+      "id": "reanimal:dragonfly",
+      "required": false
+    },
+    {
+      "id": "reanimal:seal",
+      "required": false
+    },
+    {
+      "id": "reanimal:jellyfish",
+      "required": false
+    },
+    {
+      "id": "reanimal:sea_urchin",
+      "required": false
+    },
+    {
+      "id": "reanimal:starfish",
+      "required": false
+    }
+  ]
+}
