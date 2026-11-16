@@ -150,7 +150,7 @@ public final class QuestCore {
             .noneMatch(q -> q.observations().contains(fact.factType()) && (state(q.questId()) != State.LOCKED
                 || fact.playerScope().stream().anyMatch(p -> state(q.questId(),p)!=State.LOCKED)
                 || groups.entrySet().stream().anyMatch(e -> e.getValue().equals(fact.groupScope())&&state(q.questId(),e.getKey())!=State.LOCKED)
-                || (q.visibilityScope().equals("PERSONAL")&&fact.playerScope().isEmpty()&&fact.groupScope().isEmpty()
+                || ((q.visibilityScope().equals("PERSONAL")||q.visibilityScope().equals("GROUP"))&&fact.playerScope().isEmpty()&&fact.groupScope().isEmpty()
                     &&scopedPlayers().stream().anyMatch(p->state(q.questId(),p)!=State.LOCKED))))) return;
         var old = facts.putIfAbsent(fact.factId(), fact);
         if (old != null && !old.equals(fact)) throw new IllegalArgumentException("Fact identity collision");

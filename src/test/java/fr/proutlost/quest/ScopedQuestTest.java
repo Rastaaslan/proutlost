@@ -76,6 +76,49 @@ class ScopedQuestTest {
         assertEquals(Set.of(A),restored.factById(allowed.factId()).orElseThrow().playerScope());
         assertEquals(QuestCore.State.LOCKED,restored.state("personal",B));
     }
+    @Test void publicHybridFactReachesAccessibleGroupConsumersAndSurvivesRestore() {
+        var defs=List.of(quest("group","GROUP"));var cal=new QuestCore.Calibration(2,.6,0);
+        var c=new QuestCore(defs,cal);c.assignGroup(A,"one");c.assignGroup(B,"one");c.assignGroup(C,"two");
+        var f=new WorldFact("public_group","READ","qa_world",Set.of(),"","r","l",1,Map.of(),true,WorldFact.Category.HYBRID);
+        c.accept(f);assertEquals(f,c.factById(f.factId()).orElseThrow());c.evaluate(1);
+        for(var player:List.of(A,B,C))assertEquals(QuestCore.State.RESOLVED,c.state("group",player));
+        var restored=QuestCore.restore(defs,cal,c.save());
+        assertEquals(f,restored.factById(f.factId()).orElseThrow());
+        for(var player:List.of(A,B,C))assertEquals(c.journal(player),restored.journal(player));
+    }
+    @Test void publicHybridFactNeedsAnAssignedGroupConsumer() {
+        var c=new QuestCore(List.of(quest("group","GROUP")),new QuestCore.Calibration(2,.6,0));c.active(A,0);
+        var f=new WorldFact("ungrouped","READ","qa_world",Set.of(),"","r","l",1,Map.of(),true,WorldFact.Category.HYBRID);
+        c.accept(f);assertTrue(c.factById(f.factId()).isEmpty());assertEquals(QuestCore.State.LOCKED,c.state("group",A));
+    }
+    @Test void publicHybridFactCannotBypassGroupPrerequisitesOrReadiness() {
+        var before=new QuestDefinition("before","before","before",Set.of(),Set.of(),"SERVER",Set.of("QA_UNLOCK"),
+            List.of(Set.of("QA_UNLOCK")),"QA","QA action","QA result",Set.of(),"QA",false);
+        var group=new QuestDefinition("group","group","group",Set.of("before"),Set.of(),"GROUP",Set.of("READ"),
+            List.of(Set.of("READ")),"QA","QA action","QA result",Set.of(),"QA",false);
+        var c=new QuestCore(List.of(before,group),new QuestCore.Calibration(2,.6,0));c.assignGroup(A,"one");
+        var f=new WorldFact("gated_group","READ","qa_world",Set.of(),"","r","l",1,Map.of(),true,WorldFact.Category.HYBRID);
+        c.accept(f);assertTrue(c.factById(f.factId()).isEmpty());
+        c.accept(new WorldFact("unlock_group","QA_UNLOCK","qa_world",Set.of(),"","r","l",2,Map.of(),true,WorldFact.Category.NARRATIVE));c.evaluate(2);
+        c.actionReadiness(id->!id.equals("group"));c.accept(f);assertTrue(c.factById(f.factId()).isEmpty());
+        c.actionReadiness(id->true);c.accept(f);c.evaluate(3);
+        assertEquals(QuestCore.State.RESOLVED,c.state("group",A));
+    }
+    @Test void publicGroupFallbackDoesNotAdmitAnInaccessibleAddressedGroup() {
+        var before=new QuestDefinition("before","before","before",Set.of(),Set.of(),"GROUP",Set.of("QA_UNLOCK"),
+            List.of(Set.of("QA_UNLOCK")),"QA","QA action","QA result",Set.of(),"QA",false);
+        var group=new QuestDefinition("group","group","group",Set.of("before"),Set.of(),"GROUP",Set.of("READ"),
+            List.of(Set.of("READ")),"QA","QA action","QA result",Set.of(),"QA",false);
+        var defs=List.of(before,group);var cal=new QuestCore.Calibration(2,.6,0);var c=new QuestCore(defs,cal);
+        c.assignGroup(A,"one");c.assignGroup(C,"two");c.active(A,0);c.active(C,0);
+        c.accept(new WorldFact("unlock_one","QA_UNLOCK","qa_world",Set.of(),"one","r","l",0,Map.of(),true,WorldFact.Category.NARRATIVE));c.evaluate(0);
+        var wrong=new WorldFact("wrong_group","READ","qa_world",Set.of(),"two","r","l",1,Map.of(),true,WorldFact.Category.HYBRID);
+        c.accept(wrong);assertTrue(c.factById(wrong.factId()).isEmpty());
+        var allowed=new WorldFact("allowed_group","READ","qa_world",Set.of(),"one","r","l",1,Map.of(),true,WorldFact.Category.HYBRID);
+        c.accept(allowed);c.evaluate(1);assertEquals(QuestCore.State.RESOLVED,c.state("group",A));assertEquals(QuestCore.State.LOCKED,c.state("group",C));
+        var restored=QuestCore.restore(defs,cal,c.save());
+        assertEquals("one",restored.factById(allowed.factId()).orElseThrow().groupScope());assertEquals(QuestCore.State.LOCKED,restored.state("group",C));
+    }
     @Test void newcomerCatchUpNeverRepublishesUnsharedObservation() {
         var c=core();resolve(c,"P0",0);c.observe(new QuestCore.Observation("private",A,"CAMP_CLAIMED","hidden","camp",0));
         assertEquals(1,c.catchUp(C).size());assertTrue(c.catchUp(C).getFirst().evidence().isEmpty());assertFalse(c.catchUp(C).toString().contains("hidden"));
