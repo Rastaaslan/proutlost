@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:wolf",
+    "minecraft:bee",
+    "minecraft:polar_bear",
+    {
+      "id": "reanimal:hedgehog",
+      "required": false
+    }
+  ]
+}

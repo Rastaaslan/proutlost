@@ -1,0 +1,38 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="proutlost_p008_production_qa"
+version="1.0.0-TEST_ONLY"
+displayName="P008 ProductionRuntime Observer TEST_ONLY"
+displayTest="IGNORE_ALL_VERSION"
+description="""Dedicated-server-only observational QA addon. Optional to clients: no payload channel or client capability. Requires the explicit private marked QA world. Reads completed Director actor-budget frames and previous vanilla ticks separately. No worker/whole-server CPU attribution, effect authority or operator approval. Requires the separate DECLARED_SYNTHETIC factory; nativeLab remains false."""
+
+[[dependencies.proutlost_p008_production_qa]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.248]"
+ordering="NONE"
+side="SERVER"
+
+[[dependencies.proutlost_p008_production_qa]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1]"
+ordering="NONE"
+side="SERVER"
+
+[[dependencies.proutlost_p008_production_qa]]
+modId="proutlost"
+type="required"
+versionRange="[0.1.0]"
+ordering="AFTER"
+side="SERVER"
+
+[[dependencies.proutlost_p008_production_qa]]
+modId="proutlost_director"
+type="required"
+versionRange="[1.0.0]"
+ordering="AFTER"
+side="SERVER"

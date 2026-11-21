@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "J06 TEST_ONLY observation row v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "provider_mode",
+    "run_id",
+    "client_slot",
+    "process",
+    "client_uuid",
+    "expected_client_uuid",
+    "peer_client_uuid",
+    "player_present",
+    "dimension",
+    "frame",
+    "render_pass",
+    "observed_nanos",
+    "kind",
+    "phase",
+    "admission_nonce",
+    "target_client_uuid",
+    "header",
+    "asset_id",
+    "asset_hash",
+    "current_session",
+    "data"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "provider_mode": {
+      "const": "TEST_ONLY"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "client_slot": {
+      "enum": [
+        "A",
+        "B"
+      ]
+    },
+    "process": {
+      "type": "object",
+      "required": [
+        "java_pid",
+        "process_started_utc",
+        "os",
+        "windows_session_id",
+        "windows_session_name"
+      ]
+    },
+    "client_uuid": {
+      "type": "string"
+    },
+    "expected_client_uuid": {
+      "type": "string"
+    },
+    "peer_client_uuid": {
+      "type": "string"
+    },
+    "player_present": {
+      "type": "boolean"
+    },
+    "dimension": {
+      "type": "string"
+    },
+    "frame": {
+      "type": "string"
+    },
+    "render_pass": {
+      "type": "string"
+    },
+    "observed_nanos": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "ARM",
+        "RECEIVE",
+        "DISPATCH",
+        "PERCEPTION_ACK",
+        "EFFECT",
+        "CLEANUP",
+        "FRAMEBUFFER",
+        "AUDIO_CHANNEL",
+        "AUDIO_SCAN"
+      ]
+    },
+    "phase": {
+      "type": "string"
+    },
+    "admission_nonce": {
+      "type": "string"
+    },
+    "target_client_uuid": {
+      "type": "string"
+    },
+    "header": {
+      "type": "object"
+    },
+    "asset_id": {
+      "type": "string"
+    },
+    "asset_hash": {
+      "type": "string"
+    },
+    "current_session": {
+      "type": [
+        "object",
+        "string"
+      ]
+    },
+    "data": {
+      "type": "object"
+    },
+    "capture_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "png": {
+      "type": "string"
+    },
+    "png_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "world_rendered_this_frame": {
+      "type": "boolean"
+    },
+    "sample_id": {
+      "type": "string",
+      "format": "uuid"
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "FRAMEBUFFER"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "capture_id",
+          "png",
+          "png_sha256",
+          "width",
+          "height",
+          "world_rendered_this_frame"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "AUDIO_CHANNEL"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "sample_id"
+        ]
+      }
+    }
+  ]
+}

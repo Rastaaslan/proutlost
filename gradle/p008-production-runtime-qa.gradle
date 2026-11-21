@@ -1,0 +1,75 @@
+// Explicit installed-QA addon only. No registration in neoForge.mods, no input
+// to jar/directorJar, and no effect on normal runs unless operator installs it.
+sourceSets {
+    p008ProductionRuntimeQa {
+        java.setSrcDirs(['src/p008ProductionRuntimeQa/java'])
+        resources.setSrcDirs(['src/p008ProductionRuntimeQa/resources'])
+        compileClasspath += sourceSets.director.output + sourceSets.directorPlatform.output + configurations.compileClasspath
+        runtimeClasspath += sourceSets.director.output + sourceSets.directorPlatform.output + configurations.runtimeClasspath
+    }
+    p008ProductionRuntimeQaTest {
+        java.setSrcDirs(['src/p008ProductionRuntimeQa/java', 'src/p008ProductionRuntimeQaTest/java'])
+        java.include '**/ActorFrameCapture.java', '**/CompletedTickCapture.java', '**/PreviousCompletedTickReader.java', '**/ActorFrameCaptureTests.java', '**/CompletedTickCaptureTests.java'
+        resources.setSrcDirs([])
+    }
+}
+
+tasks.register('p008ProductionRuntimeActorPureTest', JavaExec) {
+    group = 'verification'
+    description = 'Pure bounded sink/previous-slot tests; not Minecraft or client qualification'
+    dependsOn tasks.named('p008ProductionRuntimeQaTestClasses')
+    classpath = sourceSets.p008ProductionRuntimeQaTest.runtimeClasspath
+    mainClass = 'fr.proutlost.p008qa.production.ActorFrameCaptureTests'
+    args project.file('build/p008-production-runtime-pure-' + providers.gradleProperty('p008RunId').getOrElse('a01'))
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+
+tasks.register('p008ProductionRuntimeQaJar', Jar) {
+    group = 'build'
+    description = 'Separate TEST_ONLY dedicated-server production-runtime observer addon'
+    dependsOn tasks.named('directorPlatformClasses'), tasks.named('p008ProductionRuntimeQaClasses')
+    archiveBaseName = 'proutlost-p008-production-runtime-qa'
+    archiveVersion = '1.0.0-TEST_ONLY'
+    archiveClassifier = ''
+    from sourceSets.p008ProductionRuntimeQa.output
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    outputs.upToDateWhen { false }
+    outputs.doNotCacheIf('QA candidate exact class parity required', { true })
+    manifest { attributes 'Implementation-Title': 'P008 TEST_ONLY declared synthetic ProductionRuntime observer',
+        'P008-QA-Only': 'true', 'P008-QA-CPU-Scope': 'ACTUAL_RUNTIME_ACTOR_ONLY' }
+    doLast {
+        new java.util.zip.ZipFile(archiveFile.get().asFile).withCloseable { archive ->
+            def entries = java.util.Collections.list(archive.entries())*.name
+            def packed = entries.findAll { it.endsWith('.class') }.toSet()
+            if (packed.isEmpty() || packed.any { !it.startsWith('fr/proutlost/p008qa/production/') || it.endsWith('Tests.class') })
+                throw new GradleException('Production-runtime QA addon has unexpected/empty class inventory')
+            if (!entries.contains('META-INF/neoforge.mods.toml'))
+                throw new GradleException('Production-runtime QA addon metadata missing')
+            def compiled = new TreeMap<String, byte[]>()
+            source.visit { item ->
+                if (!item.directory && item.relativePath.pathString.endsWith('.class')) {
+                    def name = item.relativePath.pathString.replace('\\', '/')
+                    if (compiled.putIfAbsent(name, java.nio.file.Files.readAllBytes(item.file.toPath())) != null)
+                        throw new GradleException('Duplicate production-runtime QA compiled class')
+                }
+            }
+            if (compiled.keySet() != packed) throw new GradleException('Production-runtime QA compiled/JAR inventory differs')
+            compiled.each { name, bytes ->
+                def actual = archive.getInputStream(archive.getEntry(name)).withCloseable { it.readAllBytes() }
+                if (!java.util.Arrays.equals(bytes, actual)) throw new GradleException('Production-runtime QA JAR stale class: ' + name)
+            }
+            println 'P008_PRODUCTION_RUNTIME_QA_JAR_PARITY_PASS classes=' + packed.size()
+        }
+    }
+}
+
+// Kept separate from actor DTO sink checks: no combined delivery assertion count.
+tasks.register('p008ProductionRuntimeVanillaPureTest', JavaExec) {
+    group = 'verification'
+    dependsOn tasks.named('p008ProductionRuntimeQaTestClasses')
+    classpath = sourceSets.p008ProductionRuntimeQaTest.runtimeClasspath
+    mainClass = 'fr.proutlost.p008qa.production.CompletedTickCaptureTests'
+    args project.file('build/p008-production-vanilla-pure-' + providers.gradleProperty('p008RunId').getOrElse('a01'))
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}

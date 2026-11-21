@@ -1,0 +1,31 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="proutlost_p008_qa"
+version="1.0.0-TEST_ONLY"
+displayName="P008 Installed Native Observer TEST_ONLY"
+displayTest="IGNORE_ALL_VERSION"
+description="""Read-only evidence observer for the explicitly isolated P008 native QA laboratory. Not a production mod or canonical reception."""
+
+[[dependencies.proutlost_p008_qa]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.248]"
+ordering="NONE"
+side="SERVER"
+
+[[dependencies.proutlost_p008_qa]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1]"
+ordering="NONE"
+side="SERVER"
+
+[[dependencies.proutlost_p008_qa]]
+modId="proutlost_director"
+type="required"
+versionRange="[1.0.0]"
+ordering="AFTER"
+side="SERVER"

@@ -1,0 +1,24 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cod",
+    "minecraft:squid",
+    "minecraft:dolphin",
+    {
+      "id": "reanimal:seal",
+      "required": false
+    },
+    {
+      "id": "reanimal:jellyfish",
+      "required": false
+    },
+    {
+      "id": "reanimal:sea_urchin",
+      "required": false
+    },
+    {
+      "id": "reanimal:starfish",
+      "required": false
+    }
+  ]
+}

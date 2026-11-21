@@ -1,0 +1,85 @@
+// Explicit installed-QA addon only. No registration in neoForge.mods, no input
+// to jar/directorJar, and no effect on normal runs unless operator installs it.
+sourceSets {
+    p008CohortQa {
+        java.setSrcDirs(['src/p008CohortQa/java'])
+        resources.setSrcDirs(['src/p008CohortQa/resources'])
+        compileClasspath += sourceSets.director.output + sourceSets.directorPlatform.output + configurations.compileClasspath
+        runtimeClasspath += sourceSets.director.output + sourceSets.directorPlatform.output + configurations.runtimeClasspath
+    }
+    p008CohortQaTest {
+        java.setSrcDirs(['src/p008CohortQa/java', 'src/p008CohortQaTest/java'])
+        java.include '**/ActorFrameCapture.java', '**/CompletedTickCapture.java', '**/PreviousCompletedTickReader.java', '**/ActorFrameCaptureTests.java', '**/CompletedTickCaptureTests.java', '**/CohortPlayerCensus.java', '**/CohortPlayerCensusTests.java'
+        resources.setSrcDirs([])
+    }
+}
+
+tasks.register('p008CohortActorPureTest', JavaExec) {
+    group = 'verification'
+    description = 'Pure bounded sink/previous-slot tests; not Minecraft or client qualification'
+    dependsOn tasks.named('p008CohortQaTestClasses')
+    classpath = sourceSets.p008CohortQaTest.runtimeClasspath
+    mainClass = 'fr.proutlost.p008qa.cohort.ActorFrameCaptureTests'
+    args project.file('build/p008-cohort-pure-' + providers.gradleProperty('p008RunId').getOrElse('a01'))
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+
+tasks.register('p008CohortQaJar', Jar) {
+    group = 'build'
+    description = 'Separate TEST_ONLY dedicated-server cohort observer addon'
+    dependsOn tasks.named('directorPlatformClasses'), tasks.named('p008CohortQaClasses')
+    archiveBaseName = 'proutlost-p008-cohort-qa'
+    archiveVersion = '1.0.0-TEST_ONLY'
+    archiveClassifier = ''
+    from sourceSets.p008CohortQa.output
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    outputs.upToDateWhen { false }
+    outputs.doNotCacheIf('QA candidate exact class parity required', { true })
+    manifest { attributes 'Implementation-Title': 'P008 TEST_ONLY declared synthetic cohort observer',
+        'P008-QA-Only': 'true', 'P008-QA-CPU-Scope': 'VANILLA_BASELINE_OR_ACTUAL_RUNTIME_ACTOR' }
+    doLast {
+        new java.util.zip.ZipFile(archiveFile.get().asFile).withCloseable { archive ->
+            def entries = java.util.Collections.list(archive.entries())*.name
+            def packed = entries.findAll { it.endsWith('.class') }.toSet()
+            if (packed.isEmpty() || packed.any { !it.startsWith('fr/proutlost/p008qa/cohort/') || it.endsWith('Tests.class') })
+                throw new GradleException('Production-runtime QA addon has unexpected/empty class inventory')
+            if (!entries.contains('META-INF/neoforge.mods.toml'))
+                throw new GradleException('Production-runtime QA addon metadata missing')
+            def compiled = new TreeMap<String, byte[]>()
+            source.visit { item ->
+                if (!item.directory && item.relativePath.pathString.endsWith('.class')) {
+                    def name = item.relativePath.pathString.replace('\\', '/')
+                    if (compiled.putIfAbsent(name, java.nio.file.Files.readAllBytes(item.file.toPath())) != null)
+                        throw new GradleException('Duplicate cohort QA compiled class')
+                }
+            }
+            if (compiled.keySet() != packed) throw new GradleException('Production-runtime QA compiled/JAR inventory differs')
+            compiled.each { name, bytes ->
+                def actual = archive.getInputStream(archive.getEntry(name)).withCloseable { it.readAllBytes() }
+                if (!java.util.Arrays.equals(bytes, actual)) throw new GradleException('Production-runtime QA JAR stale class: ' + name)
+            }
+            println 'P008_COHORT_QA_JAR_PARITY_PASS classes=' + packed.size()
+        }
+    }
+}
+
+// Kept separate from actor DTO sink checks: no combined delivery assertion count.
+tasks.register('p008CohortVanillaPureTest', JavaExec) {
+    group = 'verification'
+    dependsOn tasks.named('p008CohortQaTestClasses')
+    classpath = sourceSets.p008CohortQaTest.runtimeClasspath
+    mainClass = 'fr.proutlost.p008qa.cohort.CompletedTickCaptureTests'
+    args project.file('build/p008-cohort-vanilla-pure-' + providers.gradleProperty('p008RunId').getOrElse('a01'))
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}
+
+// Pure set validation only; does not create or observe Minecraft connections.
+tasks.register('p008CohortCensusPureTest', JavaExec) {
+    group = 'verification'
+    dependsOn tasks.named('p008CohortQaTestClasses')
+    classpath = sourceSets.p008CohortQaTest.runtimeClasspath
+    mainClass = 'fr.proutlost.p008qa.cohort.CohortPlayerCensusTests'
+    args project.file('build/p008-cohort-census-pure-' + providers.gradleProperty('p008RunId').getOrElse('a01'))
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}

@@ -1,0 +1,2142 @@
+Mémo complet — Projet Proutlost Saison 2
+1. Contexte général
+
+Proutlost est déjà à sa saison 2.
+
+Les joueurs et les modos connaissent déjà le concept de base du serveur, donc il ne faut pas repartir sur une présentation longue du genre “voici ce qu’est le serveur”.
+
+Le but de la saison 2 est surtout de faire évoluer le projet avec :
+
+un modpack plus cohérent ;
+une vraie ambiance d’île déserte ;
+des animations de joueurs plus naturelles ;
+un mod maison original ;
+des événements qui peuvent être vécus différemment selon les joueurs ;
+un mélange de mystère, de survie, de moments drôles et de situations sociales.
+
+Le projet doit rester agréable pour :
+
+les joueurs classiques ;
+les streamers ;
+les modos ;
+le créateur du serveur, qui veut aussi pouvoir jouer.
+
+Le serveur ne doit pas reposer uniquement sur les streamers.
+
+2. Plateforme envisagée
+
+Base actuelle privilégiée :
+
+Minecraft Java
+Minecraft 1.21.1
+NeoForge
+Java 21
+serveur multijoueur ;
+mod maison installé côté serveur et côté client.
+
+Rien n’est encore totalement figé, mais NeoForge 1.21.1 est la direction actuelle.
+
+3. Direction artistique et ambiance
+
+L’ambiance recherchée est inspirée de la sensation de Lost, mais sans reprendre directement :
+
+les bunkers ;
+le bouton à pousser ;
+les artefacts ;
+les stations ;
+les donjons scénarisés ;
+les concepts déjà utilisés par Michou ou d’autres serveurs RP.
+
+L’objectif est plutôt une ambiance :
+
+île isolée ;
+exploration ;
+survie légère ;
+végétation dense ;
+plages ;
+océan ;
+tempêtes ;
+sons étranges ;
+découverte de lieux inhabituels ;
+phénomènes rares ;
+humour ponctuel ;
+mystère sans scénario trop rigide.
+
+Le ton général doit être un mélange d’environ :
+
+mystère et exploration ;
+tension légère ;
+moments fun ou absurdes.
+
+Le serveur ne doit pas devenir un modpack d’horreur avec des jumpscares toutes les dix minutes.
+
+4. Concept central du mod maison
+
+Le mod maison doit créer une expérience multijoueur où :
+
+les joueurs partagent le même monde, mais ne reçoivent pas toujours les mêmes informations.
+
+Exemples :
+
+un joueur entend un son que les autres n’entendent pas ;
+un joueur voit une silhouette ;
+certains voient des symboles ;
+plusieurs joueurs reçoivent chacun une partie d’un indice ;
+deux joueurs reçoivent des indications contradictoires ;
+un joueur voit une apparition pendant que les autres n’entendent qu’un bruit ;
+certaines zones réagissent aux habitudes du groupe.
+
+Le but n’est pas de créer de vraies réalités physiques différentes avec des collisions différentes.
+
+La réalité physique reste commune :
+
+mêmes blocs ;
+mêmes collisions ;
+mêmes inventaires ;
+mêmes constructions ;
+mêmes vraies entités.
+
+Les différences concernent surtout :
+
+sons ;
+particules ;
+apparitions visuelles ;
+symboles ;
+textes ;
+effets d’ambiance ;
+objets ou blocs spéciaux du mod.
+5. Ce qui rend le concept intéressant
+
+Le cœur du gameplay repose sur :
+
+l’observation ;
+la communication ;
+les témoignages contradictoires ;
+les théories entre joueurs ;
+les réactions du monde ;
+la mémoire des comportements ;
+les conséquences collectives.
+
+Le mod ne doit pas simplement dire :
+
+“Tu as coupé trop d’arbres, donc l’île est en colère.”
+
+Le système doit plutôt observer plusieurs comportements :
+
+temps passé seul ;
+temps passé en groupe ;
+exploration ;
+morts ;
+animaux tués ou nourris ;
+blocs posés et cassés ;
+zones souvent fréquentées ;
+zones abandonnées ;
+sommeil ;
+objets utilisés ;
+événements déjà reçus.
+
+Ces données servent à choisir les événements, pas à afficher une jauge de réputation.
+
+6. Relation avec les streamers
+
+Les streamers peuvent naturellement rendre le projet plus intéressant grâce aux différents points de vue.
+
+Exemples :
+
+leurs communautés comparent les scènes ;
+certains clips montrent des détails ratés ;
+les spectateurs créent des théories ;
+plusieurs POV montrent des versions différentes du même événement.
+
+Mais le jeu doit fonctionner exactement aussi bien pour un groupe privé sans aucun live.
+
+Les streamers ne doivent pas recevoir automatiquement :
+
+plus d’événements ;
+plus d’indices ;
+plus d’importance ;
+une protection spéciale ;
+un rôle central permanent.
+
+L’intégration Twitch ou YouTube n’est pas prévue dans le MVP.
+
+Elle pourrait éventuellement être ajoutée plus tard comme extension facultative.
+
+7. Rôle des modos
+
+Les modos sont avant tout des potes et des joueurs.
+
+Ils ne doivent pas devenir des maîtres du jeu ou passer leurs soirées à surveiller le serveur.
+
+Leur rôle est simplement de pouvoir aider si :
+
+quelqu’un est réellement bloqué ;
+un événement bugue ;
+un effet tourne en boucle ;
+le serveur plante ;
+un joueur perd quelque chose à cause d’un bug confirmé ;
+quelqu’un gâche volontairement l’ambiance ;
+un problème humain doit être calmé.
+
+Ils peuvent :
+
+jouer ;
+explorer ;
+construire ;
+faire des théories ;
+se tromper ;
+être surpris ;
+streamer ;
+découvrir le contenu normalement.
+
+Ils ne sont pas censés connaître tous les secrets du mod.
+
+Message à retenir pour eux
+
+Vous êtes là avant tout pour jouer et vous amuser. Vous avez juste quelques outils en plus au cas où ça casse vraiment. Pas besoin de surveiller tout le monde, de lire les logs ou d’animer le serveur. Jouez normalement, gardez les secrets et dites-moi quand un truc mérite d’être corrigé ou amélioré.
+
+8. Organisation du développement
+
+Le développement sera réalisé majoritairement seul, avec l’aide de :
+
+ChatGPT ;
+Codex ;
+éventuellement quelques amis pour les tests, constructions, idées, sons ou textures.
+
+Il faut donc garder un projet raisonnable.
+
+Le mod ne doit pas demander :
+
+plusieurs développeurs permanents ;
+un animateur en direct ;
+un maître du jeu ;
+une équipe technique complète ;
+des dizaines de systèmes complexes dès le départ.
+
+La priorité est de faire un petit moteur solide et extensible.
+
+9. MVP du mod maison
+
+Le MVP doit prouver que le concept fonctionne.
+
+Il doit contenir :
+
+un profil persistant par joueur ;
+une mémoire légère des régions ;
+un directeur d’événements ;
+des sons ciblés ;
+des particules ciblées ;
+des messages ciblés ;
+des apparitions visuelles non physiques ;
+des symboles visibles uniquement par certains joueurs ;
+une structure ou zone spéciale ;
+environ douze événements ;
+quelques objets ;
+des commandes de secours ;
+une configuration serveur ;
+un système partiellement piloté par JSON ;
+une journalisation claire.
+
+Le MVP ne doit pas contenir :
+
+une nouvelle dimension ;
+un boss complexe ;
+une campagne de trente heures ;
+une IA qui comprend le vocal ;
+de vraies collisions différentes selon les joueurs ;
+une intégration Twitch obligatoire ;
+une génération narrative infinie ;
+une grosse progression industrielle.
+10. Événements envisagés pour le MVP
+Individuels
+pas entendus derrière un joueur ;
+silhouette lointaine ;
+symbole temporaire ;
+bruit associé à un autre joueur ;
+description d’objet différente ;
+reflet ou copie visuelle décalée.
+Asymétriques
+deux directions contradictoires ;
+un joueur voit, un autre entend ;
+un indice coupé en plusieurs parties ;
+une copie visuelle d’un joueur apparaît derrière le groupe.
+Collectifs
+disparition temporaire de certains sons ;
+animaux orientés vers un même point ;
+brouillard localisé ;
+modification temporaire de l’ambiance d’une zone.
+
+Au moins une partie des événements doit demander :
+
+de communiquer ;
+de choisir ;
+d’interagir ;
+de comparer les perceptions.
+
+Le mod ne doit pas devenir une simple collection d’effets cosmétiques.
+
+11. Première zone spéciale
+
+Une première zone, nom provisoire la Clairière, peut servir de vertical slice.
+
+Elle pourrait contenir :
+
+un élément central interactif ;
+plusieurs symboles ;
+des perceptions différentes selon les joueurs ;
+plusieurs choix possibles ;
+une conséquence persistante légère.
+
+Exemple :
+
+certains voient des symboles ;
+un autre entend une séquence ;
+le groupe choisit une interaction ;
+la zone change légèrement selon leur décision ;
+de futurs événements sont influencés par ce choix.
+12. Données enregistrées
+Par joueur
+
+Exemples de données utiles :
+
+temps de jeu ;
+temps seul ;
+temps en groupe ;
+nombre de morts récentes ;
+blocs posés ;
+blocs cassés ;
+animaux nourris ;
+créatures tuées ;
+événements déjà reçus ;
+dernier événement ;
+zones visitées récemment.
+
+À éviter :
+
+historique complet des déplacements ;
+enregistrement vocal ;
+analyse du chat ;
+inventaire enregistré en permanence ;
+données inutiles ou trop lourdes.
+Par région
+
+Une région peut mémoriser :
+
+temps d’occupation ;
+activité ;
+morts ;
+combats ;
+nuits passées ;
+blocs modifiés ;
+dernière visite ;
+dernier événement ;
+présence éventuelle d’un camp.
+13. Architecture technique envisagée
+proutlost/
+├── registry/
+│   ├── blocs
+│   ├── objets
+│   ├── sons
+│   └── types d’effets
+├── player/
+│   ├── profil joueur
+│   ├── mémoire
+│   └── suivi d’activité
+├── world/
+│   ├── données globales
+│   ├── mémoire régionale
+│   ├── camps
+│   └── lieux spéciaux
+├── event/
+│   ├── directeur
+│   ├── définitions
+│   ├── instances
+│   ├── rôles
+│   ├── conditions
+│   └── effets
+├── network/
+│   ├── sons ciblés
+│   ├── apparitions
+│   ├── symboles
+│   └── nettoyage client
+├── client/
+│   ├── rendu
+│   ├── audio
+│   ├── particules
+│   └── apparitions
+├── command/
+├── config/
+└── debug/
+14. Principes techniques
+Le serveur reste autoritaire.
+Le client affiche les effets reçus.
+Le directeur d’événements ne tourne pas à chaque tick.
+Les données sont agrégées et légères.
+Les événements ont une durée maximale.
+Tous les événements doivent pouvoir s’arrêter proprement.
+Une déconnexion ne doit pas casser le système.
+Un événement bugué ne doit pas faire planter le serveur.
+Les effets client doivent être nettoyés au changement de monde ou à la déconnexion.
+Chaque fonctionnalité importante doit pouvoir être désactivée.
+15. Système d’événements data-driven
+
+Le moteur Java doit être codé une fois.
+
+Une partie des événements pourra ensuite être définie en JSON.
+
+Exemple conceptuel :
+
+{
+  "id": "proutlost:parallel_steps",
+  "weight": 10,
+  "cooldown_ticks": 72000,
+  "conditions": [
+    {
+      "type": "proutlost:player_isolated",
+      "minimum_ticks": 400
+    },
+    {
+      "type": "proutlost:time_range",
+      "from": 13000,
+      "to": 23000
+    }
+  ],
+  "roles": {
+    "witness": {
+      "count": 1
+    }
+  },
+  "effects": [
+    {
+      "type": "proutlost:directional_sound",
+      "role": "witness",
+      "sound": "proutlost:parallel_steps"
+    }
+  ]
+}
+
+À gérer en JSON :
+
+poids ;
+durée ;
+cooldown ;
+conditions simples ;
+rôles ;
+sons ;
+particules ;
+textes ;
+séquences ;
+structures ;
+recettes ;
+loot.
+
+À garder en Java :
+
+réseau ;
+rendu ;
+persistance ;
+directeur ;
+validation ;
+sélection ;
+sécurité ;
+logique complexe ;
+performances.
+16. Commandes utiles
+
+Commandes prévues :
+
+/proutlost status
+/proutlost stop
+/proutlost rescue <joueur>
+/proutlost report <message>
+/proutlost trigger <event> [joueur]
+/proutlost debug
+status
+
+Montre seulement :
+
+si le directeur fonctionne ;
+si un événement est actif ;
+depuis combien de temps ;
+si une erreur est détectée.
+stop
+
+Arrête proprement l’événement actif.
+
+rescue
+
+Nettoie les effets d’un joueur et le débloque si nécessaire.
+
+report
+
+Crée un rapport rapide avec :
+
+heure ;
+joueur ;
+position ;
+dimension ;
+événement actif ;
+message.
+trigger
+
+Réservée aux tests.
+
+17. Mods externes à prévoir
+
+Le mod maison ne doit pas tout refaire.
+
+Les mods externes peuvent gérer :
+
+Animations de joueurs
+
+Objectif :
+
+mouvements plus naturels ;
+animations de course ;
+nage ;
+montée ;
+combat ;
+interactions ;
+poses ;
+éventuellement animations contextuelles.
+
+À rechercher pour NeoForge 1.21.1 :
+
+mods d’animations du joueur ;
+bibliothèques d’animations ;
+compatibilité multijoueur ;
+compatibilité avec armures et skins ;
+compatibilité avec les apparitions du mod maison.
+Ambiance île déserte
+
+Objectif :
+
+plages ;
+océan ;
+jungle ;
+végétation tropicale ;
+sons de vagues ;
+vent ;
+pluie ;
+tempêtes ;
+insectes ;
+oiseaux ;
+faune marine ;
+grottes ;
+brouillard ;
+couchers de soleil ;
+vie de camp.
+Terrain et worldgen
+
+Possibilités :
+
+Tectonic ou équivalent ;
+datapacks de terrain ;
+carte semi-personnalisée ;
+structures faites main ;
+zones réservées aux événements.
+
+Une carte semi-contrôlée peut être plus adaptée qu’une génération totalement aléatoire pour la saison.
+
+Ambiance sonore
+sons de forêt ;
+sons marins ;
+vent ;
+pluie ;
+sons de grottes ;
+environnement dynamique.
+
+Attention à ne pas masquer les sons narratifs du mod maison.
+
+Vie de camp
+
+Mods possibles :
+
+Farmer’s Delight ;
+cuisine légère ;
+pêche ;
+conservation de nourriture ;
+mobilier de camp ;
+cordes ;
+lanternes ;
+décoration.
+Décoration
+Supplementaries ;
+panneaux ;
+cordes ;
+objets de récupération ;
+caisses ;
+éclairages ;
+meubles légers ;
+variantes de bois.
+Communication
+
+Un mod de proximité vocale serait très adapté.
+
+Il renforcerait :
+
+les séparations ;
+les appels ;
+les rencontres ;
+les témoignages ;
+la tension ;
+les scènes naturelles.
+Qualité de vie
+affichage des recettes ;
+récupération de corps ;
+stockage léger ;
+outils d’administration ;
+inventaire amélioré ;
+carte limitée.
+
+Éviter les minimaps montrant toutes les entités ou grottes.
+
+Performances
+
+Prévoir :
+
+optimisation serveur ;
+optimisation client ;
+pré-génération des chunks ;
+réduction de la charge entités ;
+profiling ;
+tests avant la saison.
+18. Create et technologie
+
+Create n’est pas obligatoire.
+
+Il peut être ajouté si l’on veut :
+
+des mécanismes de camp ;
+une station improvisée ;
+des portes ;
+des systèmes mécaniques ;
+une antenne ;
+des installations artisanales.
+
+Mais il présente un risque :
+
+transformer le pack en modpack industriel ;
+détourner les joueurs de l’exploration ;
+encourager l’automatisation massive ;
+alourdir le pack.
+
+Décision actuelle :
+
+Create reste une option, pas une base du MVP.
+
+19. Fonctionnalités futures possibles
+Raisonnables après le MVP
+davantage d’événements ;
+nouveaux types de conditions ;
+plusieurs lieux spéciaux ;
+objets ayant une histoire ;
+apprentissage de symboles ;
+événements à choix ;
+évolution légère des zones ;
+camps mieux reconnus ;
+API pour addons ;
+intégration KubeJS limitée.
+Plus complexes
+copie visuelle complète d’un joueur ;
+créature adaptative ;
+scènes passées rejouées ;
+blocs fantômes interactifs ;
+perceptions qui évoluent avec les habitudes ;
+objets visibles différemment selon le joueur ;
+zones temporairement superposées.
+À éviter au début
+vraie physique différente par joueur ;
+monde entièrement différent selon le client ;
+IA générative en direct ;
+analyse vocale ;
+analyse des streams ;
+dépendance Twitch ;
+nouvelle dimension ;
+campagne gigantesque.
+20. Ordre de développement recommandé
+Étape 1 — Socle
+projet NeoForge ;
+Git ;
+configuration ;
+registres ;
+logs ;
+serveur dédié de test.
+Étape 2 — Réseau ciblé
+envoyer un son à un seul joueur ;
+tester avec deux clients ;
+nettoyer à la déconnexion.
+Étape 3 — Profil joueur
+données persistantes ;
+compteurs simples ;
+commandes de debug.
+Étape 4 — Directeur minimal
+un événement ;
+une condition ;
+un cooldown ;
+démarrage et arrêt automatiques.
+Étape 5 — Apparition visuelle
+gestionnaire client ;
+modèle simple ;
+durée ;
+suppression propre.
+Étape 6 — JSON
+chargement des définitions ;
+codecs ;
+erreurs lisibles ;
+rechargement des ressources.
+Étape 7 — Mémoire régionale
+régions ;
+activité ;
+dernière visite ;
+camps ;
+conditions contextuelles.
+Étape 8 — Outils de secours
+status ;
+stop ;
+rescue ;
+report ;
+logs structurés.
+Étape 9 — Vertical slice
+une zone spéciale ;
+douze événements ;
+quelques objets ;
+plusieurs joueurs ;
+session complète.
+21. Critères de réussite du MVP
+
+Le MVP est réussi si :
+
+deux joueurs vivent le même événement différemment ;
+ils ont naturellement envie de comparer leurs perceptions ;
+le mod fonctionne sans animateur ;
+les données survivent au redémarrage ;
+aucun joueur n’est ciblé en permanence ;
+les événements s’arrêtent correctement ;
+les commandes de secours marchent ;
+les logs permettent de comprendre les bugs ;
+une session tient plusieurs heures ;
+le concept fonctionne sans streamer ;
+les mods d’ambiance ne cassent pas les sons narratifs ;
+les animations de joueurs ne cassent pas les apparitions ou les skins.
+22. Philosophie générale du projet
+
+Le projet doit rester :
+
+faisable seul ;
+amusant à développer ;
+agréable à jouer ;
+autonome ;
+extensible ;
+mystérieux ;
+drôle par moments ;
+non dépendant des streamers ;
+différent des serveurs RP classiques ;
+différent d’une simple chasse aux artefacts ;
+différent d’un modpack d’horreur.
+
+La phrase centrale du projet est :
+
+Un serveur Minecraft où les joueurs partagent le même monde, mais pas toujours la même perception de ce qui s’y passe.
+
+Et la règle de développement principale :
+
+Mieux vaut quelques événements très propres et mémorables qu’un énorme système impossible à finir.
+
+on avait pas plutôt dit un mode automatique de gestion du monde ?
+
+Oui, tu as raison. J’ai trop recentré le résumé sur les perceptions différentes, alors que l’idée principale était plutôt un mode automatique de gestion du monde.
+
+Les perceptions asymétriques peuvent exister, mais seulement comme un outil parmi d’autres.
+
+Le vrai concept central
+
+Un mod qui observe la vie du serveur et fait évoluer automatiquement le monde, l’ambiance et les événements, sans maître du jeu permanent.
+
+Le système doit permettre à tout le monde de jouer, y compris toi et les modos. Personne ne doit rester en coulisses pour déclencher les scènes.
+
+Ce que le gestionnaire automatique observe
+
+Il analyse de manière légère :
+
+où les joueurs s’installent ;
+quelles zones ils explorent ou abandonnent ;
+leur rythme de progression ;
+les séparations et regroupements ;
+les morts et combats récents ;
+les constructions importantes ;
+l’exploitation des ressources ;
+les périodes calmes ;
+les événements déjà vécus ;
+les joueurs peu ou souvent sollicités.
+
+Il ne surveille pas les conversations vocales et n’enregistre pas tous les déplacements.
+
+Ce qu’il gère automatiquement
+Le rythme du serveur
+
+Le système détecte grossièrement si la partie est :
+
+calme ;
+en exploration ;
+en construction ;
+en tension ;
+dispersée ;
+regroupée ;
+ralentie ;
+déjà chargée en événements.
+
+Il évite par exemple de lancer une grosse scène pendant qu’un joueur vient de mourir ou que le serveur rencontre des ralentissements.
+
+L’évolution des zones
+
+Chaque région conserve une petite mémoire :
+
+camp actif ;
+zone sauvage ;
+lieu surexploité ;
+région abandonnée ;
+endroit dangereux ;
+passage fréquent ;
+lieu associé à plusieurs événements.
+
+Le monde peut ensuite réagir :
+
+végétation qui reprend un ancien camp ;
+animaux qui changent progressivement de zone ;
+chemins naturels qui apparaissent ;
+ressources inhabituelles dans une région peu visitée ;
+ambiance sonore différente ;
+traces d’anciennes activités ;
+événements propres à l’histoire du lieu.
+Les événements
+
+Le directeur choisit tout seul :
+
+le bon moment ;
+la bonne zone ;
+les joueurs concernés ;
+l’intensité ;
+la durée ;
+les conséquences ;
+le délai avant le prochain événement.
+
+Les événements peuvent être :
+
+naturels ;
+mystérieux ;
+sociaux ;
+dangereux ;
+humoristiques ;
+individuels ;
+collectifs ;
+liés à une zone.
+L’équité
+
+Le système doit éviter que :
+
+le même streamer reçoive toutes les scènes ;
+un joueur discret ne voie jamais rien ;
+quelqu’un soit ciblé trois fois de suite ;
+les nouveaux soient immédiatement punis ;
+les événements interrompent toujours les mêmes activités.
+Place des perceptions différentes
+
+Elles restent intéressantes, mais elles passent au second plan.
+
+Le gestionnaire peut décider qu’un événement collectif contient plusieurs perceptions :
+
+un joueur voit des traces ;
+un autre entend une direction ;
+les autres constatent un changement réel dans la zone.
+
+Mais il peut aussi produire des événements entièrement communs :
+
+tempête locale ;
+migration animale ;
+végétation anormale ;
+ressources disparues ;
+ancien camp transformé ;
+changement d’un lieu après une décision collective.
+Architecture corrigée
+Proutlost World Director
+├── observation du serveur
+│   ├── activité des joueurs
+│   ├── rythme de la session
+│   ├── progression
+│   └── état technique
+├── mémoire du monde
+│   ├── régions
+│   ├── camps
+│   ├── lieux spéciaux
+│   └── historique
+├── directeur automatique
+│   ├── choix du moment
+│   ├── choix de l’intensité
+│   ├── sélection des joueurs
+│   └── contrôle de l’équité
+├── moteur d’événements
+│   ├── événements communs
+│   ├── événements asymétriques
+│   ├── changements persistants
+│   └── événements fun
+└── sécurité
+    ├── arrêt automatique
+    ├── reprise après redémarrage
+    ├── commandes de secours
+    └── journalisation
+MVP corrigé
+
+La première version devrait donc contenir :
+
+Un observateur de session
+Il calcule périodiquement l’état général : calme, exploration, dispersion, tension ou récupération.
+Une mémoire régionale
+Elle conserve l’occupation, les passages, les morts, les modifications et les événements récents.
+Un directeur automatique
+Il décide si quelque chose doit se produire, où, pour qui et avec quelle intensité.
+Un système d’équité
+Il répartit les événements sans favoriser les streamers ni les joueurs les plus visibles.
+Trois familles d’événements
+changements du monde ;
+événements collectifs ;
+perceptions individuelles ou fragmentées.
+Une quinzaine d’événements
+cinq environnementaux ;
+cinq sociaux ou collectifs ;
+cinq asymétriques ou mystérieux.
+Des outils de secours simples
+état du directeur ;
+arrêt d’un événement ;
+nettoyage des effets ;
+rapport rapide.
+Phrase de présentation corrigée
+
+Proutlost utilise un directeur automatique qui observe la vie du serveur, mémorise l’histoire des lieux et fait évoluer le monde sans nécessiter de maître du jeu. Certains événements sont communs à tous, tandis que d’autres peuvent être vécus différemment selon les joueurs.
+
+C’est cette version qu’il faut garder comme base du nouveau projet. Le système de perceptions est une fonctionnalité forte, mais le véritable cœur est le monde autonome et réactif.
+
+donne tout ce qu'il faut avec cette correction
+Mémo complet — Proutlost Saison 2
+1. Le projet en une phrase
+
+Proutlost Saison 2 est un serveur Minecraft géré par un directeur automatique qui observe la vie du serveur, mémorise l’histoire des lieux et fait évoluer le monde sans qu’un maître du jeu soit obligé d’intervenir.
+
+Certains événements seront communs à tous. D’autres pourront être vécus différemment selon les joueurs.
+
+Le cœur du projet n’est donc pas seulement la perception différente. Le vrai cœur, c’est :
+
+un monde autonome ;
+un système qui observe les joueurs ;
+une mémoire des zones ;
+des événements choisis automatiquement ;
+une évolution légère et persistante du serveur ;
+le moins d’administration manuelle possible.
+2. Contexte
+
+Proutlost est déjà à sa saison 2.
+
+Les joueurs et les modos connaissent déjà le serveur et son concept général. Il n’est pas nécessaire de leur refaire une présentation complète.
+
+Cette saison doit surtout améliorer :
+
+l’ambiance ;
+l’immersion ;
+la vie du monde ;
+les animations des joueurs ;
+la cohérence du modpack ;
+les événements automatiques ;
+le mystère ;
+les moments de groupe ;
+la possibilité pour tout le monde de jouer, y compris les modos et le créateur.
+
+Le projet doit fonctionner avec :
+
+des joueurs classiques ;
+des streamers ;
+des modos qui jouent ;
+des groupes qui se séparent ;
+des gens qui jouent sans diffuser leur partie.
+
+Les streamers peuvent enrichir l’expérience, mais ils ne doivent pas devenir le centre du système.
+
+3. Base technique envisagée
+Minecraft Java
+Minecraft 1.21.1
+NeoForge
+Java 21
+serveur multijoueur ;
+mod maison installé côté serveur et côté client ;
+datapacks et fichiers JSON pour une partie du contenu ;
+mods externes pour l’ambiance, les animations et le confort.
+
+NeoForge 1.21.1 reste la direction actuelle, même si rien n’est totalement irréversible tant que le développement n’a pas réellement commencé.
+
+4. Direction générale de la saison
+Ambiance recherchée
+
+La saison doit évoquer :
+
+une île isolée ;
+des plages ;
+de la jungle ;
+des zones rocheuses ;
+des grottes ;
+des tempêtes ;
+la mer ;
+des camps improvisés ;
+de l’exploration ;
+une sensation que le monde continue à vivre sans les joueurs ;
+des phénomènes étranges ;
+quelques moments absurdes ou fun.
+
+L’inspiration vient surtout de la sensation d’une série comme Lost :
+
+groupe isolé ;
+environnement mystérieux ;
+tensions légères ;
+découvertes ;
+théories ;
+lieux chargés d’histoire.
+
+Mais le projet ne doit pas reprendre directement :
+
+les bunkers ;
+le bouton ;
+les stations ;
+les artefacts ;
+les donjons scénarisés ;
+une chasse à six objets ;
+un scénario déjà vu chez Michou ou ailleurs.
+Ton recherché
+
+Le serveur ne doit pas devenir un modpack d’horreur.
+
+On cherche plutôt :
+
+beaucoup d’exploration et d’étrangeté ;
+un peu de tension ;
+quelques moments inquiétants ;
+des moments calmes ;
+des événements fun ou absurdes ;
+des situations dont les joueurs parlent naturellement.
+
+Le mystère doit être plus fréquent que le jumpscare.
+
+5. Le concept central : le directeur automatique
+
+Le mod maison doit agir comme un gestionnaire automatique du monde.
+
+Il observe ce qu’il se passe sur le serveur, puis décide :
+
+si un événement est utile ;
+quand il doit arriver ;
+où il doit se produire ;
+qui doit être concerné ;
+quelle intensité utiliser ;
+combien de temps il doit durer ;
+quelles conséquences légères il peut laisser.
+
+Le but est que personne n’ait besoin de rester en coulisses.
+
+Ni toi, ni les modos ne devez passer la soirée à :
+
+déclencher les scènes ;
+choisir les joueurs ciblés ;
+lancer la météo ;
+fabriquer de faux indices ;
+surveiller constamment les logs ;
+décider quand il faut “mettre de l’action”.
+
+Le mod doit faire le maximum seul.
+
+6. Ce que le mod observe
+
+Le directeur ne doit pas espionner les joueurs. Il collecte seulement des informations utiles au gameplay.
+
+Activité des joueurs
+
+Il peut suivre :
+
+temps connecté ;
+temps passé seul ;
+temps passé en groupe ;
+distance explorée ;
+fréquence de déplacement ;
+temps passé dans un camp ;
+morts récentes ;
+combats ;
+créatures tuées ;
+animaux nourris ;
+blocs posés ;
+blocs cassés ;
+sommeil ;
+zones souvent visitées ;
+zones abandonnées ;
+événements déjà reçus ;
+temps depuis le dernier événement.
+État du groupe
+
+Le système peut estimer si le groupe est :
+
+regroupé ;
+dispersé ;
+en exploration ;
+en construction ;
+en combat ;
+en récupération ;
+dans une période calme ;
+déjà au milieu d’une grosse situation ;
+trop souvent ciblé récemment.
+État technique
+
+Le directeur doit aussi tenir compte de :
+
+nombre de joueurs connectés ;
+redémarrage récent ;
+joueur qui vient de mourir ;
+serveur en difficulté ;
+événement déjà actif ;
+joueur en changement de dimension ;
+zone non chargée ;
+erreurs récentes.
+
+Il ne faut pas lancer un gros événement pendant que le serveur lag ou qu’un joueur vient de perdre tout son équipement.
+
+7. La mémoire du monde
+
+Le monde doit conserver une petite mémoire des régions.
+
+Une région peut être un carré de plusieurs chunks.
+
+Chaque région peut mémoriser :
+
+temps d’occupation ;
+passages fréquents ;
+blocs modifiés ;
+morts ;
+combats ;
+nuits passées ;
+présence d’un camp ;
+ancien camp abandonné ;
+dernier événement ;
+activité récente ;
+joueurs habituels ;
+état spécial éventuel.
+
+Cette mémoire doit rester légère.
+
+Le mod ne doit pas enregistrer tous les déplacements précis ni chaque bloc changé individuellement pendant des mois.
+
+Il faut conserver des compteurs et des états résumés.
+
+8. Comment le monde peut évoluer
+
+Le système ne doit pas juste faire apparaître des sons ou des monstres.
+
+Il doit aussi pouvoir modifier légèrement le monde.
+
+Exemples de changements persistants
+un ancien camp commence à être repris par la végétation ;
+des animaux s’installent autour d’une zone calme ;
+une région surexploitée devient moins généreuse ;
+un passage fréquent devient plus visible ;
+une zone abandonnée reçoit de nouvelles traces ;
+une clairière change après une décision collective ;
+une structure développe plusieurs états ;
+certains objets apparaissent seulement après une activité précise ;
+une ambiance sonore devient propre à un lieu ;
+un endroit associé à plusieurs morts devient plus inquiétant.
+Limite importante
+
+Le mod ne doit pas transformer librement des milliers de blocs sans contrôle.
+
+Les évolutions persistantes doivent utiliser :
+
+des structures prévues ;
+des blocs du mod ;
+des points d’intérêt ;
+de petites modifications ;
+des états enregistrés ;
+des systèmes réversibles ou limités.
+9. Les familles d’événements
+Événements environnementaux
+
+Ils concernent le monde.
+
+Exemples :
+
+brouillard local ;
+vent inhabituel ;
+silence soudain ;
+migration animale ;
+changement temporaire de lumière ;
+végétation étrange ;
+apparition de traces ;
+ressources inhabituelles ;
+tempête localisée ;
+transformation d’un lieu connu.
+Événements collectifs
+
+Ils concernent plusieurs joueurs.
+
+Exemples :
+
+tous les animaux regardent une direction ;
+une zone devient silencieuse ;
+un camp semble avoir été visité ;
+un objet commun réagit ;
+un chemin apparaît ;
+une structure change d’état ;
+plusieurs joueurs doivent faire un choix ;
+un groupe séparé reçoit des informations complémentaires.
+Événements asymétriques
+
+Ils sont vécus différemment selon les joueurs.
+
+Exemples :
+
+un joueur voit une silhouette ;
+un autre entend des pas ;
+un autre voit des symboles ;
+deux joueurs reçoivent des directions différentes ;
+plusieurs personnes possèdent chacune une partie d’un indice ;
+un joueur voit une copie d’un autre joueur ;
+un objet affiche un nom différent selon la personne.
+Événements sociaux
+
+Ils utilisent la manière dont les joueurs jouent ensemble.
+
+Exemples :
+
+un indice est donné au joueur le moins souvent cru ;
+une situation cible un groupe qui s’est séparé ;
+une zone réagit aux joueurs qui y dorment souvent ;
+une apparition suit la personne qui reste toujours derrière ;
+un événement se déclenche autour d’un objet souvent partagé ;
+le monde “se souvient” d’un groupe précis.
+Événements fun
+
+Ils doivent rester rares et cohérents avec le ton.
+
+Exemples :
+
+une chèvre s’installe mystérieusement dans le camp ;
+les poules se dirigent toutes vers un objet sans valeur ;
+un objet inutile devient temporairement très important ;
+un animal semble copier les habitudes d’un joueur ;
+un bruit très inquiétant mène à quelque chose de complètement ridicule.
+10. Place des perceptions différentes
+
+Les perceptions différentes restent une mécanique importante, mais elles ne sont pas le projet entier.
+
+Elles servent à :
+
+pousser les joueurs à discuter ;
+créer des témoignages contradictoires ;
+rendre certains moments plus personnels ;
+produire des scènes intéressantes en multijoueur ;
+enrichir les streams sans dépendre d’eux.
+
+La réalité physique reste commune :
+
+mêmes blocs ;
+mêmes collisions ;
+mêmes vraies entités ;
+mêmes inventaires ;
+mêmes constructions.
+
+Les différences concernent surtout :
+
+sons ;
+particules ;
+apparitions non physiques ;
+symboles ;
+textes ;
+noms d’objets ;
+petites interfaces ;
+blocs spéciaux du mod.
+11. Équité entre les joueurs
+
+Le système doit éviter de toujours viser :
+
+les streamers ;
+les joueurs les plus bruyants ;
+les meilleurs joueurs ;
+les mêmes personnes ;
+ceux qui s’isolent souvent.
+
+Chaque joueur doit pouvoir recevoir des moments intéressants.
+
+Le directeur doit tenir compte de :
+
+nombre d’événements déjà reçus ;
+temps depuis le dernier événement ;
+importance récente ;
+participation au groupe ;
+arrivée récente sur le serveur ;
+fatigue potentielle ;
+répétition des mêmes rôles.
+
+Exemple :
+
+Un joueur ayant reçu trois événements récemment doit avoir moins de chances d’être choisi immédiatement.
+
+Un joueur peu sollicité peut recevoir progressivement un bonus de sélection.
+
+12. Les streamers
+
+Les streamers peuvent rendre certaines scènes plus intéressantes parce que plusieurs points de vue existent.
+
+Mais ils ne doivent pas recevoir automatiquement :
+
+plus d’événements ;
+plus d’indices ;
+des événements exclusifs ;
+une protection spéciale ;
+une priorité dans les scènes.
+
+Le mod doit fonctionner sans Twitch et sans YouTube.
+
+Une intégration stream peut être envisagée plus tard, mais uniquement comme extension facultative.
+
+Exemples possibles plus tard :
+
+overlay discret ;
+identifiant d’événement ;
+marque automatique pour retrouver un clip ;
+vote ponctuel non destructeur ;
+influence très légère du public.
+
+Ce n’est pas une priorité.
+
+13. Rôle des modos
+
+Les modos sont avant tout des potes qui jouent.
+
+Ils doivent pouvoir :
+
+explorer ;
+construire ;
+mourir ;
+faire des théories ;
+découvrir les événements ;
+être surpris ;
+streamer ;
+participer comme les autres.
+
+Ils ne doivent pas :
+
+animer le serveur ;
+déclencher les scènes ;
+rester dans les logs ;
+connaître tous les secrets ;
+surveiller chaque joueur ;
+sacrifier leur session.
+
+Leur rôle supplémentaire est simplement d’aider si :
+
+un joueur est réellement bloqué ;
+un événement ne s’arrête pas ;
+le serveur plante ;
+un bug casse la partie ;
+un effet reste actif ;
+quelqu’un gâche volontairement l’ambiance ;
+une situation humaine devient désagréable.
+Message simple à leur donner
+
+Pour la saison 2, le serveur va gérer beaucoup plus de choses tout seul. Vous êtes toujours là avant tout pour jouer et profiter. Vous aurez juste quelques outils de secours si un truc casse vraiment. Pas besoin de surveiller tout le monde ni de connaître tous les secrets. Faites vos théories, testez les nouveautés et dites-moi simplement quand un truc est cool, chiant ou complètement cassé.
+
+14. Ce que le mod doit coder
+Le noyau obligatoire
+Directeur automatique
+
+Il doit :
+
+analyser l’état du serveur ;
+décider si un événement peut démarrer ;
+choisir une famille d’événements ;
+choisir une région ;
+choisir les joueurs ;
+attribuer des rôles ;
+lancer les effets ;
+suivre la durée ;
+arrêter proprement ;
+enregistrer le résultat ;
+appliquer les cooldowns.
+Mémoire des joueurs
+
+Elle contient :
+
+compteurs utiles ;
+derniers événements ;
+temps seul ou en groupe ;
+historique léger ;
+équilibre de ciblage ;
+états temporaires.
+Mémoire des régions
+
+Elle contient :
+
+activité ;
+occupation ;
+modifications ;
+morts ;
+événements ;
+camps ;
+états persistants ;
+dernière visite.
+Gestion des événements
+
+Il faut coder :
+
+définitions ;
+conditions ;
+effets ;
+rôles ;
+instances ;
+résultats ;
+cooldowns ;
+incompatibilités ;
+arrêt automatique ;
+récupération après redémarrage.
+Réseau
+
+Il faut pouvoir envoyer à un joueur précis :
+
+un son ;
+une particule ;
+une apparition ;
+un symbole ;
+un message ;
+un effet visuel ;
+un nettoyage client.
+Rendu client
+
+Il faut gérer :
+
+apparitions non physiques ;
+symboles ;
+modèles temporaires ;
+effets de brume ;
+effets visuels ;
+disparition propre ;
+changement de dimension ;
+déconnexion.
+Outils de secours
+
+Il faut coder :
+
+/proutlost status
+/proutlost stop
+/proutlost rescue <joueur>
+/proutlost report <message>
+/proutlost trigger <événement> [joueur]
+/proutlost debug
+15. Ce qui peut être data-driven
+
+Le moteur principal sera en Java.
+
+Le contenu pourra ensuite être défini en JSON.
+
+À mettre en JSON
+identifiant ;
+catégorie ;
+poids ;
+cooldown ;
+durée ;
+conditions simples ;
+rôles ;
+sons ;
+particules ;
+textes ;
+apparitions ;
+zones autorisées ;
+intensité ;
+suites simples ;
+récompenses ;
+états persistants simples.
+Exemple
+{
+  "id": "proutlost:parallel_steps",
+  "category": "asymmetric",
+  "weight": 8,
+  "cooldown_ticks": 72000,
+  "max_duration_ticks": 600,
+  "conditions": [
+    {
+      "type": "proutlost:player_isolated",
+      "minimum_ticks": 400
+    },
+    {
+      "type": "proutlost:session_state",
+      "state": "calm"
+    }
+  ],
+  "roles": {
+    "witness": {
+      "count": 1,
+      "selection": "least_recently_targeted"
+    }
+  },
+  "effects": [
+    {
+      "type": "proutlost:directional_sound",
+      "role": "witness",
+      "sound": "proutlost:parallel_steps",
+      "repeat": 4
+    }
+  ]
+}
+À garder en Java
+réseau ;
+persistance ;
+sécurité ;
+rendu ;
+calcul des états ;
+directeur ;
+logique avancée ;
+performances ;
+validation ;
+gestion des erreurs ;
+transformations complexes.
+16. Architecture technique proposée
+proutlost/
+├── core/
+│   ├── Proutlost.java
+│   ├── services
+│   └── lifecycle
+├── registry/
+│   ├── blocks
+│   ├── items
+│   ├── sounds
+│   ├── entities
+│   └── event_types
+├── player/
+│   ├── PlayerProfile
+│   ├── PlayerMemory
+│   ├── PlayerActivityTracker
+│   └── FairnessTracker
+├── world/
+│   ├── ProutlostWorldData
+│   ├── RegionMemory
+│   ├── RegionKey
+│   ├── CampManager
+│   ├── LocationState
+│   └── WorldEvolutionManager
+├── session/
+│   ├── SessionAnalyzer
+│   ├── SessionState
+│   └── ServerHealthState
+├── director/
+│   ├── WorldDirector
+│   ├── EventSelector
+│   ├── RoleAllocator
+│   ├── IntensityController
+│   └── CooldownManager
+├── event/
+│   ├── EventDefinition
+│   ├── EventInstance
+│   ├── EventContext
+│   ├── EventResult
+│   ├── condition/
+│   └── effect/
+├── network/
+│   ├── payload
+│   └── handler
+├── client/
+│   ├── apparition
+│   ├── rendering
+│   ├── audio
+│   ├── particles
+│   └── cleanup
+├── command/
+├── config/
+├── debug/
+└── data/
+17. États de session
+
+Le mod peut définir quelques états simples.
+
+public enum SessionState {
+    CALM,
+    EXPLORATION,
+    CONSTRUCTION,
+    GROUPED,
+    DISPERSED,
+    COMBAT,
+    RECOVERY,
+    HIGH_ACTIVITY
+}
+
+Ces états ne doivent pas être une intelligence artificielle compliquée.
+
+Ils peuvent être calculés avec des règles simples :
+
+joueurs proches ou éloignés ;
+blocs posés récemment ;
+distance parcourue ;
+dégâts reçus ;
+morts ;
+nombre de créatures hostiles proches ;
+temps depuis le dernier événement ;
+activité globale.
+
+Un serveur peut être à la fois en exploration et dispersé. Le système réel pourra donc utiliser plusieurs scores plutôt qu’un seul état.
+
+18. Profils et données
+Profil joueur
+
+Exemple conceptuel :
+
+public final class PlayerProfile {
+    private long totalPlayTicks;
+    private long isolatedTicks;
+    private long groupedTicks;
+    private int recentDeaths;
+    private int blocksPlaced;
+    private int blocksBroken;
+    private int hostileKills;
+    private int passiveKills;
+    private int animalsFed;
+    private int eventsReceived;
+    private long lastEventGameTime;
+    private double attentionDebt;
+}
+
+attentionDebt peut servir à favoriser progressivement les joueurs peu sollicités.
+
+Mémoire régionale
+public final class RegionMemory {
+    private long occupiedTicks;
+    private int playerVisits;
+    private int blocksChanged;
+    private int deaths;
+    private int combatEvents;
+    private int nightsSpent;
+    private boolean campPresent;
+    private long lastVisitedGameTime;
+    private long lastEventGameTime;
+    private ResourceLocation persistentState;
+}
+19. Boucle du directeur
+
+Pseudo-code :
+
+public void tick(MinecraftServer server) {
+    if (!shouldRunThisTick(server)) {
+        return;
+    }
+
+    sessionAnalyzer.update(server);
+    worldMemory.update(server);
+
+    if (activeEvent != null) {
+        activeEvent.tick(server);
+
+        if (activeEvent.isFinished() || activeEvent.hasTimedOut()) {
+            stopActiveEvent();
+        }
+
+        return;
+    }
+
+    if (!serverHealthAllowsEvent(server)) {
+        return;
+    }
+
+    EventContext context = buildContext(server);
+    List<EventDefinition> candidates = eventRegistry.findEligible(context);
+
+    if (candidates.isEmpty()) {
+        return;
+    }
+
+    EventDefinition selected = eventSelector.choose(candidates, context);
+    EventInstance instance = selected.createInstance(context);
+
+    startEvent(instance);
+}
+
+Le directeur ne doit pas s’exécuter chaque tick.
+
+Une vérification toutes les 5 à 15 secondes est largement suffisante.
+
+20. Le MVP corrigé
+
+Le MVP doit contenir :
+
+Système
+analyse légère de la session ;
+profil joueur ;
+mémoire régionale ;
+directeur automatique ;
+équité entre joueurs ;
+cooldowns ;
+intensité ;
+arrêt automatique ;
+logs ;
+outils de secours.
+Contenu
+environ 15 événements ;
+une zone spéciale ;
+quelques blocs ;
+quelques objets ;
+sons ciblés ;
+particules ;
+apparitions ;
+changements de monde légers ;
+événements communs ;
+événements asymétriques.
+Répartition conseillée des 15 événements
+5 environnementaux
+silence local ;
+migration animale ;
+brouillard ;
+ancien camp repris par la végétation ;
+zone devenue inhabituellement calme.
+5 collectifs ou sociaux
+convergence vers un point ;
+choix autour d’un lieu ;
+camp visité ;
+objet partagé qui réagit ;
+événement provoqué par la séparation du groupe.
+5 asymétriques
+pas parallèles ;
+silhouette ;
+symboles visibles par certains ;
+directions contradictoires ;
+séquence fragmentée.
+21. Première zone spéciale
+
+Nom provisoire : la Clairière.
+
+Elle peut contenir :
+
+un élément central ;
+plusieurs supports de symboles ;
+plusieurs états possibles ;
+une mémoire persistante ;
+une interaction de groupe ;
+des effets différents selon les joueurs.
+
+Exemple :
+
+le groupe découvre la zone ;
+certains voient des symboles ;
+d’autres entendent une suite de sons ;
+un objet central peut recevoir plusieurs types d’interactions ;
+le choix collectif modifie l’état de la zone ;
+cet état change les futurs événements possibles.
+
+La Clairière sert de preuve que :
+
+le monde se souvient ;
+les joueurs influencent réellement les lieux ;
+les perceptions différentes peuvent s’intégrer à un système plus large.
+22. Mods externes à prévoir
+Animations des joueurs
+
+Objectifs :
+
+mouvements plus naturels ;
+course ;
+marche ;
+saut ;
+nage ;
+escalade ;
+combat ;
+utilisation d’objets ;
+poses ;
+interactions de groupe.
+
+Points à vérifier :
+
+compatibilité NeoForge 1.21.1 ;
+compatibilité multijoueur ;
+compatibilité skins ;
+compatibilité armures ;
+compatibilité shaders ;
+compatibilité avec les apparitions du mod maison ;
+impact sur les performances.
+
+Le choix exact des mods devra être fait après tests.
+
+Ambiance île déserte
+
+Il faut chercher des mods pour :
+
+sons de vagues ;
+vent ;
+jungle ;
+pluie ;
+tempêtes ;
+insectes ;
+oiseaux ;
+plages ;
+végétation tropicale ;
+faune marine ;
+grottes ;
+brouillard ;
+couchers de soleil ;
+feu de camp ;
+pêche ;
+exploration maritime.
+Terrain
+
+Possibilités :
+
+Tectonic ou équivalent ;
+datapack de terrain ;
+biomes tropicaux ;
+carte semi-personnalisée ;
+worldgen contrôlé ;
+structures faites main.
+
+Pour la saison 2, une carte semi-contrôlée peut être plus adaptée qu’un monde totalement aléatoire.
+
+Sons et ambiance
+
+Mods potentiels :
+
+sons environnementaux ;
+météo visuelle ;
+brouillard ;
+particules ;
+amélioration de la pluie ;
+sons de grottes.
+
+Il faudra éviter que ces mods couvrent les sons narratifs.
+
+Vie de camp
+
+Mods possibles :
+
+Farmer’s Delight ;
+pêche améliorée ;
+cuisine légère ;
+lanternes ;
+cordes ;
+caisses ;
+mobilier ;
+stockage simple ;
+décoration.
+Communication
+
+Un mod vocal de proximité serait très adapté.
+
+Il renforce :
+
+les séparations ;
+la peur de perdre le groupe ;
+les appels à distance ;
+les témoignages contradictoires ;
+les scènes naturelles.
+Qualité de vie
+affichage des recettes ;
+gestion légère des corps ;
+sacs limités ;
+stockage ;
+inventaire ;
+outils d’administration ;
+carte limitée.
+
+Éviter :
+
+minimap affichant toutes les entités ;
+vision des grottes ;
+téléportation trop facile ;
+systèmes supprimant toute difficulté d’exploration.
+Optimisation
+
+Prévoir :
+
+optimisation serveur ;
+optimisation client ;
+pré-génération des chunks ;
+profiling ;
+réduction de la charge des entités ;
+tests avec plusieurs joueurs ;
+tests avec enregistrement et stream.
+23. Ce que les mods externes ne doivent pas faire
+
+Le modpack ne doit pas contenir trop de systèmes qui se battent entre eux.
+
+À éviter :
+
+plusieurs mods météo en même temps ;
+plusieurs gros mods d’animations incompatibles ;
+trop de mods de structures ;
+trop de créatures ;
+plusieurs systèmes de survie sévères ;
+grosse industrie ;
+magie massive ;
+dizaines de dimensions ;
+progression trop éloignée de Minecraft.
+
+Le mod maison doit rester le centre.
+
+Les autres mods servent à :
+
+embellir ;
+enrichir ;
+donner de l’ambiance ;
+améliorer le confort ;
+éviter de tout recoder.
+24. Place de Create
+
+Create reste facultatif.
+
+Il peut être intéressant pour :
+
+mécanismes de camp ;
+ascenseurs ;
+ponts ;
+portes ;
+petites installations ;
+antennes ;
+machines improvisées.
+
+Mais il peut aussi :
+
+détourner la partie vers l’industrie ;
+créer trop d’automatisation ;
+rendre la survie secondaire ;
+alourdir le modpack.
+
+Décision actuelle :
+
+Create pourra être testé, mais il ne fait pas partie du MVP obligatoire.
+
+25. Fonctions futures envisageables
+Relativement réalistes
+davantage d’états de région ;
+nouveaux types d’événements ;
+plusieurs lieux spéciaux ;
+objets gardant une histoire ;
+camps reconnus automatiquement ;
+événements à choix ;
+liens entre événements ;
+apprentissage de symboles ;
+API interne ;
+intégration légère avec KubeJS.
+Plus complexes
+copie visuelle complète d’un joueur ;
+créature adaptative ;
+événements rejouant le passé ;
+objets rendus différemment selon le joueur ;
+blocs fantômes ;
+zones superposées ;
+narration plus longue ;
+événements avec plusieurs étapes.
+À éviter au début
+monde physique différent selon le joueur ;
+collisions individualisées ;
+intelligence artificielle comprenant le vocal ;
+lecture automatique des streams ;
+nouvelle dimension ;
+génération infinie de scénario ;
+campagne immense ;
+dépendance à Twitch ;
+système écologique complet.
+26. Ordre de développement recommandé
+Étape 1 — Socle
+projet NeoForge ;
+dépôt Git ;
+configuration ;
+registres ;
+logs ;
+serveur de test.
+Étape 2 — Données persistantes
+profil joueur ;
+données monde ;
+sérialisation ;
+sauvegarde ;
+migration simple.
+Étape 3 — Analyse de session
+joueurs groupés ou isolés ;
+activité récente ;
+morts ;
+exploration ;
+construction ;
+état serveur.
+Étape 4 — Directeur minimal
+une seule famille d’événements ;
+sélection ;
+cooldown ;
+durée ;
+arrêt automatique.
+Étape 5 — Réseau ciblé
+son individuel ;
+particule individuelle ;
+message ;
+nettoyage client.
+Étape 6 — Apparition visuelle
+manager client ;
+modèle simple ;
+durée ;
+disparition ;
+test à deux joueurs.
+Étape 7 — Mémoire régionale
+découpage en régions ;
+activité ;
+occupation ;
+camps ;
+dernier événement ;
+états persistants.
+Étape 8 — Chargement JSON
+définitions ;
+conditions ;
+effets ;
+erreurs lisibles ;
+rechargement.
+Étape 9 — Évolution du monde
+une zone à plusieurs états ;
+petite modification persistante ;
+conséquences ;
+sauvegarde.
+Étape 10 — Outils de secours
+status ;
+stop ;
+rescue ;
+report ;
+debug ;
+logs structurés.
+Étape 11 — Vertical slice
+la Clairière ;
+quinze événements ;
+plusieurs joueurs ;
+mods d’ambiance ;
+animations ;
+session complète.
+27. Critères de réussite
+
+Le MVP est réussi si :
+
+le serveur peut gérer ses événements sans maître du jeu ;
+le directeur choisit les bons moments de manière crédible ;
+les régions gardent une mémoire légère ;
+certains lieux évoluent ;
+les joueurs ne sont pas toujours ciblés de la même manière ;
+les événements s’arrêtent seuls ;
+une déconnexion ne casse pas tout ;
+le mod survit à un redémarrage ;
+les perceptions différentes fonctionnent ;
+les événements communs fonctionnent ;
+les changements persistants sont visibles ;
+les modos peuvent jouer ;
+toi aussi tu peux jouer ;
+les streamers ne sont pas favorisés ;
+une session de plusieurs heures reste stable ;
+le concept fonctionne sans stream.
+28. Risques à surveiller
+Trop d’événements
+
+Le serveur devient fatigant.
+
+Solution :
+
+cooldowns longs ;
+intensité ;
+détection des moments calmes ;
+plafonds par heure.
+Pas assez d’événements
+
+Les joueurs ne voient pas le système.
+
+Solution :
+
+dette d’attention ;
+événements légers ;
+petits changements environnementaux ;
+mode test.
+Monde qui se détruit tout seul
+
+Les transformations deviennent incontrôlables.
+
+Solution :
+
+zones prévues ;
+changements limités ;
+états ;
+structures ;
+sauvegardes.
+Les joueurs pensent que tout est un bug
+
+Solution :
+
+identité visuelle cohérente ;
+sons propres au mod ;
+événements testés ;
+effets qui se terminent proprement ;
+éviter d’imiter de vrais bugs Minecraft.
+Les modos doivent intervenir trop souvent
+
+Solution :
+
+timeout automatique ;
+nettoyage client ;
+vérification de santé ;
+reprise après redémarrage ;
+système de secours simple.
+Projet trop gros pour une personne
+
+Solution :
+
+un moteur simple ;
+contenu en JSON ;
+beaucoup de tests ;
+peu d’assets au début ;
+pas de nouvelle dimension ;
+pas de grosse IA ;
+pas de campagne complète.
+29. Règles de développement
+Le serveur décide, le client affiche.
+Aucun événement ne doit dépendre d’un humain.
+Chaque événement a une durée maximale.
+Chaque effet peut être nettoyé.
+Chaque événement peut être désactivé.
+Les données restent légères.
+Pas d’analyse chaque tick.
+Les erreurs ne doivent pas arrêter le serveur.
+Les logs doivent être lisibles.
+Les mécaniques doivent fonctionner sans streamer.
+Les modos doivent pouvoir jouer.
+Le contenu doit pouvoir être ajouté sans réécrire tout le moteur.
+30. Résumé à garder pour le nouveau projet
+Vision
+
+Créer un serveur Minecraft sur une île mystérieuse où le monde observe la façon dont les joueurs vivent, mémorise l’histoire des lieux et déclenche automatiquement des événements adaptés.
+
+Cœur technique
+directeur automatique ;
+analyse de session ;
+mémoire joueur ;
+mémoire régionale ;
+équité ;
+événements data-driven ;
+évolutions persistantes ;
+perceptions ciblées ;
+outils de secours.
+Ambiance
+île déserte ;
+jungle ;
+plage ;
+océan ;
+survie légère ;
+animation des joueurs ;
+météo ;
+sons ;
+mystère ;
+moments fun.
+Priorité
+
+Faire un système assez autonome pour que :
+
+les joueurs jouent ;
+les modos jouent ;
+le créateur joue ;
+personne ne soit obligé d’être maître du jeu.
+Phrase finale
+
+Proutlost Saison 2 est un monde Minecraft autonome et réactif qui observe la vie du serveur, se souvient de ce qui arrive dans chaque région et crée ses propres événements, parfois communs à tous, parfois différents selon les joueurs.

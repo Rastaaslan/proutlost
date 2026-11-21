@@ -1,0 +1,10 @@
+allprojects {
+    plugins.withId('java') {
+        tasks.register('p008AnchorInteractionCommandsTest', JavaExec) {
+            dependsOn tasks.named('directorTestClasses')
+            classpath = sourceSets.directorTest.runtimeClasspath
+            mainClass = 'fr.proutlost.director.adapter.neoforge.network.AnchorInteractionCommandsTests'
+            enableAssertions = true
+        }
+    }
+}

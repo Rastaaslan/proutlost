@@ -1,0 +1,329 @@
+{
+  "api_version": "1.0.1",
+  "source_digest": "c94f65e6e3618a96498588e9995818673955169e1ac914e74be57e5133e12b5b",
+  "integration_digest": "cece0944a9e0b6a2d34331a82790392c6da5f44f0332a6e3a937c458ae3d82cc",
+  "archive_sha256": "30e48bfecec703de84e5fc9279da7ac9e41319c879a66aa314b21092ab8b370f",
+  "jar_sha256": "a670ff5ea985882a6c90f4fc30aca5d898e7af82661e154df1255e21047f2259",
+  "manifest_sha256": "29603edd11ec593564559f7326420e50775e2be06ba4ba5e55cd1d54cd988a25",
+  "delta_files": 49,
+  "revision_docs": 13,
+  "clockUTC": "2026-10-24T00:24:20.770220+00:00",
+  "historical_G0_archive_preserved": true,
+  "qualification": "Explicit Work publication supplied by user supersedes candidate status in archived docs",
+  "files": [
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/API_CHANGE_DECISION_1.0.1.json",
+      "sha256": "06ba594186ef15b309cc2ff5aad2d74a576f7cf9d6dd0b76ca458a541f540394",
+      "bytes": 11147
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/API_MANIFEST_1.0.1.json",
+      "sha256": "29603edd11ec593564559f7326420e50775e2be06ba4ba5e55cd1d54cd988a25",
+      "bytes": 117224
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/HANDOFF.md",
+      "sha256": "93f0f66747bde5293266da83f4df8ca7e3f49b30c0e3eea78a66835d139d2de3",
+      "bytes": 2613
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/JAVA_INVENTORY_1.0.1.json",
+      "sha256": "ecd3e463ad9cd91ec53d8e65224fb16da37cb28d153d95c94bc90bef3fae5ed6",
+      "bytes": 75117
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/TEST_EVIDENCE_1.0.1.json",
+      "sha256": "9c0b3219295b8d607c79d2db9ca3fa7162d4c5a49e9361d8e58484ee66025ee6",
+      "bytes": 5856
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/bootstrap.log",
+      "sha256": "aa668d67aabc348ec6558e9ad3bf8488979e2ff6dc2d3e35d173e33733551454",
+      "bytes": 218
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/compile.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/contracts.log",
+      "sha256": "6cc25c948c98b42c911884029e681b6b6599a47dd446716acfcd138650c23f31",
+      "bytes": 108
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/evidence-regression.log",
+      "sha256": "d660987dca212adfbb05ff756c7618e094aaba4793260e2f5483f69088555e7b",
+      "bytes": 127
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/inventory.log",
+      "sha256": "7ef02b9af86d4aa386e4f855be7238d11c7743d857c906817bac9550c8440fd1",
+      "bytes": 56
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/packaging.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/platform-compile.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/worlddirector-v1/api-1.0.1/logs/schema.log",
+      "sha256": "252f5aea020e2f4eec811b96a704dc90188c5ee2b83fac1cdcb0c1cf7f52ef05",
+      "bytes": 262
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/ActivityHistogram.java",
+      "sha256": "2d443dca6f4623bdfebae1a7af281b8981922b1be1e175621b22503a72d18dc4",
+      "bytes": 1019
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/ActivityTimeCounts.java",
+      "sha256": "5ff072602abca76fa5d1b72299bdbf8e3e02e3ec126a61f29095acb97428d76e",
+      "bytes": 611
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/AdminReadResult.java",
+      "sha256": "f167db977928d6cb540000649f716a6f3d155899a263ec29fc57c61ab36bf7c0",
+      "bytes": 850
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/AdminSnapshotStamp.java",
+      "sha256": "37fc1417a3512295e8b668a84e37983263c4dd171f43cecea7e3d5cbcc2a2681",
+      "bytes": 475
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/CampSnapshot.java",
+      "sha256": "8b5129752bc40c726ea6e49979f82ad090deacbeb41f17cefe3fdb1577fd3e8d",
+      "bytes": 1061
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/CatalogSnapshot.java",
+      "sha256": "95880490f7b98aec715b18da02a5ae17acc90c3bc7ce3ce124423653318922d2",
+      "bytes": 1060
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/ContextAffinity.java",
+      "sha256": "0f841395395be5246fde49733842824b0a5669347a056358c75c6b30a2ee34f3",
+      "bytes": 330
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/CooldownBinding.java",
+      "sha256": "b38941131b07264388bd0b400cdf346ec6662a02068cc53ee25c35cf8f120136",
+      "bytes": 1218
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/CooldownRecord.java",
+      "sha256": "db02e09c643df79e43799770b0fa157e309fbf4f5a4df7b35c8a506e0e603c6b",
+      "bytes": 1056
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/CooldownReleaseMode.java",
+      "sha256": "835a17b9c2c669efcbdc46776ceeb13be1410fa942081a8a0d69bb46ed54389a",
+      "bytes": 190
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/CooldownSelector.java",
+      "sha256": "dfa0818c9725ce0d5cb64aa819c4075b9bc3bc6a5a49b656fbc16fa4bec5d6bc",
+      "bytes": 243
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/DeferredPlanning.java",
+      "sha256": "29ab62ac53edaee546db314a203b2637b296982cd043dd2fff59576ba86dc811",
+      "bytes": 430
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/DefinitionScoringProfile.java",
+      "sha256": "94d040872ee6822bce88c758fa6db011a888e5032769c13084f5b546d2d82d98",
+      "bytes": 1115
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/DirectorRequestState.java",
+      "sha256": "ad811888724dd32920f13abdf79aaec84ac93e803726aa38cb8fc92193839c36",
+      "bytes": 1802
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/DurableRecord.java",
+      "sha256": "1b8f6573ed93301dc6b03bc7b89e8fd8131369705d4a96887ff5a499b280e2cd",
+      "bytes": 384
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/DurableRequest.java",
+      "sha256": "9c0a79c376fca06e48b5d8ee76ec8ca22d3eb9df761d35540ae9272f9d60f740",
+      "bytes": 1446
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/DurableRuntimeAdminAudit.java",
+      "sha256": "12c54a93e9d76b2bbf296d551cef3858720063fc8dde961a9fbcbe2a6d6b88e2",
+      "bytes": 315
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/EventCooldownSelector.java",
+      "sha256": "9b3180e8e263e3d7eb1dd9c6f417b672d1b84709918801528e8c7e0e96ad0ae1",
+      "bytes": 279
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/FamilyCooldownSelector.java",
+      "sha256": "12418352f23ae38f1b5c8476bab0953d6a1ec6e57a989e0eed457908020ba085",
+      "bytes": 263
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/GlobalSafetyCooldownSelector.java",
+      "sha256": "7b08e2488e0bd978ba9b950964ea8fa30fe14cf34da10491bb75b3374777d825",
+      "bytes": 284
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/NarrativePriority.java",
+      "sha256": "eb433273e2b35f70110fb03cc782fdba1747c97b6861d94a2e4e9960917189a9",
+      "bytes": 426
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/PlannedPrimitive.java",
+      "sha256": "a7b35ffde8a27b4f01a110665c1e60a34be19e36c192d5a59d7be347a8e0b602",
+      "bytes": 972
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/PlanningBindings.java",
+      "sha256": "8a8f3ecb9e96faca7da7fc077b88ac99416ae2381e59ebe7bf0be05f1b119d97",
+      "bytes": 957
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/PlanningRequest.java",
+      "sha256": "bd14ab2f670f9aaef116d303f0963cf8e0c68746089fa926a05ef2a21f45953e",
+      "bytes": 375
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/PlanningResult.java",
+      "sha256": "4290c40183304d397dd21ed67b4e9248ba9dda508c70febd9bcd4af8f064baab",
+      "bytes": 201
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/PlanningSnapshot.java",
+      "sha256": "48132b5e2538c0808222f0e377bfaae73d19ed79e5d4fa2c428701c277cc1203",
+      "bytes": 1067
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/PreferenceDecay.java",
+      "sha256": "2e82f77ae3c617fe58ca94a5619ede17de2456b533e064221e053d51348ee36f",
+      "bytes": 163
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/PrepareRecord.java",
+      "sha256": "71219e2785aec23c2e853b36db0a9617367d7328676be3a878e2261c192d8ee0",
+      "bytes": 4466
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/RequestPolicySource.java",
+      "sha256": "5b47fc0d987a8e168f95953ae76b170b172a86b742a518daff210c43beb04647",
+      "bytes": 193
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/RequestSchedulingPolicy.java",
+      "sha256": "b5723706910e6d47f05dfe7f913d51801d5894caba399f2f26044a6ac2831645",
+      "bytes": 1445
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/RuntimeAdminAudit.java",
+      "sha256": "e282117c250158cf4016fc88cd2b1769e9a7577f241e56bc392f15904e60880a",
+      "bytes": 1332
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/RuntimeAdminKey.java",
+      "sha256": "79fab5690d8a1d5c013a8dcdf19a67247480c0912b35ac254556931cb0b734a8",
+      "bytes": 290
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/StabilizationLiveSnapshot.java",
+      "sha256": "37f65e3f2f67bce176f9a7ab32713f3b6f1afde1fa70d5274dbddb17dbc44401",
+      "bytes": 531
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/StabilizationMarker.java",
+      "sha256": "54b6b4b778309e10bcac3ea4087a0e2faad7c6fdb46be2e3a6007bc3cd31aead",
+      "bytes": 686
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/StabilizationPlan.java",
+      "sha256": "bdfe7b31b4e32874d6054fa11ab3b9887ddf53a00db1994666da5adceec91e34",
+      "bytes": 1036
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/model/StabilizationSlice.java",
+      "sha256": "03bfdbd514fac5c6e8df54ab5bbb1e223604ee89f0685242a0149aacebbad7b3",
+      "bytes": 1416
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/permission/CommitPermit.java",
+      "sha256": "0d4c3cf33e40d168b520a9ed3c1e58f1bf0083742a1cecb09afcf9e0d3dcc92c",
+      "bytes": 9853
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/port/ActorAuthorityPort.java",
+      "sha256": "e26875068edd3eec7cf0bb6c3a5fd854f4ad190b4e6b7b3ed3760862ee249cf4",
+      "bytes": 399
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/port/AdminProjectionPort.java",
+      "sha256": "aa5b04100de1374b340e38841ff9f3da76f68fbf1e6a86736a1a41fe9837fa64",
+      "bytes": 539
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/port/PlanningPort.java",
+      "sha256": "ba97858dcd1ed8702c6f35de392812f7a4a12089d1837e54b17ef4a968f9f6f6",
+      "bytes": 556
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/port/QuestDirectorPort.java",
+      "sha256": "a7fde766fee607e25b4d6b329dc3224b7c3900b4a78ca601cc44b620445bf01d",
+      "bytes": 668
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/port/RuntimeAdminPort.java",
+      "sha256": "33238926d5fee072c4b426f855409403986b10bc3df2865ae5b24005f9f775c1",
+      "bytes": 1071
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/api/port/WorldEffectPort.java",
+      "sha256": "2f1960686d0360d6c2ff36c7a57aea716497178e61a45f2990594354dcd32428",
+      "bytes": 944
+    },
+    {
+      "path": "src/directorTest/java/fr/proutlost/director/testkit/Amendment101Tests.java",
+      "sha256": "b301b1f83df0b2effea4657ae64cf795a790b4c05be7f146307c909ca66ac923",
+      "bytes": 13743
+    },
+    {
+      "path": "src/directorTest/java/fr/proutlost/director/testkit/ContractTests.java",
+      "sha256": "af3b98699f22695950f1728fcee5b9982a25a14a46511f0dbe249b042cb005a0",
+      "bytes": 55838
+    },
+    {
+      "path": "src/directorTest/java/fr/proutlost/director/testkit/Expanded101Tests.java",
+      "sha256": "0e6c465dfcb4615051ba921009982ccf00e79d5392e745b65a3ac22705043e27",
+      "bytes": 10465
+    },
+    {
+      "path": "src/directorTest/java/fr/proutlost/director/testkit/TestDurableStore.java",
+      "sha256": "b76bda0b8b6e88b8465d64f50cb64e1c1cf9d5020bdcc1d2e7e00d4d035ebd37",
+      "bytes": 4808
+    },
+    {
+      "path": "src/directorTest/java/fr/proutlost/director/testkit/TestRuntimeAdminPort.java",
+      "sha256": "45bfff5489b26f0b2c02fff82ff7ff01c969a9a9f78eb56919ab9e8082271f01",
+      "bytes": 2476
+    },
+    {
+      "path": "src/directorTest/java/fr/proutlost/director/testkit/TestWorldEffectPort.java",
+      "sha256": "663b84ba94c086a7d4607992a4aefc9739b48e6212f7cfa7a35cc61324dccd9d",
+      "bytes": 1978
+    }
+  ],
+  "delta_manifest_entries_verified": 49,
+  "revision_documents_verification": "Archive SHA verified before import; each of 13 document paths/bytes/SHA recorded and verified byte-exact against archive. Manifest self SHA pinned by Work.",
+  "work_publication_sha256": "e68726bbdfea7e632b69cb7a03d3431367c4d73ad430abdd8a037805ca4e5daf",
+  "work_host_evidence_sha256": "e43d90fc101e91f6d80dd45c242c63a15334bf628ccc0a149cbb9d3022e6b232"
+}

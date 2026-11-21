@@ -1,0 +1,3 @@
+package fr.proutlost.worldprep.ore;
+import java.util.Set;
+public final class OrePlanner {public record Profile(String block,int minY,int maxY,double chance,long salt,Set<String> hosts){public Profile{hosts=Set.copyOf(hosts);if(minY>maxY||chance<0||chance>1)throw new IllegalArgumentException();}}public static boolean shouldPlace(Profile p,long seed,int x,int y,int z,String host,boolean blockEntity,boolean protectedZone){if(protectedZone||blockEntity||y<p.minY||y>p.maxY||!p.hosts.contains(host))return false;long v=seed^p.salt^((long)x*341873128712L)^((long)y*132897987541L)^z;v^=v>>>33;v*=0xff51afd7ed558ccdL;v^=v>>>33;double unit=(v>>>11)*0x1.0p-53;return unit<p.chance;}private OrePlanner(){}}

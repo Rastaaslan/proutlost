@@ -1,0 +1,38 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="proutlost_p008_cohort_qa"
+version="1.0.0-TEST_ONLY"
+displayName="P008 Cohort Observer TEST_ONLY"
+displayTest="IGNORE_ALL_VERSION"
+description="""Dedicated-server-only observational QA addon. Optional to clients: no payload channel or client capability. Requires the explicit private marked QA world. Reads previous completed vanilla ticks. BASELINE requires absent production runtime and has no actor stream; DIRECTOR adds completed real actor frames. Closed pinned cohort plan and actual UUID whitelist, max25 observations. No players, capability, ACK, effect authority or operator approval are created; nativeLab remains false. Director JAR remains loaded even on baseline."""
+
+[[dependencies.proutlost_p008_cohort_qa]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.248]"
+ordering="NONE"
+side="SERVER"
+
+[[dependencies.proutlost_p008_cohort_qa]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1]"
+ordering="NONE"
+side="SERVER"
+
+[[dependencies.proutlost_p008_cohort_qa]]
+modId="proutlost"
+type="required"
+versionRange="[0.1.0]"
+ordering="AFTER"
+side="SERVER"
+
+[[dependencies.proutlost_p008_cohort_qa]]
+modId="proutlost_director"
+type="required"
+versionRange="[1.0.0]"
+ordering="AFTER"
+side="SERVER"

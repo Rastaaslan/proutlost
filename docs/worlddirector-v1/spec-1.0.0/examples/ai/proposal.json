@@ -1,0 +1,15 @@
+{
+  "protocol_version": 1,
+  "request_id": "112e9468-5c91-4486-bd3d-72abc51f27cc",
+  "candidate_set_hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "adjustments": [
+    {
+      "candidate_id": "d82fd5aa-b86c-4409-a1f3-234e617ea689",
+      "delta_log_weight": 0.1
+    }
+  ],
+  "arc_proposals": [],
+  "rationale_codes": [
+    "NOVELTY"
+  ]
+}

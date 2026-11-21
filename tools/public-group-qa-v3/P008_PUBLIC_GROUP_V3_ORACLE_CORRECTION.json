@@ -1,0 +1,39 @@
+{
+  "version": "P008-PUBLIC-GROUP-ORCHESTRATION-V3-ROOT-ORACLE",
+  "parent_manifest_sha256": "9be4a3f6a510f4161516b65e0786050efb249c7fc386f95652c3ffaa2ad82641",
+  "cause": "Actual true execute-if-block run-say logs the nonce but returns empty RCON; helper rejected before any setup/native produce.",
+  "before_native_state": "zero players; grass unchanged; no public-group-qa directory",
+  "native_observations": [
+    {
+      "command": "execute if loaded 0 60 0 if block 0 60 0 minecraft:grass_block",
+      "response": "Test passed\n"
+    },
+    {
+      "command": "execute if loaded 0 60 0 if block 0 60 0 minecraft:dirt",
+      "response": ""
+    },
+    {
+      "command": "execute if loaded 0 60 0 if block 0 60 0 minecraft:air",
+      "response": ""
+    }
+  ],
+  "files": {
+    "public_group_qa.py": {
+      "sha256": "6274f7dd1df3cdf9a5cf3bd615712a8f482f609f0fadd31b83179a13c7080d49",
+      "bytes": 20797
+    },
+    "prepare_linux_qa.py": {
+      "sha256": "0ba2a072ad998a761b2c7c81c08ce8e7507ced403a184ecb48acc4b4a6bb01ec",
+      "bytes": 12311
+    },
+    "run_linux_qa.py": {
+      "sha256": "a8d764d00fae16a70837b37506d1c2f8c4655cc4803db14df4223b484cf7b521",
+      "bytes": 17763
+    },
+    "dependencies-server-50.json": {
+      "sha256": "6ca1be78e4e62bab3a7dac89b82f665ffbb430fe0ec9f5f5d88e2cdcddc49f8d",
+      "bytes": 7352
+    }
+  },
+  "qualifies": "Actual pinned native conditional positive and negative read oracles; GROUP chain remains NOT_RUN"
+}

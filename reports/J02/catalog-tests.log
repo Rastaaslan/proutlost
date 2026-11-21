@@ -1,0 +1,86 @@
+PASS T-CAT assertions=364 named_cases=83
+PASS eleven independently constructed codec goldens
+PASS T-CAT-02 reload/pinning/revisions
+PASS unknown field
+PASS unknown primitive
+PASS unknown nested argument
+PASS missing duration
+PASS missing role
+PASS role range
+PASS solo role capacity
+PASS cyclic steps
+PASS unknown predecessor
+PASS fractional ticks
+PASS typed fractional test parameter
+PASS negative parameter
+PASS probability overflow
+PASS unknown parameter
+PASS test calibration laundering
+PASS unknown asset
+PASS wrong reference kind
+PASS unknown capability
+PASS omitted primitive capability
+PASS unknown claim
+PASS unknown tag
+PASS unknown recipe
+PASS unknown fact
+PASS unknown selector
+PASS unknown merge
+PASS entity underbudget
+PASS mutation underbudget
+PASS growth underbudget
+PASS primitive minimum budget
+PASS missing WARN
+PASS insufficient warning lead
+PASS warning below profile
+PASS skippable WARN
+PASS danger declared safe
+PASS missing warning profile
+PASS unknown damage profile
+PASS persistent trace deletion
+PASS aggregate entity budget
+PASS duplicate step ID
+PASS cumulative delay
+PASS duration overflow
+PASS duration path
+PASS content revision reused
+PASS ID mismatch
+PASS ID traversal
+PASS unknown chain event
+PASS unknown chain fact
+PASS unknown chain state
+PASS duplicate transition
+PASS terminal starts event
+PASS short arc cycle
+PASS zero chain gap
+PASS excess planning horizon
+PASS zero planning horizon
+PASS reconsumed fact
+PASS unreachable state
+PASS duplicate document
+PASS duplicate JSON key
+PASS trailing text
+PASS invalid UTF8
+PASS nonfinite
+PASS excess depth
+PASS document byte limit
+PASS escaped duplicate JSON key
+PASS huge exponent
+PASS unknown schema keyword fails closed
+PASS external schema references rejected
+PASS snapshot immutable
+PASS steps immutable
+PASS registry immutable
+PASS duplicate primitive registration
+PASS production rejects fake primitive
+PASS production rejects test config
+PASS production rejects test registries
+PASS registered damage type accepted
+PASS damage type rejection and atomic preservation: [missing:damage]
+PASS damage type rejection and atomic preservation: [minecraft:falling_block, missing:damage]
+PASS damage type rejection and atomic preservation: [minecraft:block.gravel.step]
+PASS pack traversal rejected
+PASS pack symlink rejected
+PASS bounded stream read rejects excess bytes
+CATALOG_HASH=625c30a33cb581f2ed26f5499bcfb4c6fdec2494f9bef348fc9d1471f4ef2080
+NOT_RUN Gradle/NeoForge/GameTest/native clients/real physical capabilities (no Work slot; J02 pure domain only)

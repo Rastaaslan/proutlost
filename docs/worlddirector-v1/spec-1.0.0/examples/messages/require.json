@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "message_id": "e7f5295c-91fd-4c95-96c4-f7fd18003a09",
+  "world_id": "2c9a92c5-d852-4bb8-af70-47d9a45e08cd",
+  "producer_id": "proutlost:quest_core",
+  "producer_key": "test-quest:signal:require-v1",
+  "scope": {
+    "kind": "WORLD",
+    "id": "2c9a92c5-d852-4bb8-af70-47d9a45e08cd"
+  },
+  "correlation_id": "a9f9db76-9018-4ec8-a15c-060019f2b33a",
+  "causation_id": null,
+  "producer_sequence": "1",
+  "created_tick": "100",
+  "world_sequence": null,
+  "payload_type": "DirectorRequest",
+  "payload_version": 1,
+  "payload": {
+    "kind": "REQUIRE",
+    "request_id": "8fd7faaa-165f-410d-859c-365d8c3947d2",
+    "selector": {
+      "type": "ANY_OF",
+      "event_ids": [
+        "proutlost:required_signal"
+      ]
+    },
+    "target_constraints": {
+      "region_ids": [],
+      "player_ids": []
+    },
+    "required_fact_predicate": {
+      "type": "fact_match",
+      "fact_type": "proutlost:required_signal_observed",
+      "scope_match": {
+        "kind": "WORLD",
+        "id": "2c9a92c5-d852-4bb8-af70-47d9a45e08cd"
+      },
+      "required_evidence": "CONFIRMED",
+      "payload_equals": {}
+    },
+    "fulfillment_mode": "NEW_EXECUTION"
+  }
+}

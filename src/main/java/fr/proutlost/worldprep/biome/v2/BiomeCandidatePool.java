@@ -1,0 +1,4 @@
+package fr.proutlost.worldprep.biome.v2;
+import java.util.*;
+public final class BiomeCandidatePool { public record Candidate(String registryId,BiomeFamily family,int weight){public Candidate{if(registryId==null||registryId.isBlank()||family==null||weight<1)throw new IllegalArgumentException();}}
+ private final Map<BiomeFamily,List<Candidate>> byFamily; public BiomeCandidatePool(Collection<Candidate> input,Set<String> existingRegistryIds){var map=new EnumMap<BiomeFamily,List<Candidate>>(BiomeFamily.class);for(var c:input){if(!existingRegistryIds.contains(c.registryId()))throw new IllegalArgumentException("Missing biome: "+c.registryId());map.computeIfAbsent(c.family(),k->new ArrayList<>()).add(c);}map.replaceAll((k,v)->v.stream().sorted(Comparator.comparing(Candidate::registryId)).toList());byFamily=Map.copyOf(map);} public List<Candidate> candidates(BiomeFamily f){return byFamily.getOrDefault(f,List.of());}}

@@ -1,0 +1,23 @@
+{
+  "ticket": "PLS2-FULLSTACK-P0-008",
+  "scenario_origin": "Root acceptance instruction before this implementation: real QA loaded+Anvil producer -> sealed geometry D0 -> explicit geometry G0 -> true native J04 admission -> game readers -> cold restart.",
+  "scope": "DECLARED_SYNTHETIC_QA_GEOMETRY_CONTRACT_NO_AUTHOR_SEMANTICS",
+  "mapping": {
+    "each_d0_box": "Exactly one G0 REGION and one G0 LOCATION, explicit paired membership; inclusive max becomes exclusive max+1 without bounding-union cells.",
+    "identity": "Deterministic sourceWorld + D0location + exact canonical box + kind; build/revision/order excluded.",
+    "source_namespace": "proutlost:observed_physical_geometry; first physical sourceWorld pinned by producer state.",
+    "anchors": [],
+    "tags": [],
+    "author_semantics": "No roles/capabilities/EventNeed/adapters/policies/preferences created. D0 snapshot remains retained intact."
+  },
+  "observable_steps": [
+    "New traceable QA world, actual pinned fullpack; real OP4 session and already-loaded FULL chunk outside spawn reservation.",
+    "Prepare declared small synthetic support, save-all flush; actual survey-export captures live state bracketed around independent persisted Anvil readback.",
+    "Verify immutable physical request/witness/catalogue receipt; survey-director publishes geometry projection provenance plus immutable G0 message directory, and reports NOT_IMPORTED.",
+    "Same real OP4 invokes actual Director locations import; observe J04 preparation/staging/atomic activation and matching current generation.",
+    "Read all expected REGION/REGION_MEMORY/LOCATION heads from actual J04 and check source/geometry/membership; move actual player inside support and verify actual selected memory and primary-region reader.",
+    "Clean stop, preserve closed complete world+J04 and hashes, start new JVM with same compatible candidate; verify physical receipt/source/digest and native readers again without replaying completed imports.",
+    "Negative OP<4 denied; absent chunk remains absent; mismatched loaded/disk or BlockEntity refused; exact retry returns same immutable source/transport rather than a new import ACK."
+  ],
+  "native_execution_status": "PENDING_INTEGRATOR_PINNED_BUILD_AND_RUNTIME"
+}

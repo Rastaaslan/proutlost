@@ -1,0 +1,31 @@
+--- V1/public_group_qa.py
++++ V2/public_group_qa.py
+@@ -72,8 +72,8 @@
+     for pin in [args.main_sha256, args.director_sha256, args.source_sha256]:
+         need(re.fullmatch(r'[a-f0-9]{64}', pin), 'Explicit root-verified B07 hashes required')
+     need(sha(args.main_jar) == args.main_sha256 and sha(args.director_jar) == args.director_sha256, 'Frozen B07 binary SHA mismatch')
+-    dependencies = load(Path(__file__).with_name('dependencies-51.json'))['dependencies']
+-    need(len(dependencies) == 51, 'Original51dependency cohort required')
++    dependencies = load(Path(__file__).with_name('dependencies-server-50.json'))['dependencies']
++    need(len(dependencies) == 50, 'Observed50server-dependency cohort required')
+     for name, pin in dependencies.items():
+         source = args.dependency_directory / name
+         need(source.is_file() and not source.is_symlink() and sha(source) == pin, 'Original dependency differs: ' + name)
+@@ -119,7 +119,7 @@
+         'broadcast-rcon-to-ops': 'false', 'enable-query': 'false', 'motd': 'P008 PUBLIC_GROUP B07 INCOMPLETE TEST_ONLY'}
+     write_new(root / 'server.properties', ''.join(f'{k}={v}\n' for k, v in properties.items()), 0o600)
+     inventory = {p.name: sha(p) for p in sorted((root / 'mods').glob('*.jar'))}
+-    need(len(inventory) == 53, 'Exact53mod-file cohort required')
++    need(len(inventory) == 52, 'Exact52server-mod-file cohort required')
+     plan = dict(owner=owner, status='PREPARED_NOT_STARTED_NOT_QUALIFIED', verdict='B07_COMPILED_INCOMPLETE_ARCHITECTURE_GATE_FAILED',
+         server_root=str(root), previous_root=str(previous), source_sha256=args.source_sha256,
+         main_jar_sha256=args.main_sha256, director_jar_sha256=args.director_sha256, mods=inventory, seed=180112026,
+@@ -143,7 +143,7 @@
+         config = tomllib.loads((root / filename).read_text())
+         need(config.get('enabled') is False and config.get('testCommands') is False, 'Quest SERVER config must remainfalse/false')
+     inventory = {p.name: sha(p) for p in (root / 'mods').glob('*.jar')}
+-    need(inventory == plan['mods'] and len(inventory) == 53, 'Frozen B07/51dependency inventory changed')
++    need(inventory == plan['mods'] and len(inventory) == 52, 'Frozen B07/50server-dependency inventory changed')
+     properties = dict(line.split('=', 1) for line in (root / 'server.properties').read_text().splitlines() if '=' in line and not line.startswith('#'))
+     need(properties.get('server-ip') == '127.0.0.1' and properties.get('server-port') == '25579'
+         and properties.get('white-list') == 'true' and properties.get('rcon.port') == '25584', 'Exact loopback QA listeners/config required')

@@ -1,0 +1,560 @@
+{
+  "job_id": "J02",
+  "spec_version": "1.0.0",
+  "api_version": "1.0.1",
+  "status": "IMPLEMENTE_EN_SOURCE / COMPILE / TESTE",
+  "public_interfaces_changed": false,
+  "base_commit": "9d895ecf335f2cc7770f7f89b328c48e5e3173d3",
+  "g0_integration_commit_supplied_by_operator": "bcdbb0dc51886bac63d378b494d7a444664d8f72",
+  "g0_source_digest": "e769c9748318deffa7f81ad5352f4453e26e961ddb76abdbb969cbc1bcfbcbb2",
+  "g0_archive_sha256": "1272394344ec57f3b3a2c351f1ba57b686443c0271e60ea4aeccaaeb17eaa199",
+  "g0_contracts_jar_sha256": "7f023597d51a2993ef95d64480c04a2f78c77b602dc660c0866377ada531f499",
+  "baseline": {
+    "immutable": true,
+    "api_manifest_files_verified": 492,
+    "imported_files_verified": 501,
+    "files_manifest": "reports/J02/INPUT_AND_INTEGRITY.json#imported_baseline_files",
+    "integrate_imported_baseline": false,
+    "authorized_api_1_0_1_overlay": "reports/J02/API_BASELINE_ACK_1.0.1.json",
+    "overlay_manifest": "reports/J02/API_BASELINE_ACK_1.0.1.json",
+    "historical_g0_files_overlaid_only_when_authorized": true
+  },
+  "capabilities_added": {
+    "implemented": [
+      "Bounded JSON loading via pinned CanonicalJsonV1 with duplicate/UTF8/depth/size rejection",
+      "Closed normative event/chain schemas and typed @test resolution",
+      "Immutable typed primitive/reference registries and production TEST_ONLY rejection",
+      "Event/chain compilation with IDs, roles, references, graph, duration, budget, ownership, capability and WARN validation",
+      "Canonical content fingerprints, revision conflict rejection, atomic reload and old immutable instance definitions",
+      "Typed DAMAGE_TYPE registry resolution for every DamageProfile.damageTypes entry; unknown or wrong-kind IDs reject reload without changing the prior snapshot",
+      "Runtime CANDIDATE pack: nine events and two chains under proutlost_director:candidate/*, normative primitive/recipe/reference IDs unchanged, byte-exact DEFAULT_FOR_TESTING profile and provenance manifest",
+      "Strict optional scoring companions compiled into API 1.0.1 DefinitionScoringProfile; canonical combined hashes, revision tombstones and one atomic publication of definitions/profiles/history; explicit typed context bindings, no name heuristics"
+    ],
+    "qualified": [
+      "Pure Java21 compilation against pinned qualified API 1.0.1 contracts",
+      "Nine authentic events and two chains; ten families plus micro, three categories, four uniqueness scopes",
+      "364 assertions including 11 fixed golden codecs, invalid fixtures, bounds, semantic pointers, revisions and reload preservation",
+      "86 assertions load packaged runtime candidate resources and reject absent providers/assets; TEST_ONLY contracts, not real gameplay effects",
+      "101 scoring assertions: preparation, exact API projection, invalid combined reload rollback, metadata-only updates, pinned snapshots and competing same-revision writers"
+    ],
+    "gameplay_capabilities_advertised": [],
+    "not_qualified": [
+      "Minecraft physical effects",
+      "Native clients/perception rendering",
+      "Production gameplay calibration",
+      "Cross-module bootstrap integration",
+      "J03 evaluation of metadata"
+    ]
+  },
+  "migrations_added": [],
+  "integration_dependencies": [
+    "Integrator wires DefinitionLoader as CatalogPort and supplies ConfigView from validated config registry",
+    "J05/J06 provide real immutable primitive descriptors, typed asset/profile/reference registries, capabilities and qualification evidence",
+    "J04/runtime retain compiled definition blobs for recovery; runtime pins admission snapshot",
+    "Work adds CatalogTests and schema resources to common campaign; G1/Gradle/native validation remains serialized by Work",
+    "Composition populates ContentReferences.Kind.DAMAGE_TYPE from available registered damage types; registration in another reference kind is insufficient",
+    "Work binds normative primitive IDs and references listed in reports/J02/RUNTIME_BINDINGS.json to real J05/J06 providers; unavailable bindings must reject the candidate",
+    "Composition supplies explicit ResourceId -> ContextBinding(Condition, UnitValue weight); J03 consumes CatalogSnapshot.scoringProfiles and central neutral configuration"
+  ],
+  "next_smallest_blocker": {
+    "j02_domain": null,
+    "integration": "Real J05/J06 resource/provider qualification and Work-serialized common/native validation; expected IDs are in RUNTIME_BINDINGS.json"
+  },
+  "tests": [
+    {
+      "name": "J02 javac --release 21 -Xlint:all -Werror",
+      "status": "PASS",
+      "evidence": "reports/J02/compile.log"
+    },
+    {
+      "name": "T-CAT / golden codecs / invalid fixtures / DAG roles budgets danger",
+      "status": "PASS",
+      "assertions": 364,
+      "named_cases": 83,
+      "evidence": "reports/J02/catalog-tests.log"
+    },
+    {
+      "name": "Packaged runtime candidate resources",
+      "status": "PASS",
+      "assertions": 86,
+      "evidence": "reports/J02/runtime-candidate-tests.log"
+    },
+    {
+      "name": "Scoring companion preparation / API 1.0.1 projection / combined atomic publication",
+      "status": "PASS",
+      "assertions": 101,
+      "evidence": "reports/J02/scoring-metadata-tests.log"
+    },
+    {
+      "name": "MANIFEST39 SOURCE_SHA256 G0_SHA API_MANIFEST baseline imports runtime provenance",
+      "status": "PASS",
+      "checks": 1296,
+      "evidence": "reports/J02/INPUT_AND_INTEGRITY.json"
+    },
+    {
+      "name": "git diff --check",
+      "status": "PASS"
+    },
+    {
+      "name": "Gradle",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "NeoForge dedicated server",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "GameTests",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "native clients",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "real physical capability qualification",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "G1 common architecture campaign",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "API 1.0.1 scoring projection and atomic runtime publication",
+      "status": "PASS",
+      "evidence": "reports/J02/scoring-metadata-tests.log"
+    },
+    {
+      "name": "J03 scoring metadata evaluation",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "Real J05/J06 candidate bindings / audio / physical effects",
+      "status": "NOT_RUN"
+    }
+  ],
+  "files_changed": [
+    {
+      "path": "reports/J02/API_BASELINE_ACK_1.0.1.json",
+      "owner": "J02",
+      "sha256": "56a7fc411eda8e69a944d5f975e57e5a1fd01f097b216d086271b0af35a9d3f5"
+    },
+    {
+      "path": "reports/J02/HANDOFF.json",
+      "owner": "J02",
+      "sha256": null,
+      "reason": "self manifest"
+    },
+    {
+      "path": "reports/J02/INPUT_AND_INTEGRITY.json",
+      "owner": "J02",
+      "sha256": "f46902ef7312e4ba25f398c7eab5de4f74a1d5824987ea4d2782d110ec7a303a"
+    },
+    {
+      "path": "reports/J02/README.md",
+      "owner": "J02",
+      "sha256": "153540263df0f21c55171e188534c3a235e51a5ae610a55e64f3edd2fc1275c2"
+    },
+    {
+      "path": "reports/J02/RUNTIME_BINDINGS.json",
+      "owner": "J02",
+      "sha256": "d74fcc57ef210157fb27ef23605789a54ed47aab9fe9825d96d0ff1e5631f28a"
+    },
+    {
+      "path": "reports/J02/SCORING_COMPANION.md",
+      "owner": "J02",
+      "sha256": "4dd28ca33cee5a4607c7dc578105898d6843a03328725ff1a0e1d54b74819cb6"
+    },
+    {
+      "path": "reports/J02/TEST_RESULTS.json",
+      "owner": "J02",
+      "sha256": "d7d3c533e9802725d20ea303f571a64777e71ed7e7e21973f0221ca8214e1f2a"
+    },
+    {
+      "path": "reports/J02/catalog-tests.log",
+      "owner": "J02",
+      "sha256": "02a5a5b0601e27c8d0a2c4ce5a364d6e77305b7f0f59291a71f2f9d93500fbb9"
+    },
+    {
+      "path": "reports/J02/compile.log",
+      "owner": "J02",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/J02/runtime-candidate-tests.log",
+      "owner": "J02",
+      "sha256": "07c10d819620d82adb30114ae8929b88696653fb2ac44f8bad83948b829a7b27"
+    },
+    {
+      "path": "reports/J02/scoring-metadata-tests.log",
+      "owner": "J02",
+      "sha256": "268faf1a9443fd2be59c92a79c3722025589a818fa1be93019efc078d3e2e82e"
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/catalog/CatalogDiagnostic.java",
+      "owner": "J02",
+      "sha256": "38bab08c7eed715cdca151219412aa2fc076493c1ee6a0ca133c0ac03526a212"
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/catalog/ContentJson.java",
+      "owner": "J02",
+      "sha256": "80c8b74c42e68ed3676f7c3aa18df3e0bba45da792292ab1b44897d907895425"
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/catalog/ContentReferences.java",
+      "owner": "J02",
+      "sha256": "5c71f08952914f68e2a2584b45e20f9fcf3bf3170f0b42b7d1c72bfcd65670da"
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/catalog/ContentSchema.java",
+      "owner": "J02",
+      "sha256": "f23c1fc3e544fbffbb4ea294eb303bc5f700357ea23d806472e02117e7c3186d"
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/catalog/DefinitionCodec.java",
+      "owner": "J02",
+      "sha256": "e999a87b3149a9c5eaa0a3cf4acc1da88d808d24e3e22ce5594d0b216299b723"
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/catalog/DefinitionLoader.java",
+      "owner": "J02",
+      "sha256": "29a1d6c9a0c21326b9f90a986124bff09242b888dd7c10decb55837070946607"
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/catalog/DefinitionValidator.java",
+      "owner": "J02",
+      "sha256": "1f654ad88ad5a2827a070f56fc470bf207115cc92089d08b6e0118cae3f902a6"
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/catalog/InvalidContent.java",
+      "owner": "J02",
+      "sha256": "9412261b4bfc479eb7009bec16dea2dac86a34fd617495c0abfc6d9ff507ef4e"
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/catalog/PrimitiveRegistry.java",
+      "owner": "J02",
+      "sha256": "40c816480be0f15f2b6b3446a1819178b3d404675a17607b3f5b224092bc9658"
+    },
+    {
+      "path": "src/director/java/fr/proutlost/director/catalog/ScoringMetadataCompiler.java",
+      "owner": "J02",
+      "sha256": "3e8ba0313a8ca9d82e35a9d12b775ede6483f2a06c9623791e41c3ab7a50f401"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/candidate-manifest.json",
+      "owner": "J02",
+      "sha256": "5091965ac45a148983dab340ebc0fa54faf2b30ecee65d431f3090f0c9783358"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/chains/candidate/camp_short_arc.json",
+      "owner": "J02",
+      "sha256": "c261f64275c07005c11b4cb67a363568001fc7ba44e6e9a48f201d00fa3d531d"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/chains/candidate/living_scar.json",
+      "owner": "J02",
+      "sha256": "850a3cce6c3829a4fb80b4233269efa72c0c22ec48c0d0ab480fd44653942c54"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/events/candidate/animal_migration.json",
+      "owner": "J02",
+      "sha256": "39fa4115abc0fabd1559e11bd7737bd0f35bfa3d6fb38f9c423087c90e5a19a3"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/events/candidate/camp_regrowth.json",
+      "owner": "J02",
+      "sha256": "1c0641747805a8675dcfc7df021efaa3915a066e006eeb8e67e906d5b9db62d9"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/events/candidate/controlled_landslide.json",
+      "owner": "J02",
+      "sha256": "5bbcf7134d957ede69edc8b2c9ab2e44c324b2661171b3e6f367e3db41ff7d3c"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/events/candidate/goat_guest.json",
+      "owner": "J02",
+      "sha256": "70017305d7fa236d907f3e94fdf78102d7bace2099e41278ba706110acb16c89"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/events/candidate/local_mist.json",
+      "owner": "J02",
+      "sha256": "2729be5e317095254c0cd6f3df85dc2ce007af2188920d08d0a51f8779672729"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/events/candidate/parallel_steps.json",
+      "owner": "J02",
+      "sha256": "07f435be7716a0086a9c77a3d5acc8c8717ba0a86a5a69a8d87cbda3e65dbe67"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/events/candidate/required_signal.json",
+      "owner": "J02",
+      "sha256": "34991d834daea6bd3b9058cef810634b76c8235e2470ec04ed62058515497b0d"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/events/candidate/safe_micro.json",
+      "owner": "J02",
+      "sha256": "377f76a24138c3cc03e2641ccb10b109b4a763a46ec10f4b05aab16b7e6ea831"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/events/candidate/shared_choice.json",
+      "owner": "J02",
+      "sha256": "b28751ff82ec2417ea1b45b66b9895b58dcf096296e53469db459a6ae940fc49"
+    },
+    {
+      "path": "src/director/resources/data/proutlost_director/director/profiles/default_for_testing.json",
+      "owner": "J02",
+      "sha256": "a0ba94dfec141788b6f3768a585fec5208d9270e10fc0202139b4dae228cd81d"
+    },
+    {
+      "path": "src/director/resources/schemas/chain-definition.schema.json",
+      "owner": "J02",
+      "sha256": "f97010d10c079fd19436ca14ec6d0c986cf01783d72b0bb820c5a47962530f72"
+    },
+    {
+      "path": "src/director/resources/schemas/event-definition.schema.json",
+      "owner": "J02",
+      "sha256": "5febce09d1d8a016db27722ed15307babd59a678d3f3ec6438c95cde5c37cfdb"
+    },
+    {
+      "path": "src/director/resources/schemas/scoring-metadata.schema.json",
+      "owner": "J02",
+      "sha256": "d7ee3c74bf35d2076309e761125979ce0c18f544949ede33c7597ecb22210bdc"
+    },
+    {
+      "path": "src/directorTest/java/fr/proutlost/director/catalog/CatalogFixtures.java",
+      "owner": "J02",
+      "sha256": "45701cefcdfe733a87df041659995a43352dfe39c646c286f3e0bec3fc6086a8"
+    },
+    {
+      "path": "src/directorTest/java/fr/proutlost/director/catalog/CatalogTests.java",
+      "owner": "J02",
+      "sha256": "cda6ebf51a194ecdebe0446780ca9b3bb976ec20cad73c2491797bc8d63f4f7d"
+    },
+    {
+      "path": "src/directorTest/java/fr/proutlost/director/catalog/RuntimeCandidateTests.java",
+      "owner": "J02",
+      "sha256": "b1d4a8f7236f64162ff6adb85f09fc44e45502508b7483a6550ae89d9dbba7fa"
+    },
+    {
+      "path": "src/directorTest/java/fr/proutlost/director/catalog/ScoringMetadataTests.java",
+      "owner": "J02",
+      "sha256": "30066a3bffb012ec8d68f9c4990ea7b789709108d75d128354f4374e124d711f"
+    },
+    {
+      "path": "src/directorTest/java/fr/proutlost/director/catalog/run-tests.py",
+      "owner": "J02",
+      "sha256": "fb2361f932376163e8da6fc88d2346f46f9d761eda99bfc44be7ace51b0199ad"
+    },
+    {
+      "path": "src/directorTest/java/fr/proutlost/director/catalog/verify-inputs.py",
+      "owner": "J02",
+      "sha256": "049c7bee18aa04c156a76f63226b85d6c1093cec2cc4fbcbde58895d47419a85"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/DEFAULT_FOR_TESTING.json",
+      "owner": "J02",
+      "sha256": "a0ba94dfec141788b6f3768a585fec5208d9270e10fc0202139b4dae228cd81d"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/chains/camp_short_arc.json",
+      "owner": "J02",
+      "sha256": "bcad49cb4e585e37fe73fcc147506ac18855dec39d9f3b0f0bb29666813c45fa"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/chains/living_scar.json",
+      "owner": "J02",
+      "sha256": "7ea9b895566c6b6c3204768b0fe692c64b40dd7674b3b59fcda38c2349ea998d"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/events/animal_migration.json",
+      "owner": "J02",
+      "sha256": "f9ef9ee9e63987599f68fd170d9d2270853835bef713c786ba190c68acab5b15"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/events/camp_regrowth.json",
+      "owner": "J02",
+      "sha256": "633305517933fd8007569fa5da87cbe060cb945dd9925a4a2c5f57c767f997f5"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/events/controlled_landslide.json",
+      "owner": "J02",
+      "sha256": "df68297073b9d8a46f984bd985f139c8ee5e2e287e556067013c3ce4883be2cf"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/events/goat_guest.json",
+      "owner": "J02",
+      "sha256": "0f8cb219e8ad568b06958c7bb36ca14b0c948e88be007d4070bc2d9a7b757d12"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/events/local_mist.json",
+      "owner": "J02",
+      "sha256": "62b202f6048eaae507ad994fbb7a0c0752a5fdbfe3a5b0801c51c11ac67e38b7"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/events/parallel_steps.json",
+      "owner": "J02",
+      "sha256": "a3864e9010fae86f52e0c8ec39c501ea1e9b77dfe62f12374a89dd495604e63c"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/events/required_signal.json",
+      "owner": "J02",
+      "sha256": "5c2baa78c76b1a5ada54985570e0d1d21ff72ed9ac5d0e1d347f352a3dd6299b"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/events/safe_micro.json",
+      "owner": "J02",
+      "sha256": "bdab4ba89ad6695d5ee025ec1106f75d01abcfb82f86324baa78e162eb994825"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/events/shared_choice.json",
+      "owner": "J02",
+      "sha256": "4579869dd365ab9907b0da32cea4f82943bf764383ec321a89c9362f5831a87a"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/golden/animal_migration.json",
+      "owner": "J02",
+      "sha256": "f6e5ee77d0950315b0aa5c540a8b84df95101cae60132f832e237457490e9b6b"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/golden/camp_regrowth.json",
+      "owner": "J02",
+      "sha256": "016cff9a521020e873fcd3f07b1057d94396fb4e688dddc8baa379c1b101061b"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/golden/camp_short_arc.json",
+      "owner": "J02",
+      "sha256": "d187a3e529279b8a9aefe516f00d5faf0f5edad31f6b2dfb06f14a6674542c3e"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/golden/controlled_landslide.json",
+      "owner": "J02",
+      "sha256": "72333b92ddaa0c81acefea6641112dd17f08d387b0e2d9489cd7b9637538e3b8"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/golden/goat_guest.json",
+      "owner": "J02",
+      "sha256": "1e6459d046054518f1b772254eb385af1552c4a1907e07728758d2170e8ae6fa"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/golden/living_scar.json",
+      "owner": "J02",
+      "sha256": "c5274416ae441636e3a0824b71b881d3e76201403ce34919da06d2b203bbed97"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/golden/local_mist.json",
+      "owner": "J02",
+      "sha256": "e21d3c638b50d286756eec08d3ee24a40b24a650ba4fa0ab799df0c2999854f7"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/golden/parallel_steps.json",
+      "owner": "J02",
+      "sha256": "4bcd2d9d66ef8d4ac06d68c28cd2cd1e484d541b02959fc552e3aba6cf11e7f6"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/golden/required_signal.json",
+      "owner": "J02",
+      "sha256": "fd22c13c580ea9cb03585568d36aa570d4d245adea1dca8dfd7b05be973c3c6c"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/golden/safe_micro.json",
+      "owner": "J02",
+      "sha256": "7f5f811af47aaf1fd38cacfba9e742b0b7b9781f42d8a7d6cf395a790fa1b4ca"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/golden/shared_choice.json",
+      "owner": "J02",
+      "sha256": "85d77f884e57b00b8f351ef9be6ae1a033b2de14b04836bf2cef136532ca5e54"
+    },
+    {
+      "path": "src/directorTest/resources/catalog/scoring/full.json",
+      "owner": "J02",
+      "sha256": "88a8760ed0453d08f77aeb8eff01e7a03840508740d3bf6fd6b14ca8076e4183"
+    }
+  ],
+  "ownership_respected": true,
+  "risks": [
+    "The runtime pack is a separate DEFAULT_FOR_TESTING CANDIDATE, not final gameplay or approved production content.",
+    "Positive runtime tests use explicit TEST_ONLY descriptor/reference contracts, not real J05/J06 providers or audio/physical effects. Expected bindings are reported, not assumed available.",
+    "Frozen chain schema/DTO only permit DEFAULT_FOR_TESTING; production chains remain intentionally rejected.",
+    "Runtime/store own persistent active definition blobs and recovery; no world, server, Git refs/objects, bootstrap or build integration was performed.",
+    "API 1.0.1 scoring profiles target event definitions only; chain companions reject explicitly. J03 score evaluation and real provider/native integration remain NOT_RUN."
+  ],
+  "api_change_requests": [],
+  "questions": [],
+  "requires_human_decision": false,
+  "git_operations": {
+    "committed": false,
+    "pushed": false,
+    "merged": false,
+    "shared_refs_or_objects_written": false
+  },
+  "world_access": false,
+  "external_services_used": false,
+  "deployed": false,
+  "review_corrections": [
+    {
+      "iteration": 1,
+      "issue": "Unresolved DamageProfile.damageTypes IDs",
+      "status": "RESOLVED",
+      "evidence": "reports/J02/catalog-tests.log",
+      "regressions": [
+        "Unknown type in a registered damage profile",
+        "Mixed known and unknown damage types",
+        "ID registered only as SOUND rejected as damage type",
+        "Exact file/pointer/reason/unresolved-ID diagnostic",
+        "Previous nonempty catalogue identity/generation/content preserved",
+        "Registered minecraft:falling_block accepted"
+      ]
+    },
+    {
+      "iteration": 3,
+      "issue": "Missing combined scoring metadata publication",
+      "status": "RESOLVED",
+      "evidence": "reports/J02/scoring-metadata-tests.log",
+      "regressions": [
+        "Invalid metadata retains entire prior generation",
+        "Valid definitions and metadata publish together",
+        "Pinned snapshots retain original metadata",
+        "Metadata-only generation change",
+        "Concurrent divergent same revisions have one winner"
+      ]
+    }
+  ],
+  "requested_api_version": "1.0.1 qualified by Work; exact overlay imported",
+  "work_accepted_core": {
+    "integration_commit_reported_by_work": "f3ac80f333a83e7923d5aed8cda796c890d66fd5",
+    "reported_assertions": 364,
+    "reported_named_cases": 83,
+    "local_git_integration_performed": false
+  },
+  "domains": {
+    "core": {
+      "source": "IMPLEMENTE_EN_SOURCE",
+      "compile": "COMPILE",
+      "tests": "TESTE"
+    },
+    "runtime_candidate_resources": {
+      "source": "IMPLEMENTE_EN_SOURCE",
+      "compile": "COMPILE",
+      "tests": "TESTE on TEST_ONLY descriptor contracts; real J05/J06 linkage NOT_RUN"
+    },
+    "scoring_companion_preparation": {
+      "source": "IMPLEMENTE_EN_SOURCE",
+      "compile": "COMPILE against API 1.0.1",
+      "tests": "TESTE"
+    },
+    "scoring_api_projection_atomic_publication": {
+      "source": "IMPLEMENTE_EN_SOURCE",
+      "compile": "COMPILE against API 1.0.1",
+      "tests": "TESTE"
+    },
+    "j03_scoring_evaluation": {
+      "source": "integration dependency",
+      "tests": "NOT_RUN"
+    }
+  },
+  "runtime_candidate_manifest": "src/director/resources/data/proutlost_director/director/candidate-manifest.json",
+  "runtime_binding_manifest": "reports/J02/RUNTIME_BINDINGS.json",
+  "scoring_preparation_contract": "reports/J02/SCORING_COMPANION.md",
+  "api_1_0_1_contracts_jar_sha256": "a670ff5ea985882a6c90f4fc30aca5d898e7af82661e154df1255e21047f2259"
+}

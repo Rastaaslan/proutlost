@@ -1,0 +1,78 @@
+// Invoke against the exact installed B05 build root with its pinned dependency
+// cache. No task depends on directorJar, main jar or a production JavaCompile.
+// Example: ./gradlew --offline --no-configuration-cache -I /.../this.init.gradle
+//   -Pp008ObserverProposal=/.../p008-installed-observer-proposal
+//   -Pp008ObserverDirectorJar=/exact/official/B05-director.jar
+//   -Pp008ObserverDirectorSha256=RECORDED_OFFICIAL_B05_SHA256
+//   p008InstalledQaObserverJar
+gradle.projectsEvaluated {
+    def target = gradle.rootProject
+    if (!target.hasProperty('p008ObserverProposal'))
+        throw new GradleException('Explicit isolated p008ObserverProposal path required')
+    def proposal = target.file(target.property('p008ObserverProposal'))
+    if (!target.hasProperty('p008ObserverDirectorJar') || !target.hasProperty('p008ObserverDirectorSha256'))
+        throw new GradleException('Explicit official B05 Director JAR and recorded SHA256 required')
+    def officialDirector = target.file(target.property('p008ObserverDirectorJar'))
+    def expectedDirectorSha = target.property('p008ObserverDirectorSha256').toString()
+    if (!officialDirector.isFile() || !(expectedDirectorSha ==~ /[a-f0-9]{64}/) ||
+        java.security.MessageDigest.getInstance('SHA-256').digest(officialDirector.bytes).encodeHex().toString() != expectedDirectorSha)
+        throw new GradleException('Official installed B05 Director JAR hash mismatch')
+    def testSet = target.sourceSets.directorGameTest
+    // Only dependency JARs, never any SourceSetOutput directory/current B06
+    // classes. The official installed B05 JAR alone supplies Director APIs.
+    // Detach paths from all builtBy relationships: production is never rebuilt.
+    def dependencyJars = testSet.compileClasspath.files.findAll {
+        it.isFile() && it.name.endsWith('.jar') && it.canonicalFile != officialDirector.canonicalFile
+    }
+    dependencyJars.each { dependency ->
+        new java.util.zip.ZipFile(dependency).withCloseable { zip ->
+            if (zip.getEntry('fr/proutlost/director/bootstrap/DirectorServerLifecycle.class') != null)
+                throw new GradleException('Additional Director API JAR forbidden: ' + dependency)
+        }
+    }
+    def pinnedPaths = [officialDirector.absolutePath] + dependencyJars.collect { it.absolutePath }
+    def output = target.layout.buildDirectory.dir('p008-installed-observer/classes')
+    def compile = target.tasks.register('p008CompileInstalledQaObserver', JavaCompile) {
+        source proposal.toPath().resolve('src/directorGameTest/java/fr/proutlost/director/adapter/neoforge/server/DirectorNativePagedLocationImportGameTests.java').toFile()
+        source proposal.toPath().resolve('src/p008InstalledQa/java/fr/proutlost/p008qa/InstalledObserverMod.java').toFile()
+        classpath = target.files(pinnedPaths)
+        destinationDirectory = output
+        javaCompiler = target.javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(21) }
+        options.encoding = 'UTF-8'
+        options.compilerArgs.addAll(['-Xlint:all', '-Werror'])
+        sourceCompatibility = '21'
+        targetCompatibility = '21'
+        outputs.upToDateWhen { false }
+        inputs.file officialDirector
+        inputs.property 'officialDirectorSha256', expectedDirectorSha
+        doFirst { println 'P008_OBSERVER_COMPILE_B05_JAR_ONLY sha256=' + expectedDirectorSha + ' dependency_jars=' + dependencyJars.size() + ' production_output_dirs=0' }
+    }
+    target.tasks.register('p008InstalledQaObserverJar', Jar) {
+        dependsOn compile
+        archiveFileName = 'proutlost-p008-qa-TEST_ONLY-1.0.0.jar'
+        destinationDirectory = target.layout.buildDirectory.dir('p008-installed-observer')
+        from(output) { include 'fr/proutlost/p008qa/**' }
+        from(proposal.toPath().resolve('src/p008InstalledQa/resources').toFile())
+        preserveFileTimestamps = false
+        reproducibleFileOrder = true
+        manifest { attributes 'Implementation-Title': 'P008 TEST_ONLY installed observer bootstrap', 'P008-Scope': 'DECLARED_SYNTHETIC_NATIVE_QA_ONLY' }
+        doLast {
+            new java.util.zip.ZipFile(archiveFile.get().asFile).withCloseable { zip ->
+                def names = java.util.Collections.list(zip.entries())*.name
+                if (names.any { it.startsWith('fr/proutlost/director/') })
+                    throw new GradleException('Director package forbidden in standalone QA addon')
+                if (!names.contains('fr/proutlost/p008qa/InstalledObserverMod.class'))
+                    throw new GradleException('QA bootstrap class missing')
+                println 'P008_INSTALLED_QA_ADDON_PACKAGE_GUARD_PASS'
+            }
+        }
+    }
+    gradle.taskGraph.whenReady { graph ->
+        if (graph.hasTask(compile.get())) {
+            def forbidden = ['compileJava', 'compileDirectorJava', 'compileDirectorPlatformJava',
+                'compileDirectorGameTestJava', 'jar', 'directorJar', 'classes', 'directorClasses', 'directorPlatformClasses']
+            def leaked = graph.allTasks.findAll { it.project == target && forbidden.contains(it.name) }
+            if (!leaked.isEmpty()) throw new GradleException('QA observer build must not rebuild production/test source sets: ' + leaked*.path)
+        }
+    }
+}

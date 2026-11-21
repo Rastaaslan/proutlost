@@ -1,0 +1,3 @@
+package fr.proutlost.worldprep.compiler;
+import java.util.List;
+public record PreparedWorldManifest(String pipelineId,String sourceFingerprint,String semanticPackFingerprint,List<String> sealedPassFingerprints,Status status){public enum Status{VERIFYING,READY,FAILED} public PreparedWorldManifest{if(pipelineId==null||pipelineId.isBlank()||sourceFingerprint==null||sourceFingerprint.isBlank()||semanticPackFingerprint==null||semanticPackFingerprint.isBlank()||status==null)throw new IllegalArgumentException("Complete prepared world identity required");sealedPassFingerprints=List.copyOf(sealedPassFingerprints);}}

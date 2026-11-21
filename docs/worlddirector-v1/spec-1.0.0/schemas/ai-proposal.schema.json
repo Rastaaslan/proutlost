@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:proutlost:director:ai-proposal:1",
+  "type": "object",
+  "properties": {
+    "protocol_version": {
+      "const": 1
+    },
+    "request_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "candidate_set_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "adjustments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "candidate_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "delta_log_weight": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "candidate_id",
+          "delta_log_weight"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "arc_proposals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "chain_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "transition_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "chain_id",
+          "transition_ids"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "rationale_codes": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "CONTEXT_FIT",
+          "MEMORY_LINK",
+          "NOVELTY",
+          "SOCIAL_FIT",
+          "CHAIN_CONTINUITY"
+        ]
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "protocol_version",
+    "request_id",
+    "candidate_set_hash",
+    "adjustments",
+    "arc_proposals",
+    "rationale_codes"
+  ],
+  "additionalProperties": false
+}

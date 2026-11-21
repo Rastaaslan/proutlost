@@ -1,0 +1,26 @@
+{
+  "scope": "SYNTHETIC_HELPER_INVENTORY_CHECK_ONLY_NO_REMOTE_OR_SERVER_EXECUTION",
+  "python_syntax": "PASS",
+  "server_dependency_subset_exact_single_exclusion": "PASS",
+  "unchanged50dependency_hashes": "PASS",
+  "server52guard": "PASS",
+  "extra53rdclientjar_refused": "PASS",
+  "unchanged_function_asts": [
+    "need",
+    "lock",
+    "no_listener",
+    "stopped",
+    "root_path",
+    "launch_flags",
+    "launch",
+    "require_stopped_public",
+    "native_run",
+    "_native_run",
+    "main"
+  ],
+  "server_jars": 52,
+  "server_dependencies": 50,
+  "client_jars": 53,
+  "native_prepare_launch": "NOT_RUN_BY_AUTHOR",
+  "root_observed_v1_failure": "BEFORE_NEW_ROOT_MKDIR_A01_ABSENT"
+}

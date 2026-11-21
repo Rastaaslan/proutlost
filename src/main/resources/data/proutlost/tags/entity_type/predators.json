@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:wolf",
+    "minecraft:fox",
+    {
+      "id": "reanimal:crocodile",
+      "required": false
+    },
+    {
+      "id": "reanimal:seal",
+      "required": false
+    }
+  ]
+}

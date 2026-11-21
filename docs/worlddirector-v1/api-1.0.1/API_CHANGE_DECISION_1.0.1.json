@@ -1,0 +1,65 @@
+{
+  "spec_version": "1.0.0",
+  "api_version": "1.0.1",
+  "status": "IMPLEMENTED_CANDIDATE_PENDING_WORK_QUALIFICATION",
+  "owner": "Work integrator",
+  "gameplay_change": false,
+  "historical_g0_commit_as_supplied": "bcdbb0dc51886bac63d378b494d7a444664d8f72",
+  "historical_g0_digest": "e769c9748318deffa7f81ad5352f4453e26e961ddb76abdbb969cbc1bcfbcbb2",
+  "decisions": [
+    {
+      "id": "J01-API-001",
+      "status": "ACCEPT",
+      "contract": "ActivityHistogram gains Optional<ActivityTimeCounts> activityTime. ActivityTimeCounts(binCount, counts) is immutable, exact indexed order 0..binCount-1, 1..4096 bins, nonnegative long counts, checked total overflow. binCount comes from configuration (12 in DEFAULT_FOR_TESTING), never inferred from DayPhase. Four-argument constructor records Optional.empty(), not fabricated zero or spread counts. Existing camp observation/window/memory DTOs and reduction persistence carry the histogram unchanged. CampSnapshot also carries Optional<ActivityTimeCounts>, with legacy absence explicit.",
+      "merge": "Deduplicate identical EvidenceWindowId contributions before summing individual indices with checked arithmetic. Different binCount or absent indexed evidence must not silently merge into a complete histogram; reducer must retain absence/reconcile. No trajectory is stored."
+    },
+    {
+      "id": "J01-API-002",
+      "status": "RESOLVED_WITHOUT_API_CHANGE",
+      "contract": "J05 creates PlayerSignificantAggregate in its atomic confirmed result transaction with real event/outcome/perception/consequences and stable dedup ID. J04 persists aggregate/CAS atomically. J01 projects archives through MemoryPort.view and reduces operational Exposure only. No new ObservationBatch fields and no technical ACK promoted to experience."
+    },
+    {
+      "id": "J05-001",
+      "status": "ACCEPT",
+      "contract": "PrepareRecord gains Optional<StabilizationPlan>. Legacy constructor grants no stop authority. Plan contains at most 64 exact StabilizationSlice records (at most 64 intents and 4096 ownership resources each). Canonical plan.blob reference must equal EffectBlobs.stopPlan; flattened intents must equal authorizedStabilization. Footprints are subsets of original PREPARE, resource keys reserved, aggregate work within original bounds. Unique existing stop tokens differ from impact tokens. Expected exclusive DIRECTOR_ACTIVE ownership carries tokens, mutation, epoch, playerOverrideEpoch, and expected post hash.",
+      "issuance": "Only original validated durable PREPARE ACK through CommitPermit.Authority.poll creates a CommitPermit and its nested opaque StabilizationPermit. All referenced blobs including exact stop-plan blob must be forced. ACK remains bound to transaction/hash/store generation/attempt/session. No public constructor or codec for either authority.",
+      "execution": "WorldEffectPort.stabilize(PreparedSlice, CommitPermit.StabilizationPermit, StabilizationLiveSnapshot) is actor-only. Adapter must use its own trusted Authority and capture fresh validation/ownership on actor immediately before consume and execution, never trust remote caller DTOs. consume checks issuer identity, actor thread, current store session/world/boot/generation, reservation generation, exact slice/intents/work/footprint, loaded chunks, exact read-set epochs/hashes/revisions, and exact ownership including cession. It never appends or requires a new ACK. CRITICAL, READ_ONLY_SAFE and PAUSED do not waive those checks; normal CommitPermit health/expiry checks are unchanged.",
+      "idempotence": "Each preauthorized stop slice is claimable once in the authority lifetime. Repeated calls reject before effects. Returned StabilizationMarker identifies original PREPARE sequence/session/operation, stop slice/token and forced blob. It is an attempted-stop marker, never a fabricated completed outcome. Adapter must associate world-local operation markers and retain actual outcomes. Exceptions after claim are ambiguous and require reconciliation, not blind retry.",
+      "expiry_reboot": "Impact TTL expiration never invalidates retained stop authority in the same live session; reservation generation/ownership changes still veto. StoreSession must remain readable from memory when writer is lost. Reboot or session replacement invalidates all opaque authorities; no permit deserialization/reconstruction from DTOs. J04/J05 reconcile durable PREPARE, stop blob and local markers in the new session before separately authorizing any remaining recovery work. No automatic re-impact or old-session reuse.",
+      "conservative_limits": "Yielded, released, shared, conflicting, missing or unknown ownership and unloaded chunks are refused. Caller must retain evidence/alert and reconcile; permission is not physical qualification. A danger adapter unable to guarantee bounded local markers/stop must not advertise real capability."
+    },
+    {
+      "id": "J03-API-01",
+      "status": "ACCEPT",
+      "contract": "CooldownRecord.binding is optional for explicit legacy unknowns. CooldownBinding carries a sealed EventCooldownSelector / FamilyCooldownSelector / GlobalSafetyCooldownSelector, affected ScopeSet including incidental players, authoritative transitive inheritedRegions closure and lineageComplete. J03 matches selector AND affected scope or inherited region; world binding affects its world. Unknown binding or incomplete lineage defers the safety decision for which applicability cannot be proven; it is never ignored or treated as a universal cooldown. AFTER_TICK uses notBeforeTick; AFTER_TICK_AND_CONDITION additionally requires fresh positive releasePredicate evidence. Historical source instance lookup is unnecessary. J05/J04 publish/persist the binding; J03 consumes it from existing DecisionState.cooldowns."
+    },
+    {
+      "id": "J03-API-02",
+      "status": "ACCEPT_INTERNAL_REPRESENTATION",
+      "contract": "CatalogSnapshot.scoringProfiles maps DefinitionId to versioned DefinitionScoringProfile. J02 owns strict optional companion loading and includes profileHash/content in catalog generation/hash. ContextAffinity contains predicate, affinity and weight; maps carry region-trait and tension affinities; desiredLocalIntensity and habitation-sensitive families are explicit. No normative schema or EventDefinition wire modification. J03 evaluates known data; absent optional metadata uses central declared neutral values, not content-name heuristics. Profile DefinitionRef must identify the compiled definition revision/hash. Profile hash is a provenance field verified by J02, not a cryptographic attestation by the DTO constructor."
+    },
+    {
+      "id": "J03-API-03",
+      "status": "ACCEPT_INTERNAL_POLICY_AND_DECLARE_DEFAULTS",
+      "contract": "DirectorRequestState persists RequestSchedulingPolicy (NarrativePriority signed bounded rank, PreferenceDecay.LINEAR_TO_TTL, RequestPolicySource). Larger rank precedes lower, NORMAL=0; eligibleWaitTicks and normative age cap remain separate. Legacy constructors and wire adapter requests MUST use legacyWire(): NORMAL/LINEAR_TO_TTL, source LEGACY_WIRE_DEFAULT. Explicit QuestDirectorPort.submit(request,policy) is the authorized internal J08/adapter path, never payload actor authority. PREFER multiplier clamps (expiresTick-now)/(expiresTick-createdTick); positive TTL required, no new calibration/half-life. DurableRequest persists original envelope/state, semantic idempotenceHash and schedulingPolicyHash; J04 retries compare BOTH hashes, so changed policy cannot reuse an idempotency identity. DirectorMessageCodec and all five normative schemas remain byte-exact."
+    },
+    {
+      "id": "J03-API-04",
+      "status": "ACCEPT",
+      "contract": "PlanningPort is a pure J05-provided registry planner injected into J03. PlanningRequest carries exact EventStep and PlanningSnapshot; optional PlanningBindings carry candidate/definition/instance/operation/step/role identities, scopes, footprint, incidentalAudience and completeness. Absence/incompleteness is not proof: return DeferredPlanning with targeted SampleRequest(s) and reasons. PlannedPrimitive requires complete audience and matching identity/footprint plus retained role/incidental snapshots. Full original context is retained, never filtered to selected role players. J03 may call only this pure resolver during evaluate, not observation/world/disk services; actor fulfils deferrals later. DirectorPrimitive.plan(args,PlanningSnapshot) unchanged. Physical capture/commit remains J05 actor work through existing EffectPreparation and permits."
+    },
+    {
+      "id": "J07-API-01",
+      "status": "ACCEPT",
+      "contract": "RuntimeAdminPort is J05 actor-owned bounded submit/poll mailbox, distinct from J07 AdminPort facade. Uses AdminCommand, RuntimeAdminKey(session,request), AdminResult PENDING/terminal. J05 compares complete canonical command for idempotency, explicitly rejects conflicting reuse; queue full defers and unknown/evicted keys consult durable audit or defer, never silently reexecute. ActorAuthorityPort resolves current server authority at submit AND apply; disconnected/revoked permissions or stale revision reject. RuntimeAdminAudit contains full command/hash/current applied authority, coherent before/after stamps and terminal result; DurableRuntimeAdminAudit is part of closed durable union and is appended atomically with affected control aggregates before success publication. Stamps identify exact durable aggregate projections, not invented before/after row data. No command receipt grants effect authority. TEST_ONLY mailbox fixture exercises protocol without real command execution/durability claims."
+    },
+    {
+      "id": "J07-API-02",
+      "status": "ACCEPT_MINIMAL_SNAPSHOT_METADATA",
+      "contract": "AdminProjectionPort is J05/bootstrap actor publication consumed by J07. AdminReadResult gains Optional<AdminSnapshotStamp(world,boot,revision,tick,durableSequence)> for every coherent page, even empty. Old constructor explicitly lacks publication metadata; adapter must defer rather than guess row1 values. Expected-revision mismatch or unavailable publication defers. J07 performs authenticated reads. Immutable data only, no IO or world references. Bootstrap wiring is Work-owned and unchanged here."
+    }
+  ],
+  "compatibility": "API1.0.1 overlay is source-compatible for legacy model constructors where provided, with absent evidence explicit. New abstract producer methods require implementations to adapt: WorldEffectPort.stabilize and QuestDirectorPort.submit(request,policy). Strict ModelCodec emits new fields; old persisted JSON needs an explicit integrator migration, never silent invented evidence. No deployed persistence migration. DirectorMessage protocol1 unchanged. G0 artifacts and manifest remain immutable; separate overlay only.",
+  "scope": "API models/permissions/port and contract testkit only; bootstrap/config/build/scripts unchanged. Historical immutable source/JAR remain untouched.",
+  "qualification": "Direct tests recorded separately. Work performs final validation and authorizes consumer baseline changes; no publication or G0_PASS here."
+}

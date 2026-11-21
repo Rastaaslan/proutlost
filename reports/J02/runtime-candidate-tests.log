@@ -1,0 +1,3 @@
+PASS runtime candidate assertions=86 definitions=11
+CANDIDATE_CATALOG_HASH=f6805b8241fd3a882c409be001f874effd0dfc6c36b9a0532fc1aaf29962a664
+NOT_RUN real J05/J06 providers, server, physical effects, audio and clients

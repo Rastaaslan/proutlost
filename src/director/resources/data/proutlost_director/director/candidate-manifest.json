@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "status": "CANDIDATE",
+  "calibration": "DEFAULT_FOR_TESTING",
+  "production_approved": false,
+  "spec_version": "1.0.0",
+  "spec_archive_sha256": "1b00564384c295733beff865707f0da9267b4b0b8a8c1f98bd63fb1da9ef07f2",
+  "profile_resource": "data/proutlost_director/director/profiles/default_for_testing.json",
+  "profile_sha256": "a0ba94dfec141788b6f3768a585fec5208d9270e10fc0202139b4dae228cd81d",
+  "definitions": [
+    {
+      "resource": "data/proutlost_director/director/events/candidate/animal_migration.json",
+      "sha256": "39fa4115abc0fabd1559e11bd7737bd0f35bfa3d6fb38f9c423087c90e5a19a3",
+      "definition_id": "proutlost_director:candidate/animal_migration"
+    },
+    {
+      "resource": "data/proutlost_director/director/events/candidate/camp_regrowth.json",
+      "sha256": "1c0641747805a8675dcfc7df021efaa3915a066e006eeb8e67e906d5b9db62d9",
+      "definition_id": "proutlost_director:candidate/camp_regrowth"
+    },
+    {
+      "resource": "data/proutlost_director/director/events/candidate/controlled_landslide.json",
+      "sha256": "5bbcf7134d957ede69edc8b2c9ab2e44c324b2661171b3e6f367e3db41ff7d3c",
+      "definition_id": "proutlost_director:candidate/controlled_landslide"
+    },
+    {
+      "resource": "data/proutlost_director/director/events/candidate/goat_guest.json",
+      "sha256": "70017305d7fa236d907f3e94fdf78102d7bace2099e41278ba706110acb16c89",
+      "definition_id": "proutlost_director:candidate/goat_guest"
+    },
+    {
+      "resource": "data/proutlost_director/director/events/candidate/local_mist.json",
+      "sha256": "2729be5e317095254c0cd6f3df85dc2ce007af2188920d08d0a51f8779672729",
+      "definition_id": "proutlost_director:candidate/local_mist"
+    },
+    {
+      "resource": "data/proutlost_director/director/events/candidate/parallel_steps.json",
+      "sha256": "07f435be7716a0086a9c77a3d5acc8c8717ba0a86a5a69a8d87cbda3e65dbe67",
+      "definition_id": "proutlost_director:candidate/parallel_steps"
+    },
+    {
+      "resource": "data/proutlost_director/director/events/candidate/required_signal.json",
+      "sha256": "34991d834daea6bd3b9058cef810634b76c8235e2470ec04ed62058515497b0d",
+      "definition_id": "proutlost_director:candidate/required_signal"
+    },
+    {
+      "resource": "data/proutlost_director/director/events/candidate/safe_micro.json",
+      "sha256": "377f76a24138c3cc03e2641ccb10b109b4a763a46ec10f4b05aab16b7e6ea831",
+      "definition_id": "proutlost_director:candidate/safe_micro"
+    },
+    {
+      "resource": "data/proutlost_director/director/events/candidate/shared_choice.json",
+      "sha256": "b28751ff82ec2417ea1b45b66b9895b58dcf096296e53469db459a6ae940fc49",
+      "definition_id": "proutlost_director:candidate/shared_choice"
+    },
+    {
+      "resource": "data/proutlost_director/director/chains/candidate/camp_short_arc.json",
+      "sha256": "c261f64275c07005c11b4cb67a363568001fc7ba44e6e9a48f201d00fa3d531d",
+      "definition_id": "proutlost_director:candidate/camp_short_arc"
+    },
+    {
+      "resource": "data/proutlost_director/director/chains/candidate/living_scar.json",
+      "sha256": "850a3cce6c3829a4fb80b4233269efa72c0c22ec48c0d0ab480fd44653942c54",
+      "definition_id": "proutlost_director:candidate/living_scar"
+    }
+  ],
+  "binding_status": "REQUIRES_REAL_J05_J06_REGISTRIES_AND_QUALIFICATION",
+  "notes": [
+    "Candidate demonstrations derived from the normative nine events and two chains; not final gameplay calibration.",
+    "Only definition IDs and event references use the proutlost_director candidate namespace; normative primitive/recipe/asset/fact/tag IDs are unchanged.",
+    "Unknown or unavailable references reject the load; this pack supplies no provider or fake implementation."
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "QA_NEUTRAL_CAMPAIGN",
+  "version": "0.2",
+  "mode": "TEST_ONLY",
+  "status": "EXECUTABLE_TEST_ONLY_PENDING_MULTIPLAYER",
+  "isolatedFrom": "Proutlost S2 QUESTSPEC v1.0",
+  "liveWorldAccess": false,
+  "useProductionCampaignResources": false,
+  "requiresSeparateWorld": true,
+  "requiresSeparateSavedData": true,
+  "requiresTestOnlyGuard": true,
+  "requiresClientAandB": true,
+  "noNarrative": true,
+  "steps": [
+    "QA-00",
+    "QA-01A",
+    "QA-01B",
+    "QA-02",
+    "QA-03",
+    "QA-04",
+    "QA-05"
+  ],
+  "warnings": [
+    "Load only via existing neutralLab guard; production campaign remains disabled in this isolated world.",
+    "QA-03 requires actual committed Director facts for each participant. Gallery dispatch is not a Director proof.",
+    "No real two-client or human perception PASS follows from compilation or unit tests."
+  ],
+  "loader": "fr.proutlost.quest.qa.NeutralLabCampaign",
+  "runtime": "fr.proutlost.quest.qa.NeutralLabRuntime",
+  "resource": "/data/proutlost/quest_qa/steps.json"
+}

@@ -1,0 +1,17 @@
+{
+  "scope": "DECLARED_SYNTHETIC_HELPER_GUARDS_ONLY_NO_MINECRAFT_OR_REMOTE_EXECUTION",
+  "python_syntax": "PASS",
+  "valid_new_fixture_guard": "PASS",
+  "wrong_whitelist_refused": "PASS",
+  "quest_enabled_refused": "PASS",
+  "neutral_marker_refused": "PASS",
+  "extra_qa_addon_refused": "PASS",
+  "changed_mod_bytes_refused": "PASS",
+  "exact_public_flags_no_neutral_or_paged_flags": "PASS",
+  "effective_lock_refused": "PASS",
+  "live_full_identity_refused_as_stopped": "PASS",
+  "wrong_root_no_receipt_write": "PASS",
+  "source_dependencies": 51,
+  "total_mod_files": 53,
+  "native_produce_reopen": "NOT_RUN"
+}

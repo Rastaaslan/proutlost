@@ -1,0 +1,96 @@
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:377: error: cannot find symbol
+    static StoreReadResult typedFixture(StoreView original,StoreQuery query,StoreSession session) {
+           ^
+  symbol:   class StoreReadResult
+  location: class MemoryIntegrationTest
+src/director/java/fr/proutlost/director/memory/DurableMemoryPort.java:38: error: cannot find symbol
+        StoreReadResult result = store.view(query);
+        ^
+  symbol:   class StoreReadResult
+  location: class DurableMemoryPort
+src/director/java/fr/proutlost/director/memory/DurableMemoryPort.java:39: error: cannot find symbol
+        ReadContracts.validate(result, query, session);
+        ^
+  symbol:   variable ReadContracts
+  location: class DurableMemoryPort
+src/director/java/fr/proutlost/director/memory/DurableMemoryPort.java:40: error: cannot find symbol
+        if (result.status() != ReadStatus.AVAILABLE)
+                               ^
+  symbol:   variable ReadStatus
+  location: class DurableMemoryPort
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:378: error: cannot find symbol
+        var stamp=new ReadStamp(session,original.lastDurableSequence(),ReadContracts.queryHash(query));
+                      ^
+  symbol:   class ReadStamp
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:378: error: cannot find symbol
+        var stamp=new ReadStamp(session,original.lastDurableSequence(),ReadContracts.queryHash(query));
+                                                                       ^
+  symbol:   variable ReadContracts
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:381: error: cannot find symbol
+                var cursor=ReadContracts.decodeCursor(query.pageCursor().orElseThrow());
+                           ^
+  symbol:   variable ReadContracts
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:383: error: cannot find symbol
+                    return new StoreReadResult(ReadStatus.STALE,Optional.empty(),Optional.empty(),List.of());
+                               ^
+  symbol:   class StoreReadResult
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:383: error: cannot find symbol
+                    return new StoreReadResult(ReadStatus.STALE,Optional.empty(),Optional.empty(),List.of());
+                                               ^
+  symbol:   variable ReadStatus
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:385: error: cannot find symbol
+                return new StoreReadResult(ReadStatus.STALE,Optional.empty(),Optional.empty(),List.of());
+                           ^
+  symbol:   class StoreReadResult
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:385: error: cannot find symbol
+                return new StoreReadResult(ReadStatus.STALE,Optional.empty(),Optional.empty(),List.of());
+                                           ^
+  symbol:   variable ReadStatus
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:389: error: cannot find symbol
+            ?Optional.of(ReadContracts.encodeCursor(new StoreReadCursor(stamp,"1")))
+                                                        ^
+  symbol:   class StoreReadCursor
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:389: error: cannot find symbol
+            ?Optional.of(ReadContracts.encodeCursor(new StoreReadCursor(stamp,"1")))
+                         ^
+  symbol:   variable ReadContracts
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:393: error: cannot find symbol
+        return new StoreReadResult(ReadStatus.AVAILABLE,Optional.of(page),Optional.of(stamp),List.of());
+                   ^
+  symbol:   class StoreReadResult
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:393: error: cannot find symbol
+        return new StoreReadResult(ReadStatus.AVAILABLE,Optional.of(page),Optional.of(stamp),List.of());
+                                   ^
+  symbol:   variable ReadStatus
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:413: error: cannot find symbol
+        var expectedStamp=new ReadStamp(fakeSession,new Sequence(1),ReadContracts.queryHash(requested));
+                              ^
+  symbol:   class ReadStamp
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:413: error: cannot find symbol
+        var expectedStamp=new ReadStamp(fakeSession,new Sequence(1),ReadContracts.queryHash(requested));
+                                                                    ^
+  symbol:   variable ReadContracts
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:414: error: cannot find symbol
+        var nextPageCursor=ReadContracts.encodeCursor(new StoreReadCursor(expectedStamp,"1"));
+                                                          ^
+  symbol:   class StoreReadCursor
+  location: class MemoryIntegrationTest
+src/directorTest/java/fr/proutlost/director/memory/MemoryIntegrationTest.java:414: error: cannot find symbol
+        var nextPageCursor=ReadContracts.encodeCursor(new StoreReadCursor(expectedStamp,"1"));
+                           ^
+  symbol:   variable ReadContracts
+  location: class MemoryIntegrationTest
+19 errors

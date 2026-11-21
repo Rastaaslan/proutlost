@@ -1,0 +1,11 @@
+// Pure authority-policy regression. Native Minecraft pair qualification is separate.
+tasks.register('directorCampProfileAuthorityTest', JavaExec) {
+    group = 'verification'
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.bootstrap.DirectorNativeCampProfileAuthorityTests'
+    jvmArgs '-ea', '-Xmx128m', '-XX:ActiveProcessorCount=1'
+}
+tasks.named('directorContractTest') {
+    dependsOn tasks.named('directorCampProfileAuthorityTest')
+}

@@ -1,0 +1,798 @@
+[
+  {
+    "questId": "P0",
+    "authorTitle": "L’arrivée",
+    "playerTitle": "L’arrivée",
+    "prerequisites": [],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "SAFE_SHORE_REACHED"
+    ],
+    "resolutionConditions": [
+      [
+        "SAFE_SHORE_REACHED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Quittez les abords de l’épave et rejoignez le rivage sûr.",
+    "resolvedSummary": "Le groupe a rejoint une zone sûre.",
+    "unlocks": [
+      "P1",
+      "P2"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "P1",
+    "authorTitle": "Prendre pied",
+    "playerTitle": "Prendre pied",
+    "prerequisites": [
+      "P0"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "CAMP_CLAIMED"
+    ],
+    "resolutionConditions": [
+      [
+        "CAMP_CLAIMED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Établissez un camp fonctionnel puis confirmez sa reconnaissance.",
+    "resolvedSummary": "Un premier camp fonctionnel a été reconnu.",
+    "unlocks": [
+      "P3"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "P2",
+    "authorTitle": "Chercher des secours",
+    "playerTitle": "Chercher des secours",
+    "prerequisites": [
+      "P0"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "DISTRESS_SIGNAL_VALIDATED",
+      "INTERIOR_RESPONSE_OBSERVED"
+    ],
+    "resolutionConditions": [
+      [
+        "DISTRESS_SIGNAL_VALIDATED",
+        "INTERIOR_RESPONSE_OBSERVED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Construisez un signal visible puis relevez la réponse depuis l’intérieur de l’île.",
+    "resolvedSummary": "Une réponse est venue de l’intérieur de l’île.",
+    "unlocks": [
+      "P3"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "P3",
+    "authorTitle": "Un détail de trop",
+    "playerTitle": "Un détail de trop",
+    "prerequisites": [
+      "P1",
+      "P2"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "MOTIF_EXACT_COMPARISON",
+      "OLD_CAMP_MOTIF",
+      "WRECK_MOTIF"
+    ],
+    "resolutionConditions": [
+      [
+        "WRECK_MOTIF",
+        "OLD_CAMP_MOTIF",
+        "MOTIF_EXACT_COMPARISON"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Suivez la direction de la réponse ; comparez les deux motifs dans l’ancien camp.",
+    "resolvedSummary": "Le même motif existe dans deux contextes qui ne devraient pas être liés.",
+    "unlocks": [
+      "A1",
+      "B1",
+      "C1"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "A1",
+    "authorTitle": "Une signature",
+    "playerTitle": "Une signature",
+    "prerequisites": [
+      "P3"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "CAMILLE_DAILY_1",
+      "CAMILLE_DAILY_2",
+      "CAMILLE_SIGNATURE"
+    ],
+    "resolutionConditions": [
+      [
+        "CAMILLE_DAILY_1",
+        "CAMILLE_DAILY_2",
+        "CAMILLE_SIGNATURE"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Relevez les fragments ordinaires du journal déchiré dans l’ancien camp.",
+    "resolvedSummary": "Les fragments du journal sont signés Camille Derval.",
+    "unlocks": [
+      "A2"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "A2",
+    "authorTitle": "Le même nom, ailleurs",
+    "playerTitle": "Le même nom, ailleurs",
+    "prerequisites": [
+      "A1"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "CONTRADICTION_1",
+      "CONTRADICTION_2",
+      "SECOND_CAMILLE"
+    ],
+    "resolutionConditions": [
+      [
+        "SECOND_CAMILLE",
+        "CONTRADICTION_1",
+        "CONTRADICTION_2"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Comparez les biographies et relevez deux incompatibilités factuelles.",
+    "resolvedSummary": "Deux Camille Derval appartiennent à des époques apparentes très différentes ; deux faits biographiques sont incompatibles.",
+    "unlocks": [
+      "A3"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "A3",
+    "authorTitle": "Des histoires mélangées",
+    "playerTitle": "Des histoires mélangées",
+    "prerequisites": [
+      "A2"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "RECOMBINATION_1",
+      "RECOMBINATION_2",
+      "OTHER_STORY_1",
+      "OTHER_STORY_2"
+    ],
+    "resolutionConditions": [
+      [
+        "RECOMBINATION_1",
+        "RECOMBINATION_2"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Rapprochez expressions, habitudes, lieux et objets dans les récits.",
+    "resolvedSummary": "Les mêmes éléments apparaissent dans plusieurs histoires sans rester attachés aux mêmes personnes ni aux mêmes lieux.",
+    "unlocks": [
+      "J1"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "B1",
+    "authorTitle": "Quelqu’un est revenu",
+    "playerTitle": "Quelqu’un est revenu",
+    "prerequisites": [
+      "P3"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "CAMP_ROUTINE_REPLAY_OBSERVED"
+    ],
+    "resolutionConditions": [
+      [
+        "CAMP_ROUTINE_REPLAY_OBSERVED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Fréquentez le feu de camp ; relevez une routine reproduite lorsqu’elle se manifeste.",
+    "resolvedSummary": "Le lieu a reproduit une routine autour du feu.",
+    "unlocks": [
+      "B2"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "B2",
+    "authorTitle": "Laisser une marque",
+    "playerTitle": "Laisser une marque",
+    "prerequisites": [
+      "B1"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "ARRANGEMENT_RECORDED"
+    ],
+    "resolutionConditions": [
+      [
+        "ARRANGEMENT_RECORDED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Disposez trois à cinq objets ordinaires sur les emplacements et relevez leur arrangement.",
+    "resolvedSummary": "Une disposition précise, son lieu et ses auteurs ont été enregistrés.",
+    "unlocks": [
+      "B3"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "B3",
+    "authorTitle": "C’était notre geste",
+    "playerTitle": "C’était notre geste",
+    "prerequisites": [
+      "B2"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "ANCIENT_ARRANGEMENT",
+      "EXACT_ARRANGEMENT_COMPARISON"
+    ],
+    "resolutionConditions": [
+      [
+        "ANCIENT_ARRANGEMENT",
+        "EXACT_ARRANGEMENT_COMPARISON"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Comparez la trace d’un autre abri à votre relevé exact.",
+    "resolvedSummary": "Une action récente des joueurs a été intégrée au passé apparent de l’île.",
+    "unlocks": [
+      "J1"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "C1",
+    "authorTitle": "Tu as entendu ça ?",
+    "playerTitle": "Tu as entendu ça ?",
+    "prerequisites": [
+      "P3"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "PERCEPTIONS_COMPARED",
+      "SOUND_RECORDED",
+      "SYMBOLS_RECORDED"
+    ],
+    "resolutionConditions": [
+      [
+        "SOUND_RECORDED",
+        "SYMBOLS_RECORDED",
+        "PERCEPTIONS_COMPARED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Relevez volontairement sons ou symboles et comparez les témoignages de la même scène.",
+    "resolvedSummary": "Plusieurs témoignages différents concernent pourtant la même scène.",
+    "unlocks": [
+      "C2"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "C2",
+    "authorTitle": "Échanger les places",
+    "playerTitle": "Échanger les places",
+    "prerequisites": [
+      "C1"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "PERCEPTIONS_REDISTRIBUTED",
+      "POSITIONS_CHANGED",
+      "SECOND_TRIAL_COMPARED"
+    ],
+    "resolutionConditions": [
+      [
+        "POSITIONS_CHANGED",
+        "PERCEPTIONS_REDISTRIBUTED",
+        "SECOND_TRIAL_COMPARED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Changez réellement de position, rejouez la scène et comparez les relevés.",
+    "resolvedSummary": "La position seule ne détermine pas la perception.",
+    "unlocks": [
+      "C3"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "C3",
+    "authorTitle": "Répondre ensemble",
+    "playerTitle": "Répondre ensemble",
+    "prerequisites": [
+      "C2"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "COMMON_RESPONSE",
+      "FRAGMENTS_SHARED",
+      "SEQUENCE_CORRECT"
+    ],
+    "resolutionConditions": [
+      [
+        "FRAGMENTS_SHARED",
+        "SEQUENCE_CORRECT",
+        "COMMON_RESPONSE"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Partagez les fragments ; utilisez les symboles pour les supports et les sons pour l’ordre.",
+    "resolvedSummary": "Des perceptions complémentaires permettent une action correcte qu’aucun individu ne pouvait déduire seul.",
+    "unlocks": [
+      "J1"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "J1",
+    "authorTitle": "Les pièces se répondent",
+    "playerTitle": "Les pièces se répondent",
+    "prerequisites": [
+      "A3",
+      "B3",
+      "C3"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "J1_SYNTHESIS"
+    ],
+    "resolutionConditions": [
+      [
+        "J1_SYNTHESIS"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Dans le carnet, rapprochez récits incompatibles, trace ancienne et réponse commune.",
+    "resolvedSummary": "Ces phénomènes ne semblent pas indépendants. Des noms, gestes, traces et perceptions se répondent selon une logique commune.",
+    "unlocks": [
+      "D1",
+      "E1"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": true,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "D1",
+    "authorTitle": "Encore la même scène",
+    "playerTitle": "Encore la même scène",
+    "prerequisites": [
+      "J1"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "COMPARABLE_OCCURRENCES",
+      "RECENT_DETAIL_INTEGRATED",
+      "STABLE_ELEMENT"
+    ],
+    "resolutionConditions": [
+      [
+        "COMPARABLE_OCCURRENCES",
+        "STABLE_ELEMENT",
+        "RECENT_DETAIL_INTEGRATED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Comparez les répétitions d’une scène quotidienne et identifiez le détail récent.",
+    "resolvedSummary": "Le monde ne conserve pas seulement des traces ; il remet certaines situations en circulation.",
+    "unlocks": [
+      "D2"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "D2",
+    "authorTitle": "Le départ interrompu",
+    "playerTitle": "Le départ interrompu",
+    "prerequisites": [
+      "D1"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "DEPARTURE_PHYSICAL_TRACE",
+      "DEPARTURE_STORY_1",
+      "DEPARTURE_STORY_2",
+      "INTERRUPTION_COMPARED"
+    ],
+    "resolutionConditions": [
+      [
+        "DEPARTURE_STORY_1",
+        "DEPARTURE_STORY_2",
+        "DEPARTURE_PHYSICAL_TRACE",
+        "INTERRUPTION_COMPARED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Comparez deux préparatifs de départ et une trace physique correspondante.",
+    "resolvedSummary": "Des récits de départ s’interrompent avant leur conclusion ou reviennent vers un état familier.",
+    "unlocks": [
+      "D3"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "D3",
+    "authorTitle": "Passer autrement",
+    "playerTitle": "Passer autrement",
+    "prerequisites": [
+      "D2"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "DETOUR_EXPLORED",
+      "PASSAGE_CHOICE_CONFIRMED",
+      "PASSAGE_WORK_COMPLETED",
+      "REPAIR_EXPLORED"
+    ],
+    "resolutionConditions": [
+      [
+        "REPAIR_EXPLORED",
+        "DETOUR_EXPLORED",
+        "PASSAGE_CHOICE_CONFIRMED",
+        "PASSAGE_WORK_COMPLETED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Explorez réparer et détour, consultez les conséquences, votez puis réalisez l’option choisie.",
+    "resolvedSummary": "Le passage a évolué selon le choix collectif sans effacer nécessairement son histoire.",
+    "unlocks": [
+      "J2"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "E1",
+    "authorTitle": "Une voix sans lieu",
+    "playerTitle": "Une voix sans lieu",
+    "prerequisites": [
+      "J1"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "COMMON_SOUND_STRUCTURE",
+      "NO_LOCAL_SOURCE",
+      "SIGNAL_MULTIPLE_REGIONS",
+      "SIGNAL_FRAGMENT"
+    ],
+    "resolutionConditions": [
+      [
+        "SIGNAL_MULTIPLE_REGIONS",
+        "COMMON_SOUND_STRUCTURE",
+        "NO_LOCAL_SOURCE"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Relevez le signal dans plusieurs régions et comparez sa structure sans source locale.",
+    "resolvedSummary": "Une structure sonore commune se manifeste dans plusieurs régions sans source locale identifiable.",
+    "unlocks": [
+      "E2"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "E2",
+    "authorTitle": "Le mot qui manque",
+    "playerTitle": "Le mot qui manque",
+    "prerequisites": [
+      "E1"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "MISSING_PARTIR_COMPARED",
+      "SIGNAL_MASKED",
+      "SIGNAL_ORIGINAL"
+    ],
+    "resolutionConditions": [
+      [
+        "SIGNAL_ORIGINAL",
+        "SIGNAL_MASKED",
+        "MISSING_PARTIR_COMPARED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Comparez les deux versions conservées du fragment.",
+    "resolvedSummary": "Quelque chose semble masquer les informations qui conduisent vers le départ.",
+    "unlocks": [
+      "E3",
+      "R1"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "E3",
+    "authorTitle": "Faire passer l’appel",
+    "playerTitle": "Faire passer l’appel",
+    "prerequisites": [
+      "E2"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "AMPLIFY_DISTURBED",
+      "AMPLIFY_STABLE_COMPLETED",
+      "FILTER_TRANSMISSION_COMPLETED",
+      "RECOVERY_COMPLETED"
+    ],
+    "resolutionConditions": [
+      [
+        "FILTER_TRANSMISSION_COMPLETED"
+      ],
+      [
+        "AMPLIFY_STABLE_COMPLETED"
+      ],
+      [
+        "AMPLIFY_DISTURBED",
+        "RECOVERY_COMPLETED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Choisissez filtrer ou amplifier puis poursuivez la transmission ; le repli reste accessible.",
+    "resolvedSummary": "La transmission a été menée à terme avec la méthode choisie.",
+    "unlocks": [
+      "J2"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "R1",
+    "authorTitle": "Après la secousse",
+    "playerTitle": "Après la secousse",
+    "prerequisites": [
+      "E2"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "AMPLIFY_DISTURBED",
+      "RECOVERY_COMPLETED",
+      "RETREAT_REACHED",
+      "SITE_REPAIRED"
+    ],
+    "resolutionConditions": [
+      [
+        "AMPLIFY_DISTURBED",
+        "RETREAT_REACHED",
+        "SITE_REPAIRED",
+        "RECOVERY_COMPLETED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "En cas de perturbation, rejoignez le repli identifié, puis remettez le site en état.",
+    "resolvedSummary": "La transmission a repris ; une cicatrice légère demeure sur le site.",
+    "unlocks": [],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": [
+      "AMPLIFY_DISTURBED"
+    ]
+  },
+  {
+    "questId": "J2",
+    "authorTitle": "Ce qui nous garde",
+    "playerTitle": "Ce qui nous garde",
+    "prerequisites": [
+      "D3",
+      "E3"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "J2_SYNTHESIS"
+    ],
+    "resolutionConditions": [
+      [
+        "J2_SYNTHESIS"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Dans le carnet, rapprochez départs interrompus, passage modifié et signal masqué.",
+    "resolvedSummary": "L’île ne cherche pas principalement à nous détruire. Elle cherche à ce que notre histoire continue ici.",
+    "unlocks": [
+      "F1"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": true,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "F1",
+    "authorTitle": "Le même destinataire",
+    "playerTitle": "Le même destinataire",
+    "prerequisites": [
+      "J2"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "RECIPIENT_CONVERGENCE"
+    ],
+    "resolutionConditions": [
+      [
+        "RECIPIENT_CONVERGENCE"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Rapprochez dans le carnet les noms, motifs, habitudes, récits et signal déjà relevés.",
+    "resolvedSummary": "De nombreux fragments semblent revenir à une même personne absente : Alpa.",
+    "unlocks": [
+      "F2"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": true,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "F2",
+    "authorTitle": "De l’autre côté",
+    "playerTitle": "De l’autre côté",
+    "prerequisites": [
+      "F1"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "COMA_FRAGMENTS",
+      "INNER_WORLD_ESTABLISHED",
+      "INTELLIGIBLE_CALL"
+    ],
+    "resolutionConditions": [
+      [
+        "INTELLIGIBLE_CALL",
+        "COMA_FRAGMENTS",
+        "INNER_WORLD_ESTABLISHED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Utilisez la méthode de transmission maîtrisée et relevez les fragments complémentaires.",
+    "resolvedSummary": "« Alpa… si tu m’entends, on est là. » Les fragments établissent le coma : l’archipel et ses habitants appartiennent au monde intérieur associatif d’Alpa.",
+    "unlocks": [
+      "F3"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "F3",
+    "authorTitle": "Tout ne doit pas disparaître",
+    "playerTitle": "Tout ne doit pas disparaître",
+    "prerequisites": [
+      "F2"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "MEMORY_CHOICE_CONFIRMED"
+    ],
+    "resolutionConditions": [
+      [
+        "MEMORY_CHOICE_CONFIRMED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Consultez le dossier puis votez pour réunir ou répartir les témoignages.",
+    "resolvedSummary": "L’organisation du souvenir a été choisie ; les deux options permettent le réveil.",
+    "unlocks": [
+      "F4"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": true,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "F4",
+    "authorTitle": "Laisser partir",
+    "playerTitle": "Laisser partir",
+    "prerequisites": [
+      "F3"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "COMPLETE_REPLY",
+      "FRAGMENTS_LINKED",
+      "PASSAGES_OPEN",
+      "PLACE_EVOLVED",
+      "REPEATS_STOPPED",
+      "SIGNAL_CLEAR"
+    ],
+    "resolutionConditions": [
+      [
+        "FRAGMENTS_LINKED",
+        "PLACE_EVOLVED",
+        "COMPLETE_REPLY",
+        "REPEATS_STOPPED",
+        "PASSAGES_OPEN",
+        "SIGNAL_CLEAR"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Reliez les fragments, laissez évoluer les lieux et transmettez une réponse complète, sur plusieurs connexions si nécessaire.",
+    "resolvedSummary": "Les répétitions cessent, les passages restent ouverts et le signal n’est plus brouillé. L’île cesse de retenir son monde.",
+    "unlocks": [
+      "F5"
+    ],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": true,
+    "availabilityFacts": []
+  },
+  {
+    "questId": "F5",
+    "authorTitle": "Le matin d’après",
+    "playerTitle": "Le matin d’après",
+    "prerequisites": [
+      "F4"
+    ],
+    "visibilityScope": "SERVER",
+    "observations": [
+      "AWAKENING",
+      "EPILOGUE_RECORDED"
+    ],
+    "resolutionConditions": [
+      [
+        "AWAKENING",
+        "EPILOGUE_RECORDED"
+      ]
+    ],
+    "context": "Les relevés du carnet conservent les faits observés.",
+    "action": "Retrouvez le dernier regard sur l’archipel et les traces de votre histoire.",
+    "resolvedSummary": "Alpa se réveille. Le devenir des personnages reste ouvert.",
+    "unlocks": [],
+    "recoveryPolicy": "Conserver les preuves ; reproposer le support préparé ou la manifestation sans réécrire un relevé.",
+    "majorConvergence": false,
+    "availabilityFacts": []
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "MISSION_SOURCE.txt": {
+    "sha256": "2c0665dd179acbfeac6175d42549b2bedd6ef8e7461f148e42156b8486ccbedb",
+    "bytes": 26257
+  },
+  "CONCEPT_REFERENCE.txt": {
+    "sha256": "dbbfe815fa1f4ac3901b0f0b2d8ed2e93892af8bd06e3e4d57149395b0c752b3",
+    "bytes": 52164
+  }
+}

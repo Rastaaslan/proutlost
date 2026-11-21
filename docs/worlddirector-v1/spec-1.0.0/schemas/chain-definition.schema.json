@@ -1,0 +1,402 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:proutlost:director:chain-definition:1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+    },
+    "content_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "calibration": {
+      "const": "DEFAULT_FOR_TESTING"
+    },
+    "mode": {
+      "enum": [
+        "SHORT_ARC",
+        "DYNAMIC"
+      ]
+    },
+    "scope": {
+      "enum": [
+        "REGION",
+        "WORLD"
+      ]
+    },
+    "entry_state": {
+      "type": "string"
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "planning_horizon": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "pattern": "^@test:[a-z0-9_.]+$"
+        }
+      ]
+    },
+    "minimum_step_gap_ticks": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "pattern": "^@test:[a-z0-9_.]+$"
+        }
+      ]
+    },
+    "relevance_minimum": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        {
+          "type": "string",
+          "pattern": "^@test:[a-z0-9_.]+$"
+        }
+      ]
+    },
+    "transitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "on_fact": {
+            "type": "string",
+            "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+          },
+          "event_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "condition": {
+            "$ref": "#/$defs/condition"
+          },
+          "consume_fact_once": {
+            "const": true
+          },
+          "settle_state_tag": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "from",
+          "to",
+          "on_fact",
+          "event_id",
+          "condition",
+          "consume_fact_once",
+          "settle_state_tag"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "terminal_states": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "recovery": {
+      "enum": [
+        "RECOVER",
+        "ABORT_SAFE"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "content_revision",
+    "calibration",
+    "mode",
+    "scope",
+    "entry_state",
+    "states",
+    "planning_horizon",
+    "minimum_step_gap_ticks",
+    "relevance_minimum",
+    "transitions",
+    "terminal_states",
+    "recovery"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "condition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "all"
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/condition"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "type",
+            "conditions"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "any"
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/condition"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "type",
+            "conditions"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "not"
+            },
+            "condition": {
+              "$ref": "#/$defs/condition"
+            }
+          },
+          "required": [
+            "type",
+            "condition"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "players_present"
+            },
+            "minimum": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^@test:[a-z0-9_.]+$"
+                }
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "minimum"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "region_tag"
+            },
+            "tag": {
+              "type": "string",
+              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+            }
+          },
+          "required": [
+            "type",
+            "tag"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "pattern_confidence"
+            },
+            "pattern": {
+              "const": "CAMP_ROUTINE"
+            },
+            "minimum": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                {
+                  "type": "string",
+                  "pattern": "^@test:[a-z0-9_.]+$"
+                }
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "pattern",
+            "minimum"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "solo_ready"
+            },
+            "minimum_isolated_ticks": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^@test:[a-z0-9_.]+$"
+                }
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "minimum_isolated_ticks"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "risk_minimum"
+            },
+            "risk_id": {
+              "type": "string",
+              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+            },
+            "minimum": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                {
+                  "type": "string",
+                  "pattern": "^@test:[a-z0-9_.]+$"
+                }
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "risk_id",
+            "minimum"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "requirement_pending"
+            },
+            "selector": {
+              "type": "string",
+              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+            }
+          },
+          "required": [
+            "type",
+            "selector"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "memory_flag"
+            },
+            "flag": {
+              "type": "string",
+              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+            },
+            "expected": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "type",
+            "flag",
+            "expected"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

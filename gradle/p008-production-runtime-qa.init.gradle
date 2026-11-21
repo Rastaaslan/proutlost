@@ -1,0 +1,9 @@
+// Opt-in QA-only task registration. No canonical build.gradle edit is required.
+// Use --no-configuration-cache for this explicit init-script verification lane.
+gradle.projectsEvaluated {
+    def target = gradle.rootProject
+    if (!target.plugins.hasPlugin('java')) throw new GradleException('Java project required for P008 production-runtime QA addon')
+    if (target.tasks.findByName('p008ProductionRuntimeQaJar') == null) {
+        target.apply from: target.file('gradle/p008-production-runtime-qa.gradle')
+    }
+}

@@ -1,0 +1,3 @@
+package fr.proutlost.worldprep.override;
+/** Enforces PROTECTED > EXACT > PALETTE > PLANNER precedence. */
+public final class ModificationPolicy {public enum Source{PROTECTED,EXACT_OVERRIDE,PALETTE_OVERRIDE,PLANNER}public record Decision(boolean mutable,Source source,String value){}public static Decision decide(boolean protectedZone,String exact,String palette,String planned){if(protectedZone)return new Decision(false,Source.PROTECTED,null);if(exact!=null)return new Decision(true,Source.EXACT_OVERRIDE,exact);if(palette!=null)return new Decision(true,Source.PALETTE_OVERRIDE,palette);return new Decision(true,Source.PLANNER,planned);}private ModificationPolicy(){}}

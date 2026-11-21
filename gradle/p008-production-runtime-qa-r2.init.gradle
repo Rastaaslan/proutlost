@@ -1,0 +1,15 @@
+// Opt-in additional contracts only; no canonical build.gradle change.
+gradle.projectsEvaluated {
+    def target = gradle.rootProject
+    if (!target.plugins.hasPlugin('java')) throw new GradleException('Java project required')
+    if (target.tasks.findByName('p008SingleSliceDeclaredSyntheticTest') == null) {
+        target.tasks.register('p008SingleSliceDeclaredSyntheticTest', JavaExec) {
+            group = 'verification'
+            description = 'Strict production versus declared TEST_ONLY lifecycle contracts; no native effects'
+            dependsOn target.tasks.named('directorTestClasses')
+            classpath = target.sourceSets.directorTest.runtimeClasspath
+            mainClass = 'fr.proutlost.director.runtime.SingleSliceDeclaredSyntheticTests'
+            jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+        }
+    }
+}

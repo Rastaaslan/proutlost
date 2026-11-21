@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:proutlost:director:location-import:1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "world_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "source_namespace": {
+      "type": "string",
+      "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+    },
+    "export_revision": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$"
+    },
+    "export_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "regions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "region_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "dimension": {
+            "type": "string",
+            "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+          },
+          "bounds": {
+            "type": "object",
+            "properties": {
+              "min_x": {
+                "type": "integer"
+              },
+              "min_y": {
+                "type": "integer"
+              },
+              "min_z": {
+                "type": "integer"
+              },
+              "max_x_exclusive": {
+                "type": "integer"
+              },
+              "max_y_exclusive": {
+                "type": "integer"
+              },
+              "max_z_exclusive": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "min_x",
+              "min_y",
+              "min_z",
+              "max_x_exclusive",
+              "max_y_exclusive",
+              "max_z_exclusive"
+            ],
+            "additionalProperties": false
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "region_id",
+          "dimension",
+          "bounds",
+          "tags"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "locations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "location_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "external_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "region_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "dimension": {
+            "type": "string",
+            "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+          },
+          "bounds": {
+            "type": "object",
+            "properties": {
+              "min_x": {
+                "type": "integer"
+              },
+              "min_y": {
+                "type": "integer"
+              },
+              "min_z": {
+                "type": "integer"
+              },
+              "max_x_exclusive": {
+                "type": "integer"
+              },
+              "max_y_exclusive": {
+                "type": "integer"
+              },
+              "max_z_exclusive": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "min_x",
+              "min_y",
+              "min_z",
+              "max_x_exclusive",
+              "max_y_exclusive",
+              "max_z_exclusive"
+            ],
+            "additionalProperties": false
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "location_id",
+          "external_id",
+          "region_ids",
+          "dimension",
+          "bounds",
+          "tags"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "anchors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "anchor_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "location_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "dimension": {
+            "type": "string",
+            "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+          },
+          "position": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "integer"
+              },
+              "y": {
+                "type": "integer"
+              },
+              "z": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y",
+              "z"
+            ],
+            "additionalProperties": false
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "anchor_id",
+          "location_id",
+          "dimension",
+          "position",
+          "tags"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "world_id",
+    "source_namespace",
+    "export_revision",
+    "export_digest",
+    "regions",
+    "locations",
+    "anchors"
+  ],
+  "additionalProperties": false
+}

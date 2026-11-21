@@ -1,0 +1,274 @@
+package fr.proutlost.director.bootstrap;
+
+import fr.proutlost.director.api.model.*;
+import fr.proutlost.director.memory.MemoryProjection;
+import fr.proutlost.director.memory.ScopedAggregateCapture;
+import fr.proutlost.director.persistence.JournalStore;
+import fr.proutlost.director.neoforge.DirectorStandaloneMod;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import net.minecraft.server.MinecraftServer;
+
+/** Actual J01/J04 input for the private catalogue. All scope CAS revisions come
+ * from the corresponding persisted aggregate, not a logical memory maximum.
+ * Filesystem reads remain behind JournalStore's asynchronous reader. This
+ * capture does not assign health, regions, participants, risk or physical data.
+ */
+public final class DirectorNativeCatalogueInput {
+    public record Requests(StoreSession session,Sequence cut,List<RequestView> values) {
+        public Requests {Objects.requireNonNull(session);Objects.requireNonNull(cut);values=List.copyOf(values);}
+    }
+    public record Capture(DecisionInput input,Sequence cut) {}
+    private static final Set<String> FACT_TYPES=Set.of(
+        "proutlost:safe_micro_observed","proutlost:local_mist_observed",
+        "proutlost:parallel_steps_observed","proutlost:goat_guest_observed",
+        "proutlost:camp_regrowth_observed","proutlost:animal_migration_observed",
+        "proutlost:controlled_landslide_observed","proutlost:required_signal_observed",
+        "proutlost:shared_choice_observed","proutlost:context_lost",
+        "proutlost_director:admin_tension_override");
+    private final MinecraftServer server;
+    private final WorldId world;
+    private final JournalStore store;
+    private final StoreSession session;
+    private final ConfigView config;
+    private final ProviderMode mode;
+    private final Map<ResourceId,ConfigView> profiles;
+    private final DirectorNativeRegionalPlanningBridge regions;
+    private final Map<FactId,DirectorFact> facts=new LinkedHashMap<>();
+    private Sequence factCut=new Sequence(0);
+    private final Map<FactId,DirectorFact> observedFacts=new LinkedHashMap<>();
+    private Consumer<DurableRecord> observer=row->{};
+    public void observer(Consumer<DurableRecord> callback){actor();observer=Objects.requireNonNull(callback);}
+    public List<DirectorFact> knownFacts(){actor();return List.copyOf(observedFacts.values());}
+    private StoreQuery scanning;
+    private CompletableFuture<StoreReadResult> read;
+    private Optional<String> cursor=Optional.empty();
+    private boolean recovered,failed;
+    private CompletableFuture<ScopedAggregateCapture.View> metadataHydration;
+    private ScopedAggregateCapture.View memoryCapture;
+    private String diagnostic="RECOVERING";
+    public DirectorNativeCatalogueInput(MinecraftServer server,WorldId world,JournalStore store,ConfigView config){
+        this(server,world,store,config,ProviderMode.TEST_ONLY,Map.of());
+    }
+    public DirectorNativeCatalogueInput(MinecraftServer server,WorldId world,JournalStore store,ConfigView config,ProviderMode mode,Map<ResourceId,ConfigView> profiles){
+        this.profiles=Map.copyOf(profiles);this.mode=Objects.requireNonNull(mode);
+        this.server=Objects.requireNonNull(server);this.world=Objects.requireNonNull(world);
+        this.store=Objects.requireNonNull(store);this.config=Objects.requireNonNull(config);
+        actor();session=store.session();regions=new DirectorNativeRegionalPlanningBridge(config,mode);
+        if(!session.worldId().equals(world)||config.calibration()!=(mode==ProviderMode.PRODUCTION?Calibration.APPROVED:Calibration.DEFAULT_FOR_TESTING))
+            throw new IllegalArgumentException("native catalogue input identity");
+    }
+    private void actor(){if(!server.isSameThread())throw new IllegalStateException("catalogue input actor");}
+    private void accept(List<DurableRecord> rows){
+        for(var row:rows)if(row instanceof DurableFact fact
+            &&fact.value().durable()&&fact.value().evidenceStatus()==EvidenceStatus.CONFIRMED
+            &&!fact.value().factType().equals(new FactType("proutlost_director:recorded_decision_input"))
+            &&!fact.value().factType().equals(DirectorNativeEventEnvelopes.TYPE)){
+            var old=observedFacts.putIfAbsent(fact.value().factId(),fact.value());
+            if(old!=null&&!old.equals(fact.value()))throw new IllegalStateException("conflicting observed catalogue fact");
+            if(observedFacts.size()>4096)throw new IllegalStateException("catalogue observed fact capacity");
+            if(old==null)observer.accept(row);
+        }
+        for(var row:rows)if(row instanceof DurableFact f&&FACT_TYPES.contains(f.value().factType().value())){
+            var value=f.value();
+            if(!value.durable()||value.evidenceStatus()!=EvidenceStatus.CONFIRMED)continue;
+            var old=facts.putIfAbsent(value.factId(),value);
+            if(old!=null&&!old.equals(value))throw new IllegalStateException("conflicting catalogue fact");
+            if(facts.size()>2048)throw new IllegalStateException("catalogue fact window requires archival");
+        }
+    }
+    public void resetRecoveryScan(){
+        actor();facts.clear();observedFacts.clear();factCut=new Sequence(0);recovered=false;failed=false;
+        cursor=Optional.empty();read=null;scanning=null;metadataHydration=null;memoryCapture=null;diagnostic="RECOVERING";
+    }
+    public void acceptRecoveryRows(List<DurableRecord> rows,boolean last,Sequence cut){
+        actor();if(recovered)throw new IllegalStateException("input recovery already sealed");
+        accept(rows);if(last){factCut=cut;recovered=true;diagnostic="WAIT_LIVE_CONTEXT";}
+    }
+    /** Advance the verified completion-fact watermark before exposing a planning input. */
+    public void poll(){
+        actor();if(!recovered||failed)return;
+        try{
+            if(!session.equals(store.session())||store.readOnlySafe())throw new IllegalStateException("input session lost");
+            if(read==null){
+                var index=store.residentAggregateKeys(Set.of(AggregateKind.WORLD),4096);
+                if(index.isEmpty()||index.get().cut().compareTo(factCut)<=0)return;
+                scanning=new StoreQuery(world,Set.of(),new Sequence(factCut.value()+1),cursor,256);
+                var resident=store.view(scanning);
+                read=resident.status()==ReadStatus.NOT_RESIDENT?store.read(scanning).toCompletableFuture():
+                    CompletableFuture.completedFuture(resident);return;
+            }
+            if(!read.isDone())return;
+            var result=read.getNow(null);read=null;
+            ReadContracts.validate(result,scanning,session);
+            if(result.status()==ReadStatus.STALE){cursor=Optional.empty();return;}
+            if(result.status()!=ReadStatus.AVAILABLE)throw new IllegalStateException("completion facts not hydrated");
+            var page=result.page().orElseThrow();accept(page.records());cursor=page.nextCursor();
+            if(!page.hasMore())factCut=page.lastDurableSequence();
+        }catch(RuntimeException invalid){failed=true;diagnostic="FAILED "+invalid.getMessage();}
+    }
+    private Optional<Capture> waitFor(String reason){diagnostic=reason;return Optional.empty();}
+    public Optional<Capture> capture(CatalogSnapshot catalog,BudgetView budget,
+            Map<CapabilityId,CapabilityDescriptor> installedCapabilities,
+            Optional<Requests> requests,Map<RegionId,Set<TagId>> authoredTags,long seed){
+        actor();
+        if(!recovered||failed||store.readOnlySafe()||!session.equals(store.session()))return waitFor("J04_NOT_READY");
+        var life=DirectorStandaloneMod.directorLifecycle();
+        if(mode==ProviderMode.PRODUCTION){
+            // A resident common cut can still precede an already queued writer.
+            // Preparing from it races that writer's CAS even though every published
+            // projection agrees. Wait for the actual owners, never relax revisions.
+            if(!life.runtimeMetadataIngressQuiescent(server))
+                return waitFor("NATIVE_METADATA_WRITER_IN_FLIGHT");
+            var production=life.productionRuntime(server);
+            if(production.isEmpty()||production.get().gameplay().isEmpty()
+                ||!production.get().gameplay().orElseThrow().coordinator().worldWriterIdle())
+                return waitFor("WORLD_DECISION_WRITER_IN_FLIGHT");
+        }
+        var raw=life.observationSnapshot(server);var remembered=life.runtimeMemoryView(server);
+        var projected=life.memoryProjectionView(server);var observationTick=life.runtimeObservationTick(server);
+        if(raw.isEmpty()||remembered.isEmpty()||projected.isEmpty()||observationTick.isEmpty()||
+            !projected.get().complete()||projected.get().failClosed())return waitFor("J01_MEMORY_INCOMPLETE");
+        long age=observationTick.get().value()-raw.get().capturedTick().value();
+        long maximumAge=config.values().get("scheduler.snapshot_max_age_ticks").value().longValueExact();
+        if(age<0||age>maximumAge)return waitFor("J01_STALE");
+        var generation=store.metadataSnapshot();
+        boolean selectedMetadata=generation.isPresent()&&!generation.get().generations().isEmpty();
+        var kinds=EnumSet.allOf(AggregateKind.class);
+        if(selectedMetadata)kinds.removeAll(Set.of(AggregateKind.REGION,AggregateKind.REGION_MEMORY,
+            AggregateKind.ANCHOR,AggregateKind.LOCATION,AggregateKind.PLAYER_OPERATIONAL,AggregateKind.PLAYER_SIGNIFICANT));
+        var index=mode==ProviderMode.PRODUCTION?store.residentPlanningAggregateKeys(kinds,4096):
+            store.residentAggregateKeys(kinds,4096);
+        if(index.isEmpty()||!index.get().session().equals(session)||index.get().keys().isEmpty())
+            return waitFor("CURRENT_OPERATIONAL_AGGREGATES_NOT_RESIDENT");
+        var cut=index.get().cut();
+        if(projected.get().lastDurableSequence()>cut.value()||factCut.compareTo(cut)!=0)
+            return waitFor("WAIT_COMMON_WAL_CUT");
+        var requestedKeys=new HashSet<>(index.get().keys());
+        if(requestedKeys.size()>1024)return waitFor("CURRENT_OPERATIONAL_AGGREGATE_CAPACITY");
+        // The operational page is resident and current. Potentially thousands
+        // of selected significant memories are read separately in bounded IO
+        // pages, then every head is revalidated at this exact current cut.
+        var query=new StoreQuery(world,requestedKeys,new Sequence(0),Optional.empty(),1024);
+        var result=store.view(query);ReadContracts.validate(result,query,session);
+        if(result.status()!=ReadStatus.AVAILABLE||result.page().orElseThrow().hasMore()||
+            !result.page().orElseThrow().lastDurableSequence().equals(cut))return waitFor("AGGREGATE_CAPTURE_INCOMPLETE");
+        var states=new HashMap<AggregateKey,AggregateState>();
+        for(var row:result.page().orElseThrow().aggregates())states.put(row.state().key(),row.state());
+        if(!states.keySet().equals(requestedKeys))return waitFor("AGGREGATE_INDEX_CHANGED");
+        if(selectedMetadata) {
+            var selectedKeys=memoryKeys(remembered.get());
+            int maximum=Math.addExact(512,Math.multiplyExact(config.values().get("memory.resident_player_limit").value().intValueExact(),
+                Math.addExact(config.values().get("memory.player_recent_event_entries").value().intValueExact(),1)));
+            if(selectedKeys.size()>maximum)return waitFor("SELECTED_MEMORY_PROFILE_CAPACITY");
+            if(metadataHydration!=null&&metadataHydration.isDone()) {memoryCapture=metadataHydration.join();metadataHydration=null;}
+            var current=store.metadataSnapshot();
+            if(current.isEmpty()||!current.get().cut().equals(cut))return waitFor("SELECTED_MEMORY_CUT_CHANGED");
+            if(memoryCapture==null||!memoryCapture.states().keySet().equals(selectedKeys)||!memoryCapture.sameHeads(store,current.get())) {
+                memoryCapture=null;
+                if(metadataHydration==null)metadataHydration=ScopedAggregateCapture.load(store,current.get(),selectedKeys,maximum).toCompletableFuture();
+                return waitFor("HYDRATING_CURRENT_SCOPED_MEMORY");
+            }
+            states.putAll(memoryCapture.states());
+        }
+        var stored=states.get(new AggregateKey(AggregateKind.WORLD,world.value()));
+        if(!(stored instanceof WorldAggregate wa)||!wa.value().worldId().equals(world)||
+            !wa.value().storeGeneration().equals(session.storeGeneration())||!wa.value().bootEpoch().equals(session.bootEpoch()))
+            return waitFor("WORLD_IDENTITY_CHANGED");
+        var memory=remembered.get();
+        var actual=MemoryProjection.of(selectedMetadata?memory.scopes():
+            new ScopeSet(world,Set.of(new ScopeRef(ScopeKind.WORLD,world.value()))),states.values());
+        // Non-memory lease/audit facts may advance the WAL without changing any
+        // memory row. The complete current-cut query above is authoritative:
+        // compare every memory field instead of waiting forever for equal cursors.
+        if(!verifiedMemoryAtCut(actual,memory,new Sequence(projected.get().lastDurableSequence()),cut))
+            return waitFor("MEMORY_NOT_AT_CAPTURE");
+        var current=wa.value();
+        ConfigView selectedConfig=profiles.isEmpty()?config:fr.proutlost.director.runtime.AdminWorldControlHandler.configuration(current,profiles);
+        if(!current.catalogHash().equals(catalog.hash())||!current.configHash().equals(selectedConfig.provenanceHash()))
+            return waitFor("WORLD_CATALOGUE_CONFIG_NOT_ACTIVE");
+        var scopedTags=new HashMap<RegionId,Set<TagId>>();
+        authoredTags.forEach((id,tags)->{if(memory.regionRecords().containsKey(id))scopedTags.put(id,tags);});
+        var anchorCoverage=life.runtimeRegionAnchorCoverage(server);
+        if(selectedMetadata&&anchorCoverage.isEmpty())return waitFor("ANCHOR_CENSUS_NOT_CURRENT");
+        var regional=regions.project(raw.get(),memory,cut.value(),scopedTags,anchorCoverage);
+        if(regional.deferred())return waitFor("REGIONAL_CONTEXT_DEFERRED");
+        var observed=regional.snapshot();var context=observed.context();
+        var cas=new HashMap<ScopeRef,Revision>();
+        for(var state:states.values()){
+            ScopeKind kind=switch(state.key().kind()){
+                case WORLD->ScopeKind.WORLD;case REGION->ScopeKind.REGION;
+                case LOCATION->ScopeKind.LOCATION;case PLAYER_OPERATIONAL->ScopeKind.PLAYER;
+                default->null;
+            };
+            if(kind!=null)cas.put(new ScopeRef(kind,state.key().id()),state.header().revision());
+        }
+        // A complete resident index attests an absent operational player row at revision0.
+        for(var id:context.players().keySet())cas.putIfAbsent(new ScopeRef(ScopeKind.PLAYER,id.value()),new Revision(0));
+        var scopes=new HashMap<ScopeRef,ScopeSnapshot>();
+        for(var entry:context.scopes().entrySet()){
+            var revision=cas.get(entry.getKey());if(revision==null)continue;
+            var s=entry.getValue();
+            scopes.put(entry.getKey(),new ScopeSnapshot(entry.getKey(),revision,s.availableSensors(),s.missingSensors(),s.scoringFeatures()));
+        }
+        for(var entry:cas.entrySet())if(!scopes.containsKey(entry.getKey()))
+            scopes.put(entry.getKey(),new ScopeSnapshot(entry.getKey(),entry.getValue(),Set.of(),EnumSet.allOf(SensorKind.class),Map.of()));
+        var scoped=new ScopeSet(world,scopes.keySet());
+        var sample=new SnapshotBatch(observed.requestId(),scoped,observed.capturedTick(),cas,
+            new ObservationContext(scopes,context.players(),context.groups(),context.regions(),context.anchors(),
+                context.locations(),context.terrain(),Map.copyOf(installedCapabilities)),observed.missingData(),
+            observed.loadedChunks(),observed.serverHealth());
+        var owners=new HashMap<ResourceKey,OwnershipRecord>();var cooldowns=new ArrayList<CooldownRecord>();
+        var unique=new ArrayList<UniqueUseRecord>();var events=new ArrayList<EventInstance>();
+        var chains=new ArrayList<ChainInstance>();var disasters=new ArrayList<DisasterInstance>();
+        var requestKeys=new HashSet<RequestId>();
+        for(var state:states.values())switch(state){
+            case OwnershipAggregate o->owners.put(o.value().resourceKey(),o.value());
+            case CooldownAggregate c->cooldowns.add(c.value());case UniqueAggregate u->unique.add(u.value());
+            case EventAggregate e->events.add(e.value());case ChainAggregate c->chains.add(c.value());
+            case DisasterAggregate d->disasters.add(d.value());case RequestAggregate r->requestKeys.add(r.value().requestId());
+            default->{}
+        }
+        List<RequestView> actualRequests=List.of();
+        if(!requestKeys.isEmpty()){
+            if(requests.isEmpty()||!requests.get().session().equals(session)||!requests.get().cut().equals(cut))
+                return waitFor("REQUESTS_NOT_AT_CAPTURE");
+            actualRequests=requests.get().values();
+            var supplied=new HashSet<RequestId>();actualRequests.forEach(r->supplied.add(r.state().requestId()));
+            if(!supplied.equals(requestKeys))return waitFor("REQUEST_INDEX_INCOMPLETE");
+            for(var r:actualRequests){
+                var head=states.get(new AggregateKey(AggregateKind.REQUEST,r.state().requestId().value()));
+                if(!(head instanceof RequestAggregate a)||!a.value().equals(r.state()))return waitFor("REQUEST_STATE_CHANGED");
+            }
+        }
+        var now=new Tick(Math.max(current.simTick().value(),observationTick.get().value()));
+        var worldAtTick=new DirectorWorldState(current.header(),world,current.storeGeneration(),now,current.runControl(),
+            current.healthMode(),current.pacingState(),current.tension(),current.intensityProfileId(),current.catalogHash(),
+            current.configHash(),current.bootEpoch(),current.lastCheckpointSeq(),current.engineControl());
+        var decisionState=new DecisionState(worldAtTick,selectedMetadata||profiles.isEmpty()?budget:fr.proutlost.director.runtime.CatalogueBudgetProjection.from(selectedConfig,states.values()),new OwnershipView(owners),cooldowns,unique,List.copyOf(facts.values()),events,chains,disasters);
+        diagnostic="READY cut="+cut.value()+" players="+context.players().size()+" regions="+context.regions().size();
+        return Optional.of(new Capture(new DecisionInput(sample,memory,catalog,selectedConfig,actualRequests,chains,seed,decisionState,Optional.empty()),cut));
+    }
+    static Set<AggregateKey> memoryKeys(MemoryView memory) {
+        var keys=new HashSet<AggregateKey>();
+        memory.regionRecords().keySet().forEach(id->keys.add(new AggregateKey(AggregateKind.REGION,id.value())));
+        memory.regions().forEach(r->keys.add(new AggregateKey(AggregateKind.REGION_MEMORY,r.header().id())));
+        memory.anchors().keySet().forEach(id->keys.add(new AggregateKey(AggregateKind.ANCHOR,id.value())));
+        memory.locations().keySet().forEach(id->keys.add(new AggregateKey(AggregateKind.LOCATION,id.value())));
+        memory.operationalPlayers().forEach(p->keys.add(new AggregateKey(AggregateKind.PLAYER_OPERATIONAL,p.playerId().value())));
+        memory.significantPlayers().forEach(p->keys.add(new AggregateKey(AggregateKind.PLAYER_SIGNIFICANT,p.header().id())));
+        return Set.copyOf(keys);
+    }
+    static boolean verifiedMemoryAtCut(MemoryView current,MemoryView projected,Sequence projectedCut,Sequence captureCut){
+        return projectedCut.compareTo(captureCut)<=0
+            &&current.scopes().equals(projected.scopes())&&current.revisions().equals(projected.revisions())
+            &&current.regionRecords().equals(projected.regionRecords())&&current.locations().equals(projected.locations())
+            &&current.anchors().equals(projected.anchors())
+            &&new HashSet<>(current.regions()).equals(new HashSet<>(projected.regions()))
+            &&new HashSet<>(current.operationalPlayers()).equals(new HashSet<>(projected.operationalPlayers()))
+            &&new HashSet<>(current.significantPlayers()).equals(new HashSet<>(projected.significantPlayers()));
+    }
+    public Optional<List<DirectorFact>> factsAt(Sequence cut){actor();return recovered&&!failed&&factCut.equals(cut)?Optional.of(List.copyOf(observedFacts.values())):Optional.empty();}
+    public String diagnostic(){actor();return diagnostic;}
+}

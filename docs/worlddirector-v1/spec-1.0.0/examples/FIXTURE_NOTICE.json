@@ -1,0 +1,10 @@
+{
+  "status": "DEFAULT_FOR_TESTING",
+  "notes": [
+    "All event/chain numeric settings resolve through DEFAULT_FOR_TESTING.json.",
+    "Example UUIDs and coordinates are synthetic format examples, not map discovery or measurements.",
+    "AI adjustment values illustrate a response, not production scoring calibration.",
+    "proutlost:test_* assets and recipes are capability contracts; no final assets are supplied.",
+    "Fixtures do not prove NeoForge registry availability, compilation, safety or runtime performance."
+  ]
+}

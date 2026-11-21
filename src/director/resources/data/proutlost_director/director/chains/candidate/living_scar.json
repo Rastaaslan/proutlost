@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "id": "proutlost_director:candidate/living_scar",
+  "content_revision": 1,
+  "calibration": "DEFAULT_FOR_TESTING",
+  "mode": "DYNAMIC",
+  "scope": "REGION",
+  "entry_state": "SCAR",
+  "states": [
+    "SCAR",
+    "RECOVERING",
+    "ACTIVE",
+    "SETTLED",
+    "INTERRUPTED"
+  ],
+  "planning_horizon": "@test:chain.planning_horizon",
+  "minimum_step_gap_ticks": "@test:chain.step_gap_ticks",
+  "relevance_minimum": "@test:chain.relevance_min",
+  "transitions": [
+    {
+      "id": "proutlost:scar_to_recovery",
+      "from": "SCAR",
+      "to": "RECOVERING",
+      "on_fact": "proutlost:controlled_landslide_observed",
+      "event_id": "proutlost_director:candidate/animal_migration",
+      "condition": {
+        "type": "region_tag",
+        "tag": "proutlost:fauna_corridor"
+      },
+      "consume_fact_once": true,
+      "settle_state_tag": null
+    },
+    {
+      "id": "proutlost:recovery_to_active",
+      "from": "RECOVERING",
+      "to": "ACTIVE",
+      "on_fact": "proutlost:animal_migration_observed",
+      "event_id": "proutlost_director:candidate/local_mist",
+      "condition": {
+        "type": "players_present",
+        "minimum": "@test:event.role.one"
+      },
+      "consume_fact_once": true,
+      "settle_state_tag": null
+    },
+    {
+      "id": "proutlost:active_continue",
+      "from": "ACTIVE",
+      "to": "ACTIVE",
+      "on_fact": "proutlost:local_mist_observed",
+      "event_id": "proutlost_director:candidate/local_mist",
+      "condition": {
+        "type": "memory_flag",
+        "flag": "proutlost:scar_still_relevant",
+        "expected": true
+      },
+      "consume_fact_once": true,
+      "settle_state_tag": null
+    },
+    {
+      "id": "proutlost:active_settle",
+      "from": "ACTIVE",
+      "to": "SETTLED",
+      "on_fact": "proutlost:local_mist_observed",
+      "event_id": null,
+      "condition": {
+        "type": "memory_flag",
+        "flag": "proutlost:scar_still_relevant",
+        "expected": false
+      },
+      "consume_fact_once": true,
+      "settle_state_tag": "proutlost:recovering_landscape"
+    },
+    {
+      "id": "proutlost:interrupt_recovery",
+      "from": "RECOVERING",
+      "to": "INTERRUPTED",
+      "on_fact": "proutlost:context_lost",
+      "event_id": null,
+      "condition": {
+        "type": "memory_flag",
+        "flag": "proutlost:scar_still_relevant",
+        "expected": false
+      },
+      "consume_fact_once": true,
+      "settle_state_tag": "proutlost:unfinished_recovery"
+    }
+  ],
+  "terminal_states": [
+    "SETTLED",
+    "INTERRUPTED"
+  ],
+  "recovery": "RECOVER"
+}
