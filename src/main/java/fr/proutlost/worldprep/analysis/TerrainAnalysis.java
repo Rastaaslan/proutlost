@@ -14,7 +14,7 @@ public final class TerrainAnalysis {
         final int cells; try { cells=Math.multiplyExact(width,depth); } catch(ArithmeticException e){throw new IllegalArgumentException("Grid dimensions overflow",e);}
         if(width<=0||depth<=0||heights.length!=cells||water.length!=heights.length) throw new IllegalArgumentException("Invalid grid");
         short[] h=new short[heights.length], wd=new short[h.length], cd=new short[h.length]; float[] sl=new float[h.length], rough=new float[h.length];
-        for(int i=0;i<h.length;i++){h[i]=(short)heights[i];wd[i]=(short)Math.max(0,seaLevel-heights[i]);}
+        for(int i=0;i<h.length;i++){h[i]=(short)heights[i];wd[i]=(short)(water[i]?Math.max(0,seaLevel-heights[i]):0);}
         Arrays.fill(cd,Short.MAX_VALUE); ArrayDeque<Integer> q=new ArrayDeque<>();
         for(int z=0;z<depth;z++)for(int x=0;x<width;x++){int i=z*width+x;if(isBoundary(width,depth,water,x,z)){cd[i]=0;q.add(i);}}
         while(!q.isEmpty()){int i=q.remove(),x=i%width,z=i/width,n=cd[i]+1;int[] ns={i-1,i+1,i-width,i+width};for(int k=0;k<4;k++){int nx=k==0?x-1:k==1?x+1:x,nz=k==2?z-1:k==3?z+1:z;if(nx>=0&&nx<width&&nz>=0&&nz<depth&&n<cd[ns[k]]){cd[ns[k]]=(short)Math.min(n,Short.MAX_VALUE);q.add(ns[k]);}}}
