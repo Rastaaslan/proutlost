@@ -1,23 +1,17 @@
 package fr.proutlost.worldprep.runtime;
 
-import com.google.gson.JsonParser;
 import fr.proutlost.worldprep.WorldPrepConfig;
 import fr.proutlost.worldprep.biome.BiomeCandidate;
 import fr.proutlost.worldprep.persistence.WorldPrepSavedData;
 import fr.proutlost.worldprep.plan.PlanIdentity;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.EnumMap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.biome.Biome;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
 /** Startup inventory only: no terrain reads, jobs, dirty flags, or acceptance claim. */
 public final class WorldPrepStartupReport {
-    private static final String PROFILE_RESOURCE = "data/proutlost/worldprep/profiles/river_test.json";
     private WorldPrepStartupReport() {}
 
     public static void started(ServerStartedEvent event) {
@@ -30,12 +24,15 @@ public final class WorldPrepStartupReport {
                 + " cellsPerTick=" + WorldPrepConfig.CELLS_PER_TICK.get() + " profile=" + PlanIdentity.PROFILE);
         try {
             var biomes = server.registryAccess().registryOrThrow(Registries.BIOME);
-            var counts = profileCandidates(biomes);
+            var loadedProfile=BiomeProfileRuntime.resolve(server.overworld());
+            var counts = loadedProfile.resolved().counts();
             System.out.println("WORLDPREP_STARTUP environmentProfile=" + EcologyMutationPlanner.validateProfile() + " plannerVersion=" + EcologyMutationPlanner.VERSION + " suitability=UNKNOWN_NOT_PLANNED");
             failed = counts.get(BiomeCandidate.Status.MISSING) > 0;
             degraded = counts.get(BiomeCandidate.Status.FALLBACK) > 0;
             System.out.println("WORLDPREP_STARTUP profileResource=LOADED declaredBiomeCandidates=" + counts
+                    + " profileSeed=" + loadedProfile.profile().seed() + " profileDigest=" + loadedProfile.digest()
                     + " biomeRegistry=" + biomes.size() + " plannerSuitability=UNKNOWN_NOT_PLANNED");
+            loadedProfile.resolved().requireValid();
             var blocks = server.registryAccess().registryOrThrow(Registries.BLOCK);
             var entities = server.registryAccess().registryOrThrow(Registries.ENTITY_TYPE);
             for (var name : new String[]{"geology_replaceable", "ore_replaceable/stone", "ore_replaceable/deepslate", "soil_replaceable"}) {
@@ -51,10 +48,10 @@ public final class WorldPrepStartupReport {
             }
             System.out.println("WORLDPREP_STARTUP blockRegistry=" + blocks.size() + " entityRegistry=" + entities.size()
                     + " geologyOreFloraTreeAquaticSuitability=UNKNOWN_NOT_PLANNED");
-        } catch (RuntimeException | IOException unavailable) {
+        } catch (RuntimeException unavailable) {
             failed = true;
             System.out.println("WORLDPREP_STARTUP profileOrRegistry=FAILED reason=" + unavailable.getClass().getSimpleName()
-                    + " unresolvedCounts=UNKNOWN");
+                    + " detail=" + diagnostic(unavailable) + " unresolvedCounts=UNKNOWN");
         }
         for (var level : server.getAllLevels()) {
             levels++;
@@ -87,31 +84,17 @@ public final class WorldPrepStartupReport {
                 + " statusScope=STARTUP_CONTENT_AND_STATE_INVENTORY acceptance=NOT_RUN autoJobs=NONE");
     }
 
+    private static String diagnostic(Throwable failure) {
+        var text=new StringBuilder();
+        for(int depth=0;failure!=null&&depth<4;depth++,failure=failure.getCause()){
+            if(depth>0)text.append(" <- ");
+            text.append(failure.getClass().getSimpleName()).append(": ").append(failure.getMessage());
+        }
+        String line=text.toString().replaceAll("[\\p{Cntrl}]", " ");
+        return line.substring(0,Math.min(512,line.length()));
+    }
     private static ResourceLocation id(String path) { return ResourceLocation.fromNamespaceAndPath("proutlost", path); }
     private static <T> int tagSize(Registry<T> registry, TagKey<T> tag) {
         return registry.getTag(tag).map(values -> values.size()).orElse(0);
-    }
-    private static EnumMap<BiomeCandidate.Status, Integer> profileCandidates(Registry<Biome> registry) throws IOException {
-        var counts = new EnumMap<BiomeCandidate.Status, Integer>(BiomeCandidate.Status.class);
-        for (var status : BiomeCandidate.Status.values()) counts.put(status, 0);
-        try (var stream = WorldPrepStartupReport.class.getClassLoader().getResourceAsStream(PROFILE_RESOURCE)) {
-            if (stream == null) throw new IOException("Missing profile");
-            byte[] bytes = stream.readNBytes(65537);
-            if (bytes.length > 65536) throw new IOException("Profile byte bound");
-            var profile = JsonParser.parseString(new String(bytes, StandardCharsets.UTF_8)).getAsJsonObject();
-            if (profile.get("schema").getAsInt() != 1 || !PlanIdentity.PROFILE.equals(profile.get("id").getAsString()))
-                throw new IOException("Profile identity/schema");
-            for (var family : profile.getAsJsonObject("biomes").entrySet()) {
-                for (var element : family.getValue().getAsJsonArray()) {
-                    var candidate = element.getAsJsonObject();
-                    var resolution = new BiomeCandidate(candidate.get("id").getAsString(),
-                            candidate.has("fallback") ? candidate.get("fallback").getAsString() : null)
-                            .resolve(value -> registry.containsKey(ResourceLocation.parse(value)));
-                    counts.merge(resolution.status(), 1, Math::addExact);
-                }
-            }
-            if (counts.values().stream().mapToInt(Integer::intValue).sum() == 0) throw new IOException("Empty candidate profile");
-            return counts;
-        }
     }
 }
