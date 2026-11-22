@@ -424,11 +424,13 @@ public final class DirectorNativeEventLifecycle {
    if(path.isEmpty())path.add(state);
   var result=new ArrayList<EventInstance>();var header=base.header();var at=now();
   if(at.compareTo(header.updatedTick())<0)throw new IllegalStateException("EVENT metadata actor clock regressed");
+  var started=base.startedTick();
   for(int i=0;i<path.size();i++){
+   started=EventStartEvidence.observe(started,path.get(i),at,executed||e.completion!=null);
    header=new AggregateHeader(1,header.id(),header.revision().plus(1),header.lastSequence(),at);
    var last=i==path.size()-1;result.add(new EventInstance(header,base.instanceId(),base.definition(),base.catalogGeneration(),path.get(i),
     last?phase:e.completion!=null?phase("ACTUAL_ORIGINAL_COMPLETION_CAUSAL_CATCHUP"):phase("DURABLE_PREPARE_LIFECYCLE_CATCHUP"),base.roleAssignments(),base.regionIds(),base.contextRef(),steps,reservations,effects,mutations,
-    base.chainId(),e.requirements,base.startedTick(),base.elapsedActiveTicks(),base.maxDurationTicks(),base.recoveryPolicy(),last?outcome:Optional.empty()));
+    base.chainId(),e.requirements,started,base.elapsedActiveTicks(),base.maxDurationTicks(),base.recoveryPolicy(),last?outcome:Optional.empty()));
   }
   return List.copyOf(result);
  }
