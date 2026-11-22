@@ -28,7 +28,7 @@ public final class AdminQueryReplyFenceTests {
     }
 
     private static void rejected(AdminQuery query,
-                                 AdminQueryReplyFence.Reply reply,
+                                 AdminReadReply reply,
                                  AdminStatus status, ReasonCode reason) {
         check(reply.snapshot().isEmpty(), "rejected J07 read published data");
         var error = reply.rejection().orElseThrow();

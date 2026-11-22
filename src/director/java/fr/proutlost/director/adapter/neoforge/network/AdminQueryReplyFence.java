@@ -19,19 +19,9 @@ public final class AdminQueryReplyFence {
 
     private AdminQueryReplyFence() {}
 
-    public record Reply(Optional<AdminSnapshot> snapshot,
-                        Optional<AdminCommandResult> rejection) {
-        public Reply {
-            Objects.requireNonNull(snapshot);
-            Objects.requireNonNull(rejection);
-            if (snapshot.isPresent() == rejection.isPresent())
-                throw new IllegalArgumentException("exactly one J07 reply");
-        }
-    }
-
-    private static Reply deny(AdminQuery request, AdminStatus status,
+    private static AdminReadReply deny(AdminQuery request, AdminStatus status,
                               ReasonCode reason) {
-        return new Reply(Optional.empty(), Optional.of(
+        return new AdminReadReply(Optional.empty(), Optional.of(
             new AdminCommandResult(request.requestId(), status,
                 List.of(reason), Optional.empty(), Optional.empty())));
     }
@@ -54,7 +44,7 @@ public final class AdminQueryReplyFence {
         };
     }
 
-    public static Reply read(AdminQuery request,
+    public static AdminReadReply read(AdminQuery request,
                              Supplier<Optional<AdminSnapshot>> projection) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(projection);
@@ -79,7 +69,7 @@ public final class AdminQueryReplyFence {
             if (new ModelCodec<>(AdminSnapshot.class).encode(page).length
                     > MAX_READ_WIRE_BYTES)
                 return deny(request, AdminStatus.FAILED_SAFE, ReasonCode.INTERNAL_FAULT);
-            return new Reply(Optional.of(page), Optional.empty());
+            return new AdminReadReply(Optional.of(page), Optional.empty());
         } catch (RuntimeException corruptProjection) {
             // Do not echo corrupt/stale WAL details or exception messages over
             // the network. One bounded error is correlated to the query ID.

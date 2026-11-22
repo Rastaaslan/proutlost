@@ -379,25 +379,25 @@ public final class DirectorNativeNetworkBootstrap {
         return production.isPresent()?production.get().pendingPlayerRead(query):
             fr.proutlost.director.bootstrap.DirectorNativeAdminReadBridge.pendingPlayerRead(server,identity,query);
     }
-    private static AdminQueryReplyFence.Reply nativeQueryReply(MinecraftServer server,ServerSession session,
+    private static AdminReadReply nativeQueryReply(MinecraftServer server,ServerSession session,
             ServerPlayer player,SessionIdentity identity,AdminQuery query,boolean continuation){
         var production=DirectorStandaloneMod.directorLifecycle().productionRuntime(server);
         if(production.isPresent()){
             try{
                 var actor=production.get().identity(query.actorSession()).orElseThrow();
                 var result=continuation?production.get().continueNativePlayerRead(query):production.get().admin().query(query,actor);
-                if(result.status()==AdminStatus.SUCCEEDED)return new AdminQueryReplyFence.Reply(Optional.of(
+                if(result.status()==AdminStatus.SUCCEEDED)return new AdminReadReply(Optional.of(
                     fr.proutlost.director.admin.server.AdminFacade.snapshot(query,result,production.get().capabilities())),Optional.empty());
-                return new AdminQueryReplyFence.Reply(Optional.empty(),Optional.of(new AdminCommandResult(query.requestId(),result.status(),
+                return new AdminReadReply(Optional.empty(),Optional.of(new AdminCommandResult(query.requestId(),result.status(),
                     result.error().map(e->List.of(e.code())).orElseGet(()->List.of(ReasonCode.STALE_CONTEXT)),Optional.empty(),Optional.empty())));
             }catch(RuntimeException unavailable){
-                return new AdminQueryReplyFence.Reply(Optional.empty(),Optional.of(new AdminCommandResult(query.requestId(),
+                return new AdminReadReply(Optional.empty(),Optional.of(new AdminCommandResult(query.requestId(),
                     AdminStatus.DEFERRED,List.of(ReasonCode.STALE_CONTEXT),Optional.empty(),Optional.empty())));
             }
         }
         return AdminQueryReplyFence.read(query,()->fr.proutlost.director.bootstrap.DirectorNativeAdminReadBridge.query(server,identity,true,query));
     }
-    private static void deliverQueryReply(MinecraftServer server,ServerSession session,ServerPlayer player,AdminQuery query,AdminQueryReplyFence.Reply reply){
+    private static void deliverQueryReply(MinecraftServer server,ServerSession session,ServerPlayer player,AdminQuery query,AdminReadReply reply){
         if(reply.snapshot().isPresent()){
             var value=reply.snapshot().orElseThrow();
             var snapshot=DirectorStandaloneMod.directorLifecycle().productionRuntime(server).isPresent()?value:controlCapabilities(server,value);

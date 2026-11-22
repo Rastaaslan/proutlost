@@ -1,5 +1,5 @@
 package fr.proutlost.director.admin.server;
-import fr.proutlost.director.adapter.neoforge.network.AdminQueryReplyFence.Reply;
+import fr.proutlost.director.api.model.AdminReadReply;
 import fr.proutlost.director.api.error.*;
 import fr.proutlost.director.api.model.*;
 import fr.proutlost.director.api.port.*;
@@ -12,12 +12,12 @@ public final class AsyncColdPlayerReadRegressionTest {
  private static final SessionId SESSION=new SessionId(UUID.fromString("948bd265-bf6f-47c6-9876-2794c97a7d29"));
  private static final PlayerId PLAYER=new PlayerId(UUID.fromString("93094eda-b7a6-39e1-ba24-b4e8ef1d05fd"));
  private static AdminQuery query(){return new AdminQuery(SESSION,new RequestId(UUID.randomUUID()),AdminPanel.MEMORY,new PlayerFilter(PLAYER),Optional.empty(),Optional.empty(),25);}
- private static Reply stale(AdminQuery q){return new Reply(Optional.empty(),Optional.of(new AdminCommandResult(q.requestId(),AdminStatus.DEFERRED,List.of(ReasonCode.STALE_CONTEXT),Optional.empty(),Optional.empty())));}
- private static Reply ok(AdminQuery q){return new Reply(Optional.of(new AdminSnapshot(q.requestId(),new Revision(7),new Tick(11),new Sequence(13),List.of(),Optional.empty(),Set.of())),Optional.empty());}
+ private static AdminReadReply stale(AdminQuery q){return new AdminReadReply(Optional.empty(),Optional.of(new AdminCommandResult(q.requestId(),AdminStatus.DEFERRED,List.of(ReasonCode.STALE_CONTEXT),Optional.empty(),Optional.empty())));}
+ private static AdminReadReply ok(AdminQuery q){return new AdminReadReply(Optional.of(new AdminSnapshot(q.requestId(),new Revision(7),new Tick(11),new Sequence(13),List.of(),Optional.empty(),Set.of())),Optional.empty());}
  private static void drain(Queue<Runnable> q){for(int i=0;i<32&&!q.isEmpty();i++)q.remove().run();check(q.isEmpty(),"bounded actor queue drained");}
  private static void callbackAndMutableHeads()throws Exception{
   var q=query();var mailbox=new ConcurrentLinkedQueue<Runnable>();var tick=new AtomicInteger();var authorized=new AtomicBoolean(true);
-  var owner=Thread.currentThread();var evaluations=new AtomicInteger();var work=new AtomicReference<CompletableFuture<Void>>(new CompletableFuture<>());var delivered=new ArrayList<Reply>();
+  var owner=Thread.currentThread();var evaluations=new AtomicInteger();var work=new AtomicReference<CompletableFuture<Void>>(new CompletableFuture<>());var delivered=new ArrayList<AdminReadReply>();
   var gate=new DeferredAdminReadGate(32,40,4,tick::get,mailbox::add);
   check(gate.await(PLAYER,q,stale(q),()->{check(Thread.currentThread()==owner,"authority read only on actor");return authorized.get();},
    ()->{check(Thread.currentThread()==owner,"J04 recheck only on actor");return evaluations.incrementAndGet()==1?stale(q):ok(q);},
@@ -31,7 +31,7 @@ public final class AsyncColdPlayerReadRegressionTest {
   check(gate.pendingCount()==0,"completed ticket released");
  }
  private static void revocationExpiryReplacement(){
-  var mailbox=new ArrayDeque<Runnable>();var tick=new AtomicInteger();var auth=new AtomicBoolean(true);var result=new ArrayList<Reply>();
+  var mailbox=new ArrayDeque<Runnable>();var tick=new AtomicInteger();var auth=new AtomicBoolean(true);var result=new ArrayList<AdminReadReply>();
   var q=query();var work=new CompletableFuture<Void>();var eval=new AtomicInteger();var gate=new DeferredAdminReadGate(1,40,4,tick::get,mailbox::add);
   check(gate.await(PLAYER,q,stale(q),auth::get,()->{eval.incrementAndGet();return ok(q);},()->Optional.of(work),result::add),"one ticket");
   check(!gate.await(new PlayerId(UUID.randomUUID()),query(),stale(q),auth::get,()->ok(q),()->Optional.of(work),result::add),"capacity cannot be borrowed");
@@ -49,7 +49,7 @@ public final class AsyncColdPlayerReadRegressionTest {
   newer.complete(null);drain(mailbox);check(result.size()==1&&result.getFirst().snapshot().orElseThrow().requestId().equals(newQ.requestId()),"only replacement can publish");
  }
  private static void refusalBoundsAndTickWrap(){
-  var mailbox=new ArrayDeque<Runnable>();var tick=new AtomicInteger(Integer.MAX_VALUE-10);var result=new ArrayList<Reply>();var q=query();
+  var mailbox=new ArrayDeque<Runnable>();var tick=new AtomicInteger(Integer.MAX_VALUE-10);var result=new ArrayList<AdminReadReply>();var q=query();
   var gate=new DeferredAdminReadGate(32,40,4,tick::get,mailbox::add);
   check(gate.await(PLAYER,q,stale(q),()->true,()->stale(q),()->Optional.of(CompletableFuture.completedFuture(null)),result::add),"bounded completed-work loop");
   drain(mailbox);check(result.size()==1&&DeferredAdminReadGate.awaitingData(result.getFirst())&&gate.pendingCount()==0,"four failed loads end safely without retry loop");

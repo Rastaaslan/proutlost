@@ -1,6 +1,6 @@
 package fr.proutlost.director.admin.server;
 
-import fr.proutlost.director.adapter.neoforge.network.AdminQueryReplyFence.Reply;
+import fr.proutlost.director.api.model.AdminReadReply;
 import fr.proutlost.director.api.error.ReasonCode;
 import fr.proutlost.director.api.model.*;
 import java.util.*;
@@ -17,12 +17,12 @@ public final class DeferredAdminReadGate {
  private final IntSupplier ticks;private final Consumer<Runnable> actorQueue;
  private final Map<PlayerId,Ticket> tickets=new HashMap<>();
  private final class Ticket {
-  final PlayerId player;final AdminQuery query;final Reply initial;final int admittedTick;
-  final BooleanSupplier authorized;final Supplier<Reply> evaluate;
-  final Supplier<Optional<CompletionStage<?>>> pending;final Consumer<Reply> deliver;
+  final PlayerId player;final AdminQuery query;final AdminReadReply initial;final int admittedTick;
+  final BooleanSupplier authorized;final Supplier<AdminReadReply> evaluate;
+  final Supplier<Optional<CompletionStage<?>>> pending;final Consumer<AdminReadReply> deliver;
   int loads;volatile boolean notificationFailed;
-  Ticket(PlayerId p,AdminQuery q,Reply initial,BooleanSupplier auth,Supplier<Reply> eval,
-    Supplier<Optional<CompletionStage<?>>> pending,Consumer<Reply> deliver){
+  Ticket(PlayerId p,AdminQuery q,AdminReadReply initial,BooleanSupplier auth,Supplier<AdminReadReply> eval,
+    Supplier<Optional<CompletionStage<?>>> pending,Consumer<AdminReadReply> deliver){
    player=p;query=q;this.initial=initial;authorized=auth;evaluate=eval;this.pending=pending;
    this.deliver=deliver;admittedTick=ticks.getAsInt();
   }
@@ -33,12 +33,12 @@ public final class DeferredAdminReadGate {
   this.ticks=Objects.requireNonNull(ticks);this.actorQueue=Objects.requireNonNull(actorQueue);
  }
  private void actor(){if(Thread.currentThread()!=owner)throw new IllegalStateException("read completion actor");}
- public static boolean awaitingData(Reply reply){
+ public static boolean awaitingData(AdminReadReply reply){
   return reply.rejection().filter(r->(r.status()==AdminStatus.REJECTED||r.status()==AdminStatus.DEFERRED)
     &&r.reasonCodes().equals(List.of(ReasonCode.STALE_CONTEXT))).isPresent();
  }
- public boolean await(PlayerId player,AdminQuery query,Reply initial,BooleanSupplier authorized,
-   Supplier<Reply> evaluate,Supplier<Optional<CompletionStage<?>>> pending,Consumer<Reply> deliver){
+ public boolean await(PlayerId player,AdminQuery query,AdminReadReply initial,BooleanSupplier authorized,
+   Supplier<AdminReadReply> evaluate,Supplier<Optional<CompletionStage<?>>> pending,Consumer<AdminReadReply> deliver){
   actor();Objects.requireNonNull(player);Objects.requireNonNull(query);
   if(query.panel()!=AdminPanel.MEMORY||!(query.filter() instanceof PlayerFilter)
     ||query.cursor().isPresent()||!awaitingData(initial)||!initial.rejection().orElseThrow().commandId().equals(query.requestId())||tickets.containsKey(player)
@@ -62,14 +62,14 @@ public final class DeferredAdminReadGate {
   int elapsed=ticks.getAsInt()-ticket.admittedTick; // Defined int wrap for a short tick window.
   return elapsed<0||elapsed>=timeoutTicks;
  }
- private void finish(Ticket ticket,Reply reply){
+ private void finish(Ticket ticket,AdminReadReply reply){
   var request=reply.snapshot().map(AdminSnapshot::requestId)
     .orElseGet(()->new RequestId(reply.rejection().orElseThrow().commandId().value()));
   var bounded=request.equals(ticket.query.requestId())?reply:fault(ticket);
   if(tickets.remove(ticket.player,ticket))ticket.deliver.accept(bounded);
  }
- private Reply fault(Ticket ticket){
-  return new Reply(Optional.empty(),Optional.of(new AdminCommandResult(ticket.query.requestId(),
+ private AdminReadReply fault(Ticket ticket){
+  return new AdminReadReply(Optional.empty(),Optional.of(new AdminCommandResult(ticket.query.requestId(),
     AdminStatus.FAILED_SAFE,List.of(ReasonCode.INTERNAL_FAULT),Optional.empty(),Optional.empty())));
  }
  private void resume(Ticket ticket){
