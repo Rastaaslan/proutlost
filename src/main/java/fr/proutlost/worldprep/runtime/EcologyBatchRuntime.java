@@ -136,6 +136,7 @@ public final class EcologyBatchRuntime {
         if (child == null || !child.area().equals(tileId) || !child.operation().name().equals(stage))
             throw new IllegalStateException("Batch child ownership mismatch");
         if (child.state() == JobState.COMPLETED) { if(!reconcileChild(level,data,child,budget))return; recordChild(root,header,parent,child,index,stage,level);advance(level, data, parent); return; }
+        if (lostUnsealedPreview(child)) { restartLostUnsealedPreview(level,data,parent,child); return; }
         if (child.state() != JobState.PAUSED) throw new IllegalStateException("Batch child needs recovery: " + child.state());
         try {
             BlockMutationRuntime.process(level, data, childId, child, Math.min(256, budget));
@@ -143,8 +144,41 @@ public final class EcologyBatchRuntime {
             if (updated.state() == JobState.COMPLETED) {recordChild(root,header,parent,updated,index,stage,level);advance(level, data, parent);}
             else { data.jobs().put(childId, updated.withState(JobState.PAUSED)); data.changed(); }
         } catch (fr.proutlost.worldprep.world.ServerExistingChunkAccess.Refused e) { throw e; }
+        catch (WorldPrepRuntime.PreviewResumeRequired lost) { restartLostUnsealedPreview(level,data,parent,child.failed(lost.toString())); }
         catch (RuntimeException e) { data.jobs().put(childId, data.jobs().get(childId).failed(e.toString())); data.changed(); throw e; }
     }
+    /** Only an owned, nonphysical batch preview whose volatile writer was lost may restart. */
+    static boolean lostUnsealedPreview(Job child) {
+        return child != null && child.state() == JobState.FAILED && child.snapshotId() == null
+            && child.operation().name().startsWith("PREVIEW_") && STAGES.contains(child.operation().name())
+            && child.error() != null
+            && child.error().startsWith(WorldPrepRuntime.PreviewResumeRequired.class.getName()+":");
+    }
+    static void requireUnsealedPreviewWithoutPhysicalHistory(Job child,
+            java.util.Collection<BlockWorldPrepData.Journal> journals) {
+        if (!lostUnsealedPreview(child)) throw new IllegalStateException("Not an owned unsealed batch preview loss");
+        String pass=child.operation().name().substring("PREVIEW_".length());
+        if(journals.stream().anyMatch(j->j.area.equals(child.area())&&j.pass.equals(pass)))
+            throw new IllegalStateException("Preview stage already has physical history; exact receipt recovery required");
+    }
+    private static void restartLostUnsealedPreview(ServerLevel level,WorldPrepSavedData data,Job parent,Job interrupted) {
+        if(parent.operation()!=Operation.BATCH_ECOLOGY||parent.state()!=JobState.RUNNING
+                ||!interrupted.id().equals(parent.snapshotId())
+                ||!STAGES.get((int)(parent.cursor()%STAGES.size())).equals(interrupted.operation().name()))
+            throw new IllegalStateException("Exact parent preview stage ownership required");
+        var stored=data.jobs().get(interrupted.id());
+        if(stored==null||stored.operation()!=interrupted.operation()||!stored.area().equals(interrupted.area())
+                ||stored.cursor()!=interrupted.cursor()||!java.util.Objects.equals(stored.snapshotId(),interrupted.snapshotId()))
+            throw new IllegalStateException("Interrupted preview identity changed");
+        requireUnsealedPreviewWithoutPhysicalHistory(interrupted,BlockMutationRuntime.data(level).journals().values());
+        // Keep the consumed child UUID, cursor, cause and unsealed artifacts as history.
+        // A following ACKed parent tick uses the existing prepare path for a fresh child UUID.
+        data.jobs().put(interrupted.id(),interrupted.withState(JobState.CANCELLED));
+        data.jobs().put(parent.id(),new Job(parent.id(),parent.operation(),parent.area(),parent.state(),parent.cursor(),"",null));
+        BlockMutationRuntime.forgetPreview(level,interrupted.id());
+        data.changed();level.getDataStorage().save();
+    }
+
     private static boolean reconcileReceipt(ServerLevel level,WorldPrepSavedData data,Job parent,EcologyTiles tiles,
                                          BatchManifestStore.Stage receipt,int budget) throws IOException {
         long index=receipt.sequence()/STAGES.size();
