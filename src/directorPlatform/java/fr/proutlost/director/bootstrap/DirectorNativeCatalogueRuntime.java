@@ -336,10 +336,13 @@ public final class DirectorNativeCatalogueRuntime implements AutoCloseable {
             }
             job.proposal=proposal;job.nextTry=clock.getAsLong()+RETRY_TICKS;
             job.submitted=false;job.previousNoPlan=previousNoPlan;
-            if(executor.mode()==ProviderMode.PRODUCTION){
+            // The full host supplies its bounded archive worker in declared QA too.
+            // Preserve the real provider mode; legacy worker-free test hosts keep audit-only behavior.
+            if(archiveWorker!=null){
                 var frozenInput=executor.capturedInput(proposal.proposalId()).orElseThrow();
                 var snapshots=executor.capturedPlanningSnapshots(proposal.proposalId());var effects=executor.capturedEffects(proposal.proposalId());
-                job.recording=CompletableFuture.supplyAsync(()->RecordedDecisionArchive.record(frozenInput,proposal,snapshots,effects,session,ProviderMode.PRODUCTION),archiveWorker);
+                var recordingMode=executor.mode();
+                job.recording=CompletableFuture.supplyAsync(()->RecordedDecisionArchive.record(frozenInput,proposal,snapshots,effects,session,recordingMode),archiveWorker);
             }else{
                 var receipt=journal.submit(proposal);job.submitted=true;
                 if(receipt.state()==DirectorDecisionJournal.State.REJECTED||receipt.state()==DirectorDecisionJournal.State.UNAVAILABLE)
