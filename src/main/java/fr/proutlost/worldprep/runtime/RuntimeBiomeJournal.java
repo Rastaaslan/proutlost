@@ -17,7 +17,9 @@ import net.minecraft.world.level.storage.LevelResource;
 
 /** Exact, manifest-bound BIOMES ownership journal; SavedData retains metadata only. */
 public final class RuntimeBiomeJournal {
-    private static final PagedPlanStore.EntryCodec<WorldPrepSavedData.SnapshotCell> CODEC=new PagedPlanStore.EntryCodec<>(){
+    private static final PagedJournalStore.ChunkCodec<WorldPrepSavedData.SnapshotCell> CODEC=new PagedJournalStore.ChunkCodec<>(){
+        public int chunkX(WorldPrepSavedData.SnapshotCell c){return Math.floorDiv(c.quartX(),4);}
+        public int chunkZ(WorldPrepSavedData.SnapshotCell c){return Math.floorDiv(c.quartZ(),4);}
         public void write(DataOutput out,WorldPrepSavedData.SnapshotCell c)throws IOException{out.writeInt(c.quartX());out.writeInt(c.quartY());out.writeInt(c.quartZ());out.writeUTF(c.beforeBiome());out.writeUTF(c.appliedBiome());}
         public WorldPrepSavedData.SnapshotCell read(DataInput in)throws IOException{return new WorldPrepSavedData.SnapshotCell(in.readInt(),in.readInt(),in.readInt(),in.readUTF(),in.readUTF());}
     };
