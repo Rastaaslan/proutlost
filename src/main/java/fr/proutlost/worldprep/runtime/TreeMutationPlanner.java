@@ -23,7 +23,7 @@ public final class TreeMutationPlanner {
         if(area.treeMode()==VegetationPlanner.TreeMode.NO_TREES||area.treeMode()==VegetationPlanner.TreeMode.MANUAL_ONLY)return empty;
         int x=ControlledOak.rootX(level.getSeed(),cx,cz),z=ControlledOak.rootZ(level.getSeed(),cx,cz);
         if(x-2<area.minX()||x+2>area.maxX()||z-2<area.minZ()||z+2>area.maxZ())return empty;
-        var c=EcologyMutationPlanner.observe(level,area,x,z);var cfg=EcologyMutationPlanner.validateProfile();
+        var c=EcologyMutationPlanner.observe(level,area,x,z);var cfg=EcologyMutationPlanner.validateProfile(level);
         double density=cfg.forestDensity()*(c.forest()?1:.3)*c.moisture()*Math.max(.1,1-c.normalizedAltitude())*(c.temperature()<cfg.coldTemperature()?.8:1);
         double clearing=new SimplexNoise(RandomSource.create(level.getSeed())).getValue(x/128.0,z/128.0)*.5+.5;
         if(c.blocked()||c.waterDepth()!=0||c.surface()!=c.floor()||c.slope()>cfg.maxSlope()||c.normalizedAltitude()>.8||!VegetationPlanner.treeCandidate(level.getSeed(),cx,cz,area.treeMode(),density,clearing))return empty;

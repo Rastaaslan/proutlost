@@ -26,7 +26,7 @@ public final class WorldPrepStartupReport {
             var biomes = server.registryAccess().registryOrThrow(Registries.BIOME);
             var loadedProfile=BiomeProfileRuntime.resolve(server.overworld());
             var counts = loadedProfile.resolved().counts();
-            System.out.println("WORLDPREP_STARTUP environmentProfile=" + EcologyMutationPlanner.validateProfile() + " plannerVersion=" + EcologyMutationPlanner.VERSION + " suitability=UNKNOWN_NOT_PLANNED");
+            System.out.println("WORLDPREP_STARTUP environmentProfile=" + EcologyMutationPlanner.validateProfile(server.overworld()) + " plannerVersion=" + EcologyMutationPlanner.VERSION + " suitability=UNKNOWN_NOT_PLANNED");
             failed = counts.get(BiomeCandidate.Status.MISSING) > 0;
             degraded = counts.get(BiomeCandidate.Status.FALLBACK) > 0;
             System.out.println("WORLDPREP_STARTUP profileResource=LOADED declaredBiomeCandidates=" + counts

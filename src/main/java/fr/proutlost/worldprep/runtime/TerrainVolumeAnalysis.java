@@ -34,7 +34,7 @@ public final class TerrainVolumeAnalysis {
         parts.add("analysis-exact-host-quart4-and-sampled-suitability-v1");
         parts.add(EcologyMutationPlanner.tagFingerprint(level));
         parts.add(BlockMutationRuntime.hostTagFingerprintForAnalysis());
-        parts.add(EcologyMutationPlanner.validateProfile().toString());
+        parts.add(EcologyMutationPlanner.validateProfile(level).toString());
         for(var tag:java.util.List.of(BiomeTags.IS_FOREST,BiomeTags.IS_OCEAN,BiomeTags.IS_RIVER))
             parts.add(tag.location()+"="+registry.getTag(tag).map(values->values.stream().map(h->h.unwrapKey().orElseThrow().location().toString()).sorted().toList().toString()).orElse(""));
         var identity=fr.proutlost.worldprep.plan.PlanFingerprint.of(parts.toArray(String[]::new)).value();cohort.put(registry,identity);return identity;
@@ -50,7 +50,7 @@ public final class TerrainVolumeAnalysis {
         if(y>=level.getMinBuildHeight()&&y+2<level.getMaxBuildHeight()) {
             var chunk=ServerExistingChunkAccess.requireBlock(level,area,x,y,z);var floor=new BlockPos(x,y,z);var above=floor.above();
             boolean protect=data.protectedBlock(area.dimension(),x,z)||!chunk.getAllStarts().isEmpty()||!chunk.getAllReferences().isEmpty();
-            var ground=chunk.getBlockState(floor);var head=chunk.getBlockState(above);var cfg=EcologyMutationPlanner.validateProfile();
+            var ground=chunk.getBlockState(floor);var head=chunk.getBlockState(above);var cfg=EcologyMutationPlanner.validateProfile(level);
             boolean dry=terrain.waterDepth()==0&&terrain.slope()<=cfg.maxSlope()&&!protect&&!ground.hasBlockEntity()
                 &&head.isAir()&&level.canSeeSky(above);
             flora=dry&&Blocks.SHORT_GRASS.defaultBlockState().canSurvive(level,above);

@@ -25,7 +25,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 /** Existing pure planners connected to loaded vanilla terrain and a closed reversible palette. */
@@ -39,12 +38,17 @@ public final class EcologyMutationPlanner {
         if(settings!=null)return settings;
         try(var in=EcologyMutationPlanner.class.getResourceAsStream("/data/proutlost/worldprep/profiles/river_test.json")){
             if(in==null)throw new IllegalStateException("Missing environment profile");
-            var e=JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject().getAsJsonObject("environment");
+            return settings=parseEnvironmentProfile(new String(in.readAllBytes(),StandardCharsets.UTF_8));
+        }catch(Exception ex){throw new IllegalStateException("Environment profile unavailable or invalid",ex);}
+    }
+    /** Runtime ecology must use the same active data-pack cohort as biome identity. */
+    public static Settings validateProfile(ServerLevel level){return BiomeProfileRuntime.environment(level);}
+    static Settings parseEnvironmentProfile(String text){
+            var e=JsonParser.parseString(text).getAsJsonObject().getAsJsonObject("environment");
             if(e==null||e.get("schema").getAsInt()!=1)throw new IllegalStateException("Unknown environment profile schema");
             double flora=e.get("flora_density").getAsDouble(),forest=e.get("forest_density").getAsDouble(),slope=e.get("max_slope").getAsDouble(),cold=e.get("cold_temperature").getAsDouble();
             if(!Double.isFinite(flora)||flora<0||flora>1||!Double.isFinite(forest)||forest<0||forest>1||!Double.isFinite(slope)||slope<0||slope>16||!Double.isFinite(cold)||cold<0||cold>2)throw new IllegalStateException("Invalid environment profile bounds");
-            return settings=new Settings(flora,forest,slope,cold);
-        }catch(Exception ex){throw new IllegalStateException("Environment profile unavailable or invalid",ex);}
+            return new Settings(flora,forest,slope,cold);
     }
     public static boolean supports(String pass){return pass.equals("SOILS")||pass.equals("FLORA")||pass.equals("TREES")||pass.equals("AQUATIC");}
     /** One immutable column, cached by the existing incremental scan; it retains no world/chunk. */
@@ -52,7 +56,7 @@ public final class EcologyMutationPlanner {
             double normalizedAltitude,double moisture,float temperature,boolean forest,String biome,long noise,
             SoilPlanner.Result soil,AquaticPlanner.Result aquatic,boolean blocked) {}
     public static Column observe(ServerLevel level,WorldPrepSavedData.Area area,int x,int z){
-        validateProfile();var chunk=ServerExistingChunkAccess.requireBlock(level,area,x,level.getMinBuildHeight(),z);
+        validateProfile(level);var chunk=ServerExistingChunkAccess.requireBlock(level,area,x,level.getMinBuildHeight(),z);
         var terrain=MinecraftTerrainSampler.sample(level,x,z);int surface=chunk.getHeight(Heightmap.Types.WORLD_SURFACE,x,z),floor=chunk.getHeight(Heightmap.Types.OCEAN_FLOOR,x,z);
         int top=surface;if(top>floor&&!chunk.getFluidState(new BlockPos(x,top,z)).is(FluidTags.WATER))top--;
         int water=top>floor&&chunk.getFluidState(new BlockPos(x,top,z)).is(FluidTags.WATER)?top-floor:0;
@@ -72,7 +76,7 @@ public final class EcologyMutationPlanner {
     public static BlockWorldPrepData.Change change(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass,int x,int y,int z,Column c){
         var chunk=ServerExistingChunkAccess.requireBlock(level,area,x,y,z);var pos=new BlockPos(x,y,z);var before=chunk.getBlockState(pos);
         if(c.blocked||data.protectedBlock(area.dimension(),x,z)||before.hasBlockEntity())return null;
-        var cfg=validateProfile();BlockState target=null;
+        var cfg=validateProfile(level);BlockState target=null;
         if(pass.equals("SOILS")&&c.waterDepth==0&&c.surface==c.floor&&c.soil.depth()>0&&y<=c.floor&&y>c.floor-c.soil.depth()&&(before.is(SOIL)||before.is(ROCK))){
             target=switch(c.soil.type()){
                 case ROCK->BuiltInRegistries.BLOCK.get(ResourceLocation.parse(GeologyPlanner.replacement(level.getSeed(),x,y,z,GeologyPlanner.province(level.getSeed(),x,y,z)))).defaultBlockState();

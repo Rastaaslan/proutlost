@@ -17,15 +17,19 @@ public final class BiomeProfileRuntime {
         ResourceLocation.fromNamespaceAndPath("proutlost","worldprep/profiles/river_test.json");
     private static final Map<ResourceManager,Cached> CACHE = new WeakHashMap<>();
     private static final class Cached {
-        final BiomeProfile profile;final String digest;
+        final BiomeProfile profile;final String digest;final String text;
+        EcologyMutationPlanner.Settings environment;
         final Map<Object,BiomeProfile.Resolved> registries=new IdentityHashMap<>();
-        Cached(BiomeProfile profile,String digest){this.profile=profile;this.digest=digest;}
+        Cached(BiomeProfile profile,String digest,String text){this.profile=profile;this.digest=digest;this.text=text;}
     }
     public record Loaded(BiomeProfile profile,String digest,BiomeProfile.Resolved resolved) {}
     private BiomeProfileRuntime(){}
 
     private static Cached profile(ServerLevel level){
-        ResourceManager manager=Objects.requireNonNull(level.getServer().getResourceManager(),"Server resource manager");
+        return profile(Objects.requireNonNull(level.getServer().getResourceManager(),"Server resource manager"));
+    }
+    private static Cached profile(ResourceManager manager){
+        Objects.requireNonNull(manager,"Server resource manager");
         synchronized(CACHE){
             var cached=CACHE.get(manager);
             if(cached!=null)return cached;
@@ -37,11 +41,25 @@ public final class BiomeProfileRuntime {
                 var profile=BiomeProfile.parse(text);
                 if(!profile.id().equals(PlanIdentity.PROFILE))
                     throw new IllegalArgumentException("Biome profile identity mismatch: "+profile.id());
-                var result=new Cached(profile,PlanFingerprint.of(text).value());
+                var result=new Cached(profile,PlanFingerprint.of(text).value(),text);
                 CACHE.put(manager,result);return result;
             }catch(IOException failure){
                 throw new IllegalStateException("Cannot read WorldPrep biome profile "+RESOURCE,failure);
             }
+        }
+    }
+    /** Lazily parse ecology: biome-only consumers keep their existing profile contract. */
+    public static EcologyMutationPlanner.Settings environment(ServerLevel level){
+        return environment(level.getServer().getResourceManager());
+    }
+    static EcologyMutationPlanner.Settings environment(ResourceManager manager){
+        var cached=profile(manager);
+        synchronized(cached){
+            if(cached.environment==null){
+                try{cached.environment=EcologyMutationPlanner.parseEnvironmentProfile(cached.text);}
+                catch(RuntimeException failure){throw new IllegalStateException("Environment profile unavailable or invalid",failure);}
+            }
+            return cached.environment;
         }
     }
     public static long seed(ServerLevel level){return profile(level).profile.seed();}
