@@ -29,7 +29,7 @@ public final class WorldPrepCommands {
             .then(Commands.literal("pos1").executes(c->position(c.getSource(),true)))
             .then(Commands.literal("pos2").executes(c->position(c.getSource(),false)))
             .then(Commands.literal("job").then(Commands.argument("id",UuidArgument.uuid())
-                .then(Commands.literal("recover").executes(c->{fr.proutlost.worldprep.runtime.BlockMutationRuntime.recoverStandalone(level(c.getSource()),WorldPrepRuntime.data(level(c.getSource())),UuidArgument.getUuid(c,"id"));return 1;}))
+                .then(Commands.literal("recover").executes(c->{fr.proutlost.worldprep.runtime.BlockMutationRuntime.recoverStandalone(level(c.getSource()),WorldPrepRuntime.data(level(c.getSource())),UuidArgument.getUuid(c,"id"));c.getSource().sendSuccess(()->Component.literal("Recovery queued; original job and journal retained."),false);return 1;}))
                 .then(Commands.literal("resume").executes(c->controlJob(c.getSource(),UuidArgument.getUuid(c,"id"),"resume")))
                 .then(Commands.literal("pause").executes(c->controlJob(c.getSource(),UuidArgument.getUuid(c,"id"),"pause")))
                 .then(Commands.literal("cancel").executes(c->controlJob(c.getSource(),UuidArgument.getUuid(c,"id"),"cancel")))))

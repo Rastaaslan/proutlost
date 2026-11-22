@@ -42,7 +42,7 @@ public final class WorldPrepRuntime {
         return recovery==null?java.util.Optional.empty():java.util.Optional.of(recovery.cursor.progress());
     }
     /** A pause/resume command is a recovery boundary even within one server tick. */
-    public static void discardBiomeApplyRecovery(ServerLevel level,UUID id){forgetBiomeRecovery(level,id);}
+    public static void discardBiomeApplyRecovery(ServerLevel level,UUID id){forgetBiomeRecovery(level,id);BlockMutationRuntime.discardRecovery(level,id);}
     private static void forgetBiomeRecovery(ServerLevel level,UUID id){
         var states=BIOME_RECOVERY.get(level);
         if(states!=null){states.remove(id);if(states.isEmpty())BIOME_RECOVERY.remove(level);}
@@ -72,10 +72,10 @@ public final class WorldPrepRuntime {
     }
     private static UUID enqueue(ServerLevel level,WorldPrepSavedData.Operation op,String areaId,UUID snapshot){requireEnabled();var d=data(level);var area=requireArea(d,areaId);if(!area.dimension().equals(level.dimension().location().toString()))throw new IllegalStateException("Area belongs to another dimension");if(op.name().startsWith("APPLY")||op.name().startsWith("ROLLBACK")||op==WorldPrepSavedData.Operation.BATCH_ECOLOGY){fr.proutlost.worldprep.physical.NativePhysicalRuntime.requireNoPhysicalHistory(level);assertUnlocked(d,area);}UUID id=UUID.randomUUID();d.jobs().put(id,new WorldPrepSavedData.Job(id,op,areaId,WorldPrepSavedData.JobState.QUEUED,0,"",snapshot));d.changed();if(BlockMutationRuntime.isBlockOperation(op)){try{BlockMutationRuntime.prepare(level,d,id,op,area);}catch(RuntimeException failure){d.jobs().put(id,d.jobs().get(id).failed(failure.getMessage()));d.changed();throw failure;}}return id;}
     public static void tick(ServerTickEvent.Post event){
-        if(!WorldPrepConfig.ENABLED.get()||WorldPrepConfig.STRUCTURES_ONLY.get()){for(ServerLevel level:event.getServer().getAllLevels()){MultiTileEcologyPrefetch.cancelLevel(level);ExistingChunkLoader.release(level);BIOME_RECOVERY.remove(level);}return;}
+        if(!WorldPrepConfig.ENABLED.get()||WorldPrepConfig.STRUCTURES_ONLY.get()){for(ServerLevel level:event.getServer().getAllLevels()){MultiTileEcologyPrefetch.cancelLevel(level);ExistingChunkLoader.release(level);BIOME_RECOVERY.remove(level);BlockMutationRuntime.discardLevelRecovery(level);}return;}
         var stop=fr.proutlost.worldprep.ecology.ExecutionSafety.check(event.getServer().getPlayerCount(),event.getServer().getAverageTickTimeNanos(),WorldPrepConfig.MAX_TICK_MILLIS.get());
         for(ServerLevel level:event.getServer().getAllLevels()){
-            if(stop!=fr.proutlost.worldprep.ecology.ExecutionSafety.Stop.NONE){BIOME_RECOVERY.remove(level);ExistingChunkLoader.release(level);var d=data(level);EcologyParallelPreviewRuntime.cancel(d);MultiTileEcologyPrefetch.cancel(d);d.jobs().replaceAll((id,j)->j.state()==WorldPrepSavedData.JobState.RUNNING||j.state()==WorldPrepSavedData.JobState.QUEUED?new WorldPrepSavedData.Job(j.id(),j.operation(),j.area(),WorldPrepSavedData.JobState.PAUSED,j.cursor(),"SAFETY_STOP: "+stop,j.snapshotId()):j);d.changed();}
+            if(stop!=fr.proutlost.worldprep.ecology.ExecutionSafety.Stop.NONE){BIOME_RECOVERY.remove(level);BlockMutationRuntime.discardLevelRecovery(level);ExistingChunkLoader.release(level);var d=data(level);EcologyParallelPreviewRuntime.cancel(d);MultiTileEcologyPrefetch.cancel(d);d.jobs().replaceAll((id,j)->j.state()==WorldPrepSavedData.JobState.RUNNING||j.state()==WorldPrepSavedData.JobState.QUEUED?new WorldPrepSavedData.Job(j.id(),j.operation(),j.area(),WorldPrepSavedData.JobState.PAUSED,j.cursor(),"SAFETY_STOP: "+stop,j.snapshotId()):j);d.changed();}
             else tickLevel(level,WorldPrepConfig.CELLS_PER_TICK.get());
         }
     }
@@ -85,6 +85,7 @@ public final class WorldPrepRuntime {
         var d=data(level);
         prunePreviews(level,d);
         ExistingChunkLoader.cleanup(level,d);
+        if(BlockMutationRuntime.tickStandaloneRecovery(level,d,budget))return;
         var entry=d.jobs().entrySet().stream().filter(e->e.getValue().state()==WorldPrepSavedData.JobState.RUNNING||e.getValue().state()==WorldPrepSavedData.JobState.QUEUED).findFirst().orElse(null);
         if(entry==null)return;
         var j=entry.getValue();

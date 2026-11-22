@@ -28,12 +28,72 @@ import java.util.NoSuchElementException;
 
 /** Shared incremental executor for deterministic BlockState plans and owned rollback journals. */
 public final class BlockMutationRuntime {
+    private static final java.util.Map<ServerLevel,java.util.Map<UUID,BlockJournalRecovery>> RECOVERIES=new java.util.WeakHashMap<>();
+    private static final java.util.Map<ServerLevel,java.util.LinkedHashSet<UUID>> STANDALONE_RECOVERY=new java.util.WeakHashMap<>();
+    private static final org.slf4j.Logger RECOVERY_LOG=org.slf4j.LoggerFactory.getLogger(BlockMutationRuntime.class);
+    private static final class BlockJournalRecovery {
+        final WorldPrepSavedData owner;
+        final fr.proutlost.worldprep.storage.PagedJournalStore.Manifest manifest;
+        final long firstPage;
+        final boolean completedRecovery;
+        final BiomeApplyRecoveryCursor cursor;
+        BlockJournalRecovery(WorldPrepSavedData owner,fr.proutlost.worldprep.storage.PagedJournalStore.Manifest manifest,long firstPage,boolean completedRecovery){
+            this.owner=owner;this.manifest=manifest;this.firstPage=firstPage;this.completedRecovery=completedRecovery;
+            if(firstPage<0||firstPage>manifest.pages().size())throw new IllegalArgumentException("Journal suffix outside manifest");
+            cursor=new BiomeApplyRecoveryCursor(manifest.pages().size()-firstPage);
+        }
+    }
+    public record JournalRecoveryProgress(long firstPage,long prefixPages,long prefixCells,BiomeApplyRecoveryCursor.Progress cursor){}
+    /** Read-only diagnostics; this volatile cursor never replaces the durable journal. */
+    public static java.util.Optional<JournalRecoveryProgress> blockRecoveryProgress(ServerLevel level,UUID job){
+        var states=RECOVERIES.get(level);var r=states==null?null:states.get(job);
+        return r==null?java.util.Optional.empty():java.util.Optional.of(new JournalRecoveryProgress(r.firstPage,r.manifest.pages().size(),r.manifest.entryCount(),r.cursor.progress()));
+    }
+    public static boolean standaloneRecoveryPending(ServerLevel level,UUID job){
+        var requests=STANDALONE_RECOVERY.get(level);return requests!=null&&requests.contains(job);
+    }
+    static void discardRecovery(ServerLevel level,UUID id){
+        var states=RECOVERIES.get(level);
+        if(states!=null){
+            states.remove(id);
+            var job=WorldPrepRuntime.data(level).jobs().get(id);
+            if(job!=null&&job.operation()==WorldPrepSavedData.Operation.BATCH_ECOLOGY&&job.snapshotId()!=null)states.remove(job.snapshotId());
+            if(states.isEmpty())RECOVERIES.remove(level);
+        }
+        var requests=STANDALONE_RECOVERY.get(level);
+        if(requests!=null){requests.remove(id);if(requests.isEmpty())STANDALONE_RECOVERY.remove(level);}
+    }
+    static void discardLevelRecovery(ServerLevel level){RECOVERIES.remove(level);STANDALONE_RECOVERY.remove(level);}
+    private static void pruneRecoveries(ServerLevel level,WorldPrepSavedData data){
+        var states=RECOVERIES.get(level);if(states==null)return;
+        states.entrySet().removeIf(e->{
+            var j=data.jobs().get(e.getKey());if(j==null||e.getValue().owner!=data)return true;
+            if(j.state()==WorldPrepSavedData.JobState.RUNNING||j.state()==WorldPrepSavedData.JobState.QUEUED)return false;
+            if(e.getValue().completedRecovery)return !standaloneRecoveryPending(level,j.id())
+                &&data.jobs().values().stream().noneMatch(p->p.operation()==WorldPrepSavedData.Operation.BATCH_ECOLOGY
+                    &&(p.state()==WorldPrepSavedData.JobState.RUNNING||p.state()==WorldPrepSavedData.JobState.QUEUED)
+                    &&WorldPrepRuntime.requireArea(data,p.area()).overlaps(WorldPrepRuntime.requireArea(data,j.area())));
+            return data.jobs().values().stream().noneMatch(p->p.operation()==WorldPrepSavedData.Operation.BATCH_ECOLOGY
+                &&(p.state()==WorldPrepSavedData.JobState.RUNNING||p.state()==WorldPrepSavedData.JobState.QUEUED)
+                &&j.id().equals(p.snapshotId()));
+        });
+        if(states.isEmpty())RECOVERIES.remove(level);
+    }
+    private static BlockJournalRecovery recovery(ServerLevel level,WorldPrepSavedData data,UUID id,
+            fr.proutlost.worldprep.storage.PagedJournalStore.Manifest manifest,boolean completed){
+        var states=RECOVERIES.computeIfAbsent(level,k->new java.util.HashMap<>());var r=states.get(id);
+        if(r==null||r.owner!=data||r.completedRecovery!=completed){r=new BlockJournalRecovery(data,manifest,0,completed);states.put(id,r);}
+        if(!r.manifest.equals(manifest))throw new IllegalStateException("Block journal changed outside the active recovery slice");
+        return r;
+    }
+
     private static final java.util.Map<ServerLevel,java.util.Map<UUID,BlockPreview>> PREVIEWS=new java.util.WeakHashMap<>();
     private static final class BlockPreview {
         final BlockWorldPrepData.Plan plan;final PagedPlanStore.Writer<BlockWorldPrepData.Change> writer;long scanned;int maskX=Integer.MIN_VALUE,maskZ;boolean maskAccepted;int columnX=Integer.MIN_VALUE,columnZ;EcologyMutationPlanner.Column column;TreeMutationPlanner.Candidate tree;
         BlockPreview(BlockWorldPrepData.Plan plan,PagedPlanStore.Writer<BlockWorldPrepData.Change> writer){this.plan=plan;this.writer=writer;}
     }
     static void prunePreviews(ServerLevel level,WorldPrepSavedData data){
+        pruneRecoveries(level,data);
         var previews=PREVIEWS.get(level);if(previews!=null){previews.keySet().removeIf(id->{var job=data.jobs().get(id);return job==null||!(job.state()==WorldPrepSavedData.JobState.RUNNING||job.state()==WorldPrepSavedData.JobState.QUEUED||job.state()==WorldPrepSavedData.JobState.PAUSED);});if(previews.isEmpty())PREVIEWS.remove(level);}
     }
     static void forgetPreview(ServerLevel level,UUID id){var previews=PREVIEWS.get(level);if(previews!=null)previews.remove(id);}
@@ -91,17 +151,35 @@ public final class BlockMutationRuntime {
         applyBatch(level,data,blocks,id,job,area,plan,budget);
     }
 
-    /** Explicit standalone recovery: no new plan, journal, cursor or automatic replay. */
+    /** Explicit request only. The original completed job and journal remain unchanged;
+     * the server tick performs bounded recovery and a new JVM requires another explicit request. */
     public static void recoverStandalone(ServerLevel level, WorldPrepSavedData data, UUID id) {
-        if (!level.getServer().isSameThread()) throw new IllegalStateException("Server thread required");
-        if (!fr.proutlost.worldprep.WorldPrepConfig.ENABLED.get()) throw new IllegalStateException("WorldPrep disabled");
-        if (fr.proutlost.worldprep.ecology.ExecutionSafety.check(level.getServer().getPlayerCount(),
-                level.getServer().getAverageTickTimeNanos(), fr.proutlost.worldprep.WorldPrepConfig.MAX_TICK_MILLIS.get())
-                != fr.proutlost.worldprep.ecology.ExecutionSafety.Stop.NONE) throw new IllegalStateException("Recovery safety stop");
+        if(!level.getServer().isSameThread())throw new IllegalStateException("Server thread required");
+        if(!fr.proutlost.worldprep.WorldPrepConfig.ENABLED.get())throw new IllegalStateException("WorldPrep disabled");
+        if(fr.proutlost.worldprep.ecology.ExecutionSafety.check(level.getServer().getPlayerCount(),
+                level.getServer().getAverageTickTimeNanos(),fr.proutlost.worldprep.WorldPrepConfig.MAX_TICK_MILLIS.get())
+                !=fr.proutlost.worldprep.ecology.ExecutionSafety.Stop.NONE)throw new IllegalStateException("Recovery safety stop");
         if(!checkpointReady(level,data))throw new IllegalStateException("Checkpoint pending; retry recovery after acknowledgement");
-        requireStandaloneRecovery(data, id);
-        reconcileCompleted(level, data, data.jobs().get(id));
-        level.getDataStorage().save();
+        requireStandaloneRecovery(data,id);
+        discardRecovery(level,id);
+        STANDALONE_RECOVERY.computeIfAbsent(level,k->new java.util.LinkedHashSet<>()).add(id);
+        RECOVERY_LOG.info("WorldPrep standalone recovery queued for {}",id);
+    }
+
+    /** Returns true when this tick belongs to an explicit, finite recovery request. */
+    static boolean tickStandaloneRecovery(ServerLevel level,WorldPrepSavedData data,int budget){
+        var requests=STANDALONE_RECOVERY.get(level);if(requests==null||requests.isEmpty())return false;
+        UUID id=requests.iterator().next();
+        try{
+            requireStandaloneRecovery(data,id);
+            if(!checkpointReady(level,data))return true;
+            if(reconcileCompleted(level,data,data.jobs().get(id),budget)){
+                discardRecovery(level,id);RECOVERY_LOG.info("WorldPrep standalone recovery completed for {}",id);
+            }
+        }catch(RuntimeException failure){
+            discardRecovery(level,id);RECOVERY_LOG.warn("WorldPrep standalone recovery refused for "+id,failure);
+        }
+        return true;
     }
 
     public static void requireStandaloneRecovery(WorldPrepSavedData data, UUID id) {
@@ -126,30 +204,31 @@ public final class BlockMutationRuntime {
         }
     }
 
-    /** Recovery of completed metadata is reconciliation only, never creation of new journal entries. */
-    public static void reconcileCompleted(ServerLevel level, WorldPrepSavedData data, WorldPrepSavedData.Job job) {
+    /** A completed receipt is reconciled in bounded slices before its caller may advance. */
+    public static boolean reconcileCompleted(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Job job){
+        return reconcileCompleted(level,data,job,fr.proutlost.worldprep.WorldPrepConfig.CELLS_PER_TICK.get());
+    }
+    public static boolean reconcileCompleted(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Job job,int budget){
         if(!level.getServer().isSameThread())throw new IllegalStateException("Server thread required");
         if(job.state()!=WorldPrepSavedData.JobState.COMPLETED||!job.operation().name().startsWith("APPLY_"))
             throw new IllegalStateException("Completed apply required");
-        var area=WorldPrepRuntime.requireArea(data,job.area());
-        String pass=pass(job.operation());
+        var area=WorldPrepRuntime.requireArea(data,job.area());String pass=pass(job.operation());
         if(!EcologyMutationPlanner.supports(pass))throw new IllegalStateException("Ecology recovery only");
         EcologyMutationPlanner.requireBounded(area);
-        var blocks=data(level);
-        var plan=requirePlan(level,data,area,pass);
-        var journal=requireJournal(blocks,job,area,plan);
-        long previousPages=journal.pageCount(),previousEntries=journal.entryCount();
-        String previousRoot=journal.journalRoot();
-        RuntimePageJournal.reconcile(level,journal);
-        if(RuntimePageJournal.durableEntryCount(level,journal)!=plan.entryCount())
-            throw new IllegalStateException("Completed child has incomplete journal");
-        boolean replayedChanges=reconcileAppliedJournal(level,data,area,plan,journal);
-        // A read-only recovery must NOT mark the multi-megabyte SavedData dirty
-        // on every completed APPLY receipt. Preserve persistence whenever either
-        // terrain required replay or journal metadata actually changed.
-        if(recoveryPersistenceRequired(replayedChanges,previousPages,journal.pageCount(),
-                previousEntries,journal.entryCount(),previousRoot,journal.journalRoot()))
-            blocks.changed();
+        var blocks=data(level);var plan=requirePlan(level,data,area,pass);var journal=requireJournal(blocks,job,area,plan);
+        long previousPages=journal.pageCount(),previousEntries=journal.entryCount();String previousRoot=journal.journalRoot();
+        var manifest=RuntimePageJournal.requireMetadata(level,journal);
+        if(manifest.entryCount()!=plan.entryCount())throw new IllegalStateException("Completed child has incomplete journal");
+        var r=recovery(level,data,job.id(),manifest,true);
+        boolean[] replayed={false};
+        advanceApplyRecovery(level,data,area,plan,journal,r,budget,replayed);
+        if(recoveryPersistenceRequired(replayed[0],previousPages,journal.pageCount(),previousEntries,journal.entryCount(),previousRoot,journal.journalRoot())){
+            blocks.changed();level.getDataStorage().save();
+        }
+        boolean ready=r.cursor.progress().phase()==BiomeApplyRecoveryCursor.Phase.READY;
+        if(ready&&!checkpointReady(level,data))return false;
+        if(ready){var states=RECOVERIES.get(level);states.remove(job.id());if(states.isEmpty())RECOVERIES.remove(level);}
+        return ready;
     }
 
     /** Exact persistence decision for recovery, without changing admission rules. */
@@ -204,36 +283,46 @@ public final class BlockMutationRuntime {
         }catch(IOException e){throw new IllegalStateException("Incremental block preview failed",e);}
     }
 
-    /** Two phase protocol: persist the complete batch journal, then perform idempotent writes, then persist its cursor. */
+    /** Publish intent before writes; recover each immutable prefix once, and each own suffix once. */
     private static void applyBatch(ServerLevel level,WorldPrepSavedData data,BlockWorldPrepData blocks,UUID id,WorldPrepSavedData.Job job,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan,int budget){
         var journal=requireJournal(blocks,job,area,plan);
-        long previousPages=journal.pageCount(),previousEntries=journal.entryCount();
-        String previousRoot=journal.journalRoot();
-        boolean terrainReplayed=reconcileAppliedJournal(level,data,area,plan,journal);
-        // Reconciliation is mandatory, but an unchanged immutable journal is not a new mutation.
-        // Keep the dirtiness guard identical to reconcileCompleted() to avoid stale metadata.
-        if(recoveryPersistenceRequired(terrainReplayed,previousPages,journal.pageCount(),
-                previousEntries,journal.entryCount(),previousRoot,journal.journalRoot()))
-            blocks.changed();
-        long durable=RuntimePageJournal.durableEntryCount(level,journal);if(durable>plan.entryCount())throw new IllegalStateException("Journal exceeds exact plan");
-        // Cursor reflects reconciled terrain, never merely a published intent page.
-        if(job.cursor()!=durable){data.jobs().put(id,job.withCursor(durable));data.changed();level.getDataStorage().save();return;}
-        List<BlockWorldPrepData.Change> changes=new ArrayList<>();int count=BlockCheckpointPolicy.batchLength(durable,Math.toIntExact(plan.entryCount()),budget);
-        if(count==0){data.jobs().put(id,job.withCursor(durable).withState(WorldPrepSavedData.JobState.COMPLETED));data.changed();level.getDataStorage().save();return;}
-        try{PagedPlanStore.readRange(RuntimePlanStore.directory(level,plan.planId()),manifest(level,plan),RuntimePlanStore.BLOCK_CODEC,durable,count,changes::add);}catch(IOException e){throw new IllegalStateException("Paged plan validation failed",e);}
-        if(changes.size()!=count)throw new IllegalStateException("Paged plan ended before sealed entry count");
-        int start=Math.toIntExact(durable),end=start+count;
-        for(var change:changes){validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());var loaded=ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());var current=encode(loaded.getBlockState(pos));
-            if(current.equals(change.before())&&safeAtBoundary(level,data,area,plan,change,pos)){}
-            // Every sealed mutation is mandatory: protection, BlockEntity, or a third state is a conflict.
-            else throw ownership(pos);
+        long previousPages=journal.pageCount(),previousEntries=journal.entryCount();String previousRoot=journal.journalRoot();
+        var manifest=RuntimePageJournal.requireMetadata(level,journal);
+        if(manifest.entryCount()>plan.entryCount())throw new IllegalStateException("Journal exceeds exact plan");
+        var r=recovery(level,data,id,manifest,false);boolean[] replayed={false};
+        int used=advanceApplyRecovery(level,data,area,plan,journal,r,budget,replayed);
+        if(recoveryPersistenceRequired(replayed[0],previousPages,journal.pageCount(),previousEntries,journal.entryCount(),previousRoot,journal.journalRoot())){
+            blocks.changed();level.getDataStorage().save();
         }
-        var batch=List.copyOf(changes);
-        RuntimePageJournal.publish(level,journal,batch);
+        if(r.cursor.progress().phase()!=BiomeApplyRecoveryCursor.Phase.READY)return;
+        long durable=manifest.entryCount();
+        // The durable cursor follows actual reconciliation, never merely published intent.
+        if(job.cursor()!=durable){data.jobs().put(id,job.withCursor(durable));data.changed();level.getDataStorage().save();return;}
+        if(used>=budget)return;
+        int count=BlockCheckpointPolicy.batchLength(durable,Math.toIntExact(plan.entryCount()),budget-used);
+        if(count==0){data.jobs().put(id,job.withCursor(durable).withState(WorldPrepSavedData.JobState.COMPLETED));data.changed();level.getDataStorage().save();return;}
+        List<BlockWorldPrepData.Change> changes=new ArrayList<>();
+        try{PagedPlanStore.readRange(RuntimePlanStore.directory(level,plan.planId()),manifest(level,plan),RuntimePlanStore.BLOCK_CODEC,durable,count,changes::add);}
+        catch(IOException e){throw new IllegalStateException("Paged plan validation failed",e);}
+        if(changes.size()!=count)throw new IllegalStateException("Paged plan ended before sealed entry count");
+        for(var change:changes){
+            validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());
+            var loaded=ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
+            if(!encode(loaded.getBlockState(pos)).equals(change.before())||!safeAtBoundary(level,data,area,plan,change,pos))throw ownership(pos);
+        }
+        var advanced=RuntimePageJournal.publish(level,journal,List.copyOf(changes));
+        if(advanced.pages().size()<=manifest.pages().size()
+                ||!advanced.pages().subList(0,manifest.pages().size()).equals(manifest.pages())
+                ||advanced.entryCount()-manifest.entryCount()!=changes.size()
+                ||!advanced.journalId().equals(manifest.journalId())||!advanced.planId().equals(manifest.planId())
+                ||!advanced.planRoot().equals(manifest.planRoot())||advanced.pass()!=manifest.pass()
+                ||!advanced.dimension().equals(manifest.dimension())||!advanced.area().equals(manifest.area()))
+            throw new IllegalStateException("Own block journal append changed immutable prefix or identity");
+        // Only the newly published suffix is pending. A cold start or pause discards this cache
+        // and starts a full-prefix validation barrier again.
+        RECOVERIES.get(level).put(id,new BlockJournalRecovery(data,advanced,manifest.pages().size(),false));
         blocks.changed();data.changed();level.getDataStorage().save();
-        // Yield before terrain writes. Next invocation must pass checkpointReady,
-        // then reconciles this exact published journal. Never infer terrain durability.
-
+        // checkpointReady on the next invocation must acknowledge the exact published journal.
     }
 
     /** Completion metadata is not ownership: later writers can recreate identical values. */
@@ -261,50 +350,45 @@ public final class BlockMutationRuntime {
     }
 
     private static void rollback(ServerLevel level,WorldPrepSavedData data,BlockWorldPrepData blocks,UUID id,WorldPrepSavedData.Job job,WorldPrepSavedData.Area area,String pass,int budget){
-        var journal=blocks.journals().get(job.snapshotId());if(journal==null||!journal.area.equals(area.id())||!journal.pass.equals(pass))throw new IllegalStateException("Snapshot ownership mismatch");
+        var journal=blocks.journals().get(job.snapshotId());
+        if(journal==null||!journal.area.equals(area.id())||!journal.pass.equals(pass))throw new IllegalStateException("Snapshot ownership mismatch");
         requireRollbackRecoveryOwnership(data,job);
-        RuntimePageJournal.reconcile(level,journal);preflightBlockRollback(level,data,area,journal);
-        int[] remaining={Math.max(1,budget)},restored={0};boolean[] pending={false};
-        RuntimePageJournal.visit(level,journal,(sequence,changes)->{for(var change:changes){var pos=new BlockPos(change.x(),change.y(),change.z());var loaded=ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());String current=encode(loaded.getBlockState(pos));if(current.equals(change.applied())){if(remaining[0]>0){writeVerified(level,pos,decode(change.before()),mutationFlags(pass));ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z()).setUnsaved(true);remaining[0]--;restored[0]++;}else pending[0]=true;}}});
-        var advanced=data.jobs().get(id).withCursor(job.cursor()+restored[0]);if(!pending[0])advanced=advanced.withState(WorldPrepSavedData.JobState.COMPLETED);data.jobs().put(id,advanced);data.changed();blocks.changed();level.getDataStorage().save();
+        var manifest=RuntimePageJournal.requireMetadata(level,journal);var r=recovery(level,data,id,manifest,false);
+        r.cursor.advance(budget,page->manifest.pages().get(Math.toIntExact(page)).entryCount(),
+            (page,offset,count,phase)->RuntimePageJournal.visitRecoverySlice(level,journal,manifest,page,offset,count,change->{
+                validateBounds(level,area,change);
+                if(data.protectedBlock(area.dimension(),change.x(),change.z()))throw new IllegalStateException("Rollback location is protected");
+                var pos=new BlockPos(change.x(),change.y(),change.z());
+                var loaded=ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
+                String current=encode(loaded.getBlockState(pos));
+                if(!current.equals(change.applied())&&!current.equals(change.before()))throw ownership(pos);
+                if(phase==BiomeApplyRecoveryCursor.Phase.REPLAY&&!current.equals(change.before())){
+                    writeVerified(level,pos,decode(change.before()),mutationFlags(pass));loaded.setUnsaved(true);
+                }
+            }));
+        var progress=r.cursor.progress();
+        if(progress.phase()==BiomeApplyRecoveryCursor.Phase.VALIDATE)return;
+        var advanced=job.withCursor(Math.max(0,progress.visitedCells()-manifest.entryCount()));
+        if(progress.phase()==BiomeApplyRecoveryCursor.Phase.READY)advanced=advanced.withState(WorldPrepSavedData.JobState.COMPLETED);
+        data.jobs().put(id,advanced);data.changed();blocks.changed();level.getDataStorage().save();
     }
 
-    /** Preserve the two-phase ownership validation before ALL physical writes.
-     * Return true only when some terrain actually needed replay.
-     */
-    private static boolean reconcileAppliedJournal(ServerLevel level,WorldPrepSavedData data,
-            WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan,BlockWorldPrepData.Journal journal){
-        if(journal.pageCount()==0&&!java.nio.file.Files.exists(
-            fr.proutlost.worldprep.storage.PagedJournalStore.manifestPath(
-                RuntimePageJournal.directory(level,journal.id))))return false;
-        RuntimePageJournal.reconcile(level,journal);
-        RuntimePageJournal.visit(level,journal,(sequence,changes)->{
-            for(var change:changes){
-                validateBounds(level,area,change);
-                var pos=new BlockPos(change.x(),change.y(),change.z());
-                ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
-                String current=encode(level.getBlockState(pos));
+    /** All recovered cells pass ownership before the first replay, with the same cell budget. */
+    private static int advanceApplyRecovery(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,
+            BlockWorldPrepData.Plan plan,BlockWorldPrepData.Journal journal,BlockJournalRecovery r,int budget,boolean[] replayed){
+        return r.cursor.advance(budget,page->r.manifest.pages().get(Math.toIntExact(r.firstPage+page)).entryCount(),
+            (page,offset,count,phase)->RuntimePageJournal.visitRecoverySlice(level,journal,r.manifest,r.firstPage+page,offset,count,change->{
+                validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());
+                var loaded=ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
+                String current=encode(loaded.getBlockState(pos));
                 if(current.equals(change.before())){
                     if(!safeAtBoundary(level,data,area,plan,change,pos))throw ownership(pos);
                 }else if(!current.equals(change.applied()))throw ownership(pos);
-            }
-        });
-        final boolean[] replayed={false};
-        RuntimePageJournal.visit(level,journal,(sequence,changes)->{
-            for(var change:changes){
-                var pos=new BlockPos(change.x(),change.y(),change.z());
-                var loaded=ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
-                if(encode(loaded.getBlockState(pos)).equals(change.before())){
-                    writeVerified(level,pos,decode(change.applied()),mutationFlags(plan.pass));
-                    ServerExistingChunkAccess.requireBlock(
-                        level,area,change.x(),change.y(),change.z()).setUnsaved(true);
-                    replayed[0]=true;
+                if(phase==BiomeApplyRecoveryCursor.Phase.REPLAY&&current.equals(change.before())){
+                    writeVerified(level,pos,decode(change.applied()),mutationFlags(plan.pass));loaded.setUnsaved(true);replayed[0]=true;
                 }
-            }
-        });
-        return replayed[0];
+            }));
     }
-    private static void preflightBlockRollback(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Journal journal){RuntimePageJournal.visit(level,journal,(sequence,changes)->{for(var change:changes){validateBounds(level,area,change);if(data.protectedBlock(area.dimension(),change.x(),change.z()))throw new IllegalStateException("Rollback location is protected");var pos=new BlockPos(change.x(),change.y(),change.z());ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());String current=encode(level.getBlockState(pos));if(!current.equals(change.applied())&&!current.equals(change.before()))throw ownership(pos);}});}
 
     private static boolean safeAtBoundary(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan,BlockWorldPrepData.Change change,BlockPos pos){
         if(!MinecraftTerrainSampler.matchesMask(level,area.mask(),change.x(),change.z(),1,1))return false;if(data.protectedBlock(area.dimension(),change.x(),change.z())||level.getBlockEntity(pos)!=null)return false;

@@ -69,8 +69,9 @@ public final class EcologyBatchRuntime {
                 if(!BlockMutationRuntime.checkpointReady(level,data))return;
                 var recoveryTile=tiles.at(recovery.next/STAGES.size());
                 if(!ExistingChunkLoader.ensure(level,parent.id(),recoveryTile.minX()>>4,recoveryTile.minZ()>>4))return;
-                reconcileReceipt(level,data,parent,tiles,BatchManifestStore.read(root,header,recovery.next));
-                recovery.next++;
+                if(!reconcileReceipt(level,data,parent,tiles,BatchManifestStore.read(root,header,recovery.next),budget))return;
+                boolean physical=STAGES.get((int)(recovery.next%STAGES.size())).startsWith("APPLY_");
+                recovery.next++;if(physical)return;
             }
             return;
         }
@@ -101,7 +102,7 @@ public final class EcologyBatchRuntime {
         if(Files.exists(BatchManifestStore.stagePath(root,parent.id(),parent.cursor()))){
             var receipt=BatchManifestStore.read(root,header,parent.cursor());
             if(!receipt.tileId().equals(tileId)||receipt.tileIndex()!=index||!receipt.stage().equals(stage))throw new IOException("Stage schedule mismatch");
-            reconcileReceipt(level,data,parent,tiles,receipt);
+            if(!reconcileReceipt(level,data,parent,tiles,receipt,budget))return;
             advance(level,data,parent);return;
         }
         if (stage.equals("STRUCTURES") || stage.equals("HABITATS")) {
@@ -134,7 +135,7 @@ public final class EcologyBatchRuntime {
         var child = data.jobs().get(childId);
         if (child == null || !child.area().equals(tileId) || !child.operation().name().equals(stage))
             throw new IllegalStateException("Batch child ownership mismatch");
-        if (child.state() == JobState.COMPLETED) { reconcileChild(level,data,child); recordChild(root,header,parent,child,index,stage,level);advance(level, data, parent); return; }
+        if (child.state() == JobState.COMPLETED) { if(!reconcileChild(level,data,child,budget))return; recordChild(root,header,parent,child,index,stage,level);advance(level, data, parent); return; }
         if (child.state() != JobState.PAUSED) throw new IllegalStateException("Batch child needs recovery: " + child.state());
         try {
             BlockMutationRuntime.process(level, data, childId, child, Math.min(256, budget));
@@ -144,8 +145,8 @@ public final class EcologyBatchRuntime {
         } catch (fr.proutlost.worldprep.world.ServerExistingChunkAccess.Refused e) { throw e; }
         catch (RuntimeException e) { data.jobs().put(childId, data.jobs().get(childId).failed(e.toString())); data.changed(); throw e; }
     }
-    private static void reconcileReceipt(ServerLevel level,WorldPrepSavedData data,Job parent,EcologyTiles tiles,
-                                         BatchManifestStore.Stage receipt) throws IOException {
+    private static boolean reconcileReceipt(ServerLevel level,WorldPrepSavedData data,Job parent,EcologyTiles tiles,
+                                         BatchManifestStore.Stage receipt,int budget) throws IOException {
         long index=receipt.sequence()/STAGES.size();
         String tileId="proutlost:batch_"+parent.id().toString().replace("-","")+"_"+index;
         String stage=STAGES.get((int)(receipt.sequence()%STAGES.size()));
@@ -164,11 +165,12 @@ public final class EcologyBatchRuntime {
             var recovered=receiptChildCandidate(parent,child,receipt);
             // Do not publish COMPLETED merely because a receipt exists. This validates
             // exact plan/journal identity, full journal count and terrain ownership first.
-            reconcileChild(level,data,recovered);
+            if(!reconcileChild(level,data,recovered,budget))return false;
             if(!recovered.equals(child)) {
                 data.jobs().put(child.id(),recovered);data.changed();level.getDataStorage().save();
             }
         }
+        return true;
     }
     public static Job receiptChildCandidate(Job parent,Job child,BatchManifestStore.Stage receipt) throws IOException {
         if(child==null)throw new IOException("Missing child ownership metadata; offline exact-state repair required");
@@ -184,9 +186,9 @@ public final class EcologyBatchRuntime {
             throw new IOException("Receipt ahead of SavedData without exact active APPLY ownership; offline repair required");
         return child.withCursor(receipt.plannedChanges()).withState(JobState.COMPLETED);
     }
-    private static void reconcileChild(ServerLevel level,WorldPrepSavedData data,Job child) {
-        if(child.operation().name().startsWith("APPLY_"))
-            BlockMutationRuntime.reconcileCompleted(level,data,child);
+    private static boolean reconcileChild(ServerLevel level,WorldPrepSavedData data,Job child,int budget) {
+        return !child.operation().name().startsWith("APPLY_")
+            ||BlockMutationRuntime.reconcileCompleted(level,data,child,Math.min(256,budget));
     }
     private static void recordChild(Path root,BatchManifestStore.Header header,Job parent,Job child,long tile,String stage,ServerLevel level) throws IOException {
         String pass=stage.substring(stage.indexOf('_')+1);

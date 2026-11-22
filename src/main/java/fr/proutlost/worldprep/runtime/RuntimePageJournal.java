@@ -22,6 +22,22 @@ public final class RuntimePageJournal {
 
     public static PagedJournalStore.Manifest initialize(ServerLevel level,BlockWorldPrepData.Journal journal){try{var manifest=PagedJournalStore.initialize(directory(level,journal.id),PagedJournalStore.empty(journal.id,journal.planId(),journal.fingerprint(),PassId.valueOf(journal.pass),level.dimension().location().toString(),journal.area));DurablePageStore.forceDirectory(directory(level,journal.id));update(journal,manifest);return manifest;}catch(IOException e){throw new IllegalStateException("Durable journal initialization failed",e);}}
     public static PagedJournalStore.Manifest publish(ServerLevel level,BlockWorldPrepData.Journal journal,List<BlockWorldPrepData.Change> changes){try{var current=manifestOrEmpty(level,journal);var advanced=PagedJournalStore.append(directory(level,journal.id),current,changes,CODEC);DurablePageStore.forceDirectory(directory(level,journal.id));update(journal,advanced);return advanced;}catch(IOException e){throw new IllegalStateException("Durable journal publication failed",e);}}
+    /** Authenticate the manifest only; every bounded page read authenticates its exact payload. */
+    public static PagedJournalStore.Manifest requireMetadata(ServerLevel level,BlockWorldPrepData.Journal journal){
+        try{var manifest=PagedJournalStore.readManifest(directory(level,journal.id));requireIdentity(level,journal,manifest);update(journal,manifest);return manifest;}
+        catch(IOException e){throw new IllegalStateException("Journal recovery required",e);}
+    }
+    public static void visitRecoverySlice(ServerLevel level,BlockWorldPrepData.Journal journal,
+            PagedJournalStore.Manifest expected,long page,int offset,int count,
+            java.util.function.Consumer<BlockWorldPrepData.Change> consumer){
+        try{
+            PagedJournalStore.visitPage(directory(level,journal.id),expected,page,CODEC,(sequence,changes)->{
+                if(offset<0||count<1||offset>changes.size()-count)throw new IOException("Block recovery slice outside exact page");
+                for(int n=offset;n<offset+count;n++)consumer.accept(changes.get(n));
+            });
+        }catch(IOException e){throw new IllegalStateException("Journal recovery required",e);}
+    }
+
     public static PagedJournalStore.Manifest reconcile(ServerLevel level,BlockWorldPrepData.Journal journal){try{var manifest=PagedJournalStore.readManifest(directory(level,journal.id));requireIdentity(level,journal,manifest);PagedJournalStore.validateAll(directory(level,journal.id),manifest);DurablePageStore.forceDirectory(directory(level,journal.id));update(journal,manifest);return manifest;}catch(IOException e){throw new IllegalStateException("Journal recovery required",e);}}
     public static PagedJournalStore.Metrics visit(ServerLevel level,BlockWorldPrepData.Journal journal,PagedJournalStore.PageConsumer<BlockWorldPrepData.Change> consumer){try{var manifest=reconcile(level,journal);return PagedJournalStore.visitPages(directory(level,journal.id),manifest,CODEC,consumer);}catch(IOException e){throw new IllegalStateException("Journal recovery required",e);}}
     public static long durableEntryCount(ServerLevel level,BlockWorldPrepData.Journal journal){Path path=PagedJournalStore.manifestPath(directory(level,journal.id));if(!Files.exists(path))return 0;return reconcile(level,journal).entryCount();}
