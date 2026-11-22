@@ -142,17 +142,22 @@ final class TerrainPreviewGuard {
     static void finishAdmission(ServerLevel level,UUID id) { remove(ADMISSIONS,level,id); }
     static void discard(ServerLevel level,UUID id) { finishPreview(level,id);finishAdmission(level,id); }
     static void discardLevel(ServerLevel level) { PREVIEWS.remove(level);ADMISSIONS.remove(level); }
+    static void discardLevelAdmission(ServerLevel level) { ADMISSIONS.remove(level); }
     private static <T> void remove(Map<ServerLevel,Map<UUID,T>> map,ServerLevel level,UUID id) {
         var states=map.get(level);if(states!=null){states.remove(id);if(states.isEmpty())map.remove(level);}
     }
     static void prune(ServerLevel level,WorldPrepSavedData data) {
-        for(var map:List.of(PREVIEWS,ADMISSIONS)) {
-            var states=map.get(level);
-            if(states!=null)states.keySet().removeIf(id->{
-                var job=data.jobs().get(id);
-                return job==null||(job.state()!=WorldPrepSavedData.JobState.QUEUED&&job.state()!=WorldPrepSavedData.JobState.RUNNING);
-            });
-        }
+        var previews=PREVIEWS.get(level);
+        if(previews!=null)previews.keySet().removeIf(id->{
+            var job=data.jobs().get(id);
+            return job==null||(job.state()!=WorldPrepSavedData.JobState.QUEUED
+                &&job.state()!=WorldPrepSavedData.JobState.RUNNING&&job.state()!=WorldPrepSavedData.JobState.PAUSED);
+        });
+        var admissions=ADMISSIONS.get(level);
+        if(admissions!=null)admissions.keySet().removeIf(id->{
+            var job=data.jobs().get(id);
+            return job==null||(job.state()!=WorldPrepSavedData.JobState.QUEUED&&job.state()!=WorldPrepSavedData.JobState.RUNNING);
+        });
     }
     private TerrainPreviewGuard() {}
 }

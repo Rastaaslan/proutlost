@@ -54,7 +54,7 @@ public final class BlockMutationRuntime {
         var requests=STANDALONE_RECOVERY.get(level);return requests!=null&&requests.contains(job);
     }
     static void discardRecovery(ServerLevel level,UUID id){
-        TerrainPreviewGuard.discard(level,id);
+        TerrainPreviewGuard.finishAdmission(level,id);
         var states=RECOVERIES.get(level);
         if(states!=null){
             states.remove(id);
@@ -65,7 +65,7 @@ public final class BlockMutationRuntime {
         var requests=STANDALONE_RECOVERY.get(level);
         if(requests!=null){requests.remove(id);if(requests.isEmpty())STANDALONE_RECOVERY.remove(level);}
     }
-    static void discardLevelRecovery(ServerLevel level){RECOVERIES.remove(level);STANDALONE_RECOVERY.remove(level);TerrainPreviewGuard.discardLevel(level);}
+    static void discardLevelRecovery(ServerLevel level){RECOVERIES.remove(level);STANDALONE_RECOVERY.remove(level);TerrainPreviewGuard.discardLevelAdmission(level);}
     private static void pruneRecoveries(ServerLevel level,WorldPrepSavedData data){
         var states=RECOVERIES.get(level);if(states==null)return;
         states.entrySet().removeIf(e->{
