@@ -115,9 +115,10 @@ public final class WorldPrepEcologyGameTests {
                     "CONTROLLED_OAK_V1:"+root.getX()+":"+root.getY()+":"+root.getZ()));
         }
         // A sealed explicit fixture exercises the actual production journal and safe tree envelope.
-        BlockMutationRuntime.publishSealed(level,data,area,plan);
+        BlockMutationRuntime.publishSealed(level,data,area,plan,CheckpointFixture.terrainBinding(level,area,plan));
         var blocks=BlockMutationRuntime.data(level);blocks.plans().put(BlockWorldPrepData.planKey(id,"TREES"),plan);
         var apply=WorldPrepRuntime.enqueue(level,WorldPrepSavedData.Operation.APPLY_TREES,id);
+        CheckpointFixture.admit(level,apply,256);
         for(int phase=0;phase<8 && data.jobs().get(apply).cursor()==0;phase++)
             CheckpointFixture.tick(level,8);
         h.assertTrue(data.jobs().get(apply).cursor()==8,"Expected a partial tree checkpoint");

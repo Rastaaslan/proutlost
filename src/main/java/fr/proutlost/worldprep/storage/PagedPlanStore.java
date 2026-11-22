@@ -48,6 +48,7 @@ public final class PagedPlanStore {
         private long directSelections, fallbackSelections;
         private int validatedPages;
         private Publication publication;
+        private TerrainInputTrace.Binding terrainInput;
         private Writer(Path root,UUID planId,PassId pass,String area,String dimension,String profile,
                 String digest,String engine,String planner,int pageSize,EntryCodec<T> codec)throws IOException{
             if(pageSize<1)throw new IllegalArgumentException("entriesPerPage must be positive");
@@ -55,7 +56,9 @@ public final class PagedPlanStore {
             directory=root.resolve(planId.toString());
             if(Files.exists(directory))throw new IOException("Preview plan directory already exists");
             Files.createDirectories(directory);
-            writing=PlanManifest.create(DurablePageStore.FORMAT_VERSION,planId,pass,area,dimension,profile,digest,
+            int planFormat = TerrainInputTrace.required(planner)
+                ? TerrainInputTrace.PLAN_FORMAT_VERSION : DurablePageStore.FORMAT_VERSION;
+            writing=PlanManifest.create(planFormat,planId,pass,area,dimension,profile,digest,
                 engine,planner,PlanManifest.State.WRITING,List.of());
             publishManifest(manifestPath(directory),writing);
         }
@@ -81,10 +84,22 @@ public final class PagedPlanStore {
             references.add(writePage(directory,writing.planId(),writing.passId(),writing.dimension(),references.size(),batch,codec));
             batch.clear();
         }
+        /** Binds the immutable observed terrain before publication; existing planner versions are unchanged. */
+        public void bindTerrainInput(TerrainInputTrace.Binding binding) {
+            Objects.requireNonNull(binding);
+            if (!TerrainInputTrace.required(writing.plannerVersion())
+                || !writing.semanticInputDigest().equals(binding.baseSemanticDigest()))
+                throw new IllegalArgumentException("Terrain binding does not match the WRITING plan context");
+            if (terrainInput != null && !terrainInput.equals(binding))
+                throw new IllegalStateException("Terrain input is already bound");
+            terrainInput = binding;
+        }
         /** Finishes at most pageBudget validation pages; the manifest stays WRITING until all pass. */
         public Optional<Publication> finish(int pageBudget)throws IOException{
             if(pageBudget<1)throw new IllegalArgumentException("Positive page budget required");
             if(publication!=null)return Optional.of(publication);
+            if(TerrainInputTrace.required(writing.plannerVersion()) && terrainInput==null)
+                throw new IOException("Terrain input must be bound before plan sealing");
             if(!inputComplete){flush();inputComplete=true;}
             int remaining=pageBudget;
             while(validatedPages<references.size()&&remaining-->0){
@@ -93,11 +108,13 @@ public final class PagedPlanStore {
             if(validatedPages<references.size())return Optional.empty();
             if(!readManifest(directory).equals(writing))throw new IOException("Preview WRITING manifest changed");
             var sealed=PlanManifest.create(writing.planFormatVersion(),writing.planId(),writing.passId(),writing.areaId(),
-                writing.dimension(),writing.profile(),writing.semanticInputDigest(),writing.engineVersion(),writing.plannerVersion(),
+                writing.dimension(),writing.profile(),terrainInput==null?writing.semanticInputDigest():terrainInput.semanticInputDigest(),writing.engineVersion(),writing.plannerVersion(),
                 PlanManifest.State.SEALED,references);
             // Preserve the original validation slice; diagnostic publication precedes the SEALED commit.
             if(PlanSelectionTrace.required(sealed.plannerVersion()))
                 PlanSelectionTrace.publish(directory,sealed,directSelections,fallbackSelections);
+            if(TerrainInputTrace.required(sealed.plannerVersion()))
+                TerrainInputTrace.publish(directory,sealed,terrainInput);
             publishManifest(manifestPath(directory),sealed,true);
             publication=new Publication(directory,readManifest(directory));return Optional.of(publication);
         }
@@ -151,7 +168,11 @@ public final class PagedPlanStore {
             for (int i=0;i<count;i++) pages.add(new PlanManifest.PageReference(in.readLong(), in.readInt(), in.readInt(), in.readInt(), in.readUTF()));
             String root = in.readUTF();
             if (in.read() != -1) throw new IOException("Trailing plan manifest data");
-            try { return new PlanManifest(pageFormat,id,pass,area,dimension,profile,semantic,engine,planner,state,pages,root); }
+            try {
+                var value = new PlanManifest(pageFormat,id,pass,area,dimension,profile,semantic,engine,planner,state,pages,root);
+                if (state == PlanManifest.State.SEALED) TerrainInputTrace.read(directory,value);
+                return value;
+            }
             catch (IllegalArgumentException exception) { throw new IOException("Invalid plan manifest", exception); }
         } catch (EOFException exception) { throw new IOException("Truncated plan manifest", exception); }
     }

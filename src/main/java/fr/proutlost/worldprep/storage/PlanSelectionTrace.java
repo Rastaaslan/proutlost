@@ -23,7 +23,7 @@ public final class PlanSelectionTrace {
         }
     }
     private PlanSelectionTrace() {}
-    public static boolean required(String planner) { return PLANNER_VERSION.equals(planner); }
+    public static boolean required(String planner) { return PLANNER_VERSION.equals(planner) || TerrainInputTrace.required(planner); }
     public static Path path(Path directory) { return directory.resolve("selection-trace.wpt"); }
     private static long entries(PlanManifest manifest) {
         return manifest.pages().stream().mapToLong(PlanManifest.PageReference::entryCount).reduce(0,Math::addExact);

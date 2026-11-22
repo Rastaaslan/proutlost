@@ -36,7 +36,9 @@ public record PlanManifest(int planFormatVersion, UUID planId, PassId passId, St
         Objects.requireNonNull(pages, "pages");
         Objects.requireNonNull(rootFingerprint, "rootFingerprint");
         pages = List.copyOf(pages);
-        if (planFormatVersion != DurablePageStore.FORMAT_VERSION || areaId.isBlank() || dimension.isBlank()
+        int expectedFormat = TerrainInputTrace.required(plannerVersion)
+            ? TerrainInputTrace.PLAN_FORMAT_VERSION : DurablePageStore.FORMAT_VERSION;
+        if (planFormatVersion != expectedFormat || areaId.isBlank() || dimension.isBlank()
                 || profile.isBlank() || engineVersion.isBlank() || plannerVersion.isBlank()) {
             throw new IllegalArgumentException("Invalid manifest identity");
         }

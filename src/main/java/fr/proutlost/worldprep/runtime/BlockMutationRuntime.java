@@ -7,6 +7,7 @@ import fr.proutlost.worldprep.plan.PlanFingerprint;
 import fr.proutlost.worldprep.storage.PagedPlanStore;
 import fr.proutlost.worldprep.storage.PlanSelectionTrace;
 import fr.proutlost.worldprep.storage.PlanManifest;
+import fr.proutlost.worldprep.storage.TerrainInputTrace;
 import fr.proutlost.worldprep.world.ServerExistingChunkAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -53,6 +54,7 @@ public final class BlockMutationRuntime {
         var requests=STANDALONE_RECOVERY.get(level);return requests!=null&&requests.contains(job);
     }
     static void discardRecovery(ServerLevel level,UUID id){
+        TerrainPreviewGuard.discard(level,id);
         var states=RECOVERIES.get(level);
         if(states!=null){
             states.remove(id);
@@ -63,7 +65,7 @@ public final class BlockMutationRuntime {
         var requests=STANDALONE_RECOVERY.get(level);
         if(requests!=null){requests.remove(id);if(requests.isEmpty())STANDALONE_RECOVERY.remove(level);}
     }
-    static void discardLevelRecovery(ServerLevel level){RECOVERIES.remove(level);STANDALONE_RECOVERY.remove(level);}
+    static void discardLevelRecovery(ServerLevel level){RECOVERIES.remove(level);STANDALONE_RECOVERY.remove(level);TerrainPreviewGuard.discardLevel(level);}
     private static void pruneRecoveries(ServerLevel level,WorldPrepSavedData data){
         var states=RECOVERIES.get(level);if(states==null)return;
         states.entrySet().removeIf(e->{
@@ -89,14 +91,14 @@ public final class BlockMutationRuntime {
 
     private static final java.util.Map<ServerLevel,java.util.Map<UUID,BlockPreview>> PREVIEWS=new java.util.WeakHashMap<>();
     private static final class BlockPreview {
-        final BlockWorldPrepData.Plan plan;final PagedPlanStore.Writer<BlockWorldPrepData.Change> writer;long scanned;int maskX=Integer.MIN_VALUE,maskZ;boolean maskAccepted;int columnX=Integer.MIN_VALUE,columnZ;EcologyMutationPlanner.Column column;TreeMutationPlanner.Candidate tree;
+        final BlockWorldPrepData.Plan plan;final PagedPlanStore.Writer<BlockWorldPrepData.Change> writer;Iterator<BlockWorldPrepData.Change> parallelEntries;long scanned;int maskX=Integer.MIN_VALUE,maskZ;boolean maskAccepted;int columnX=Integer.MIN_VALUE,columnZ;EcologyMutationPlanner.Column column;TreeMutationPlanner.Candidate tree;
         BlockPreview(BlockWorldPrepData.Plan plan,PagedPlanStore.Writer<BlockWorldPrepData.Change> writer){this.plan=plan;this.writer=writer;}
     }
     static void prunePreviews(ServerLevel level,WorldPrepSavedData data){
-        pruneRecoveries(level,data);
+        pruneRecoveries(level,data);TerrainPreviewGuard.prune(level,data);
         var previews=PREVIEWS.get(level);if(previews!=null){previews.keySet().removeIf(id->{var job=data.jobs().get(id);return job==null||!(job.state()==WorldPrepSavedData.JobState.RUNNING||job.state()==WorldPrepSavedData.JobState.QUEUED||job.state()==WorldPrepSavedData.JobState.PAUSED);});if(previews.isEmpty())PREVIEWS.remove(level);}
     }
-    static void forgetPreview(ServerLevel level,UUID id){var previews=PREVIEWS.get(level);if(previews!=null)previews.remove(id);}
+    static void forgetPreview(ServerLevel level,UUID id){var previews=PREVIEWS.get(level);if(previews!=null)previews.remove(id);TerrainPreviewGuard.discard(level,id);}
     private static final TagKey<Block> GEOLOGY=tag("geology_replaceable"),STONE=tag("ore_replaceable/stone"),DEEPSLATE=tag("ore_replaceable/deepslate");
     private record Ore(String name,String stone,String deep,int min,int max,int rarity,long salt){}
     private static final Ore[] ORES={new Ore("coal","coal_ore","deepslate_coal_ore",0,192,95,11),new Ore("iron","iron_ore","deepslate_iron_ore",-64,128,120,17),new Ore("copper","copper_ore","deepslate_copper_ore",-16,112,150,23),new Ore("gold","gold_ore","deepslate_gold_ore",-64,32,260,29),new Ore("redstone","redstone_ore","deepslate_redstone_ore",-64,16,180,31),new Ore("lapis","lapis_ore","deepslate_lapis_ore",-64,48,300,37),new Ore("diamond","diamond_ore","deepslate_diamond_ore",-64,16,650,41),new Ore("emerald","emerald_ore","deepslate_emerald_ore",32,256,900,43)};
@@ -117,9 +119,9 @@ public final class BlockMutationRuntime {
         if(!level.getServer().isSameThread())throw new IllegalStateException("WorldPrep requires the server thread");
         String pass=pass(operation);if(EcologyMutationPlanner.supports(pass))EcologyMutationPlanner.requireBounded(area);var blocks=data(level);requireCompatible(blocks);
         if(isApply(operation)){
-            var plan=requirePlan(level,data,area,pass);var snapshotId=UUID.randomUUID();
-            var journal=new BlockWorldPrepData.Journal(snapshotId,id,plan.planId(),area.id(),pass,plan.fingerprint());RuntimePageJournal.initialize(level,journal);blocks.journals().put(snapshotId,journal);
-            data.jobs().put(id,data.jobs().get(id).withSnapshot(snapshotId));blocks.changed();data.changed();level.getDataStorage().save();
+            var plan=requirePlan(level,data,area,pass);
+            terrainBinding(level,plan).orElseThrow(()->new IllegalStateException("PREVIEW STALE: legacy preview has no terrain binding; create a new preview"));
+            // No journal or physical authority until bounded actual terrain validation in process().
         }else if(isRollback(operation)){
             var requested=data.jobs().get(id).snapshotId();var journal=blocks.journals().get(requested);
             if(journal==null||!journal.area.equals(area.id())||!journal.pass.equals(pass))throw new IllegalStateException("Exact rollback journal ownership mismatch");
@@ -133,21 +135,35 @@ public final class BlockMutationRuntime {
         if(isRollback(job.operation())){rollback(level,data,blocks,id,job,area,pass,budget);return;}
         String key=BlockWorldPrepData.planKey(area.id(),pass);var plan=blocks.plans().get(key);
         if(job.operation().name().startsWith("PREVIEW")){
-            if(job.cursor()==0&&fr.proutlost.worldprep.ecology.BoundedEcologyCandidatePool.supports(pass)
+            if(!TerrainPreviewGuard.preparePreview(level,data,id,job,area,input(level,data,area,pass),budget))return;
+            if(TerrainPreviewGuard.pendingParallel(level,id)!=null||(job.cursor()==0&&fr.proutlost.worldprep.ecology.BoundedEcologyCandidatePool.supports(pass)
                     &&(fr.proutlost.worldprep.WorldPrepConfig.MULTITILE_PREFETCH.get()&&area.id().startsWith("proutlost:batch_")
-                       ||fr.proutlost.worldprep.WorldPrepConfig.PARALLEL_ECOLOGY_PLANNING.get())){
-                var parallelPlan=new BlockWorldPrepData.Plan(area.id(),pass,"development",input(level,data,area,pass),"");
-                boolean ready=fr.proutlost.worldprep.WorldPrepConfig.MULTITILE_PREFETCH.get()&&area.id().startsWith("proutlost:batch_")
-                    ? MultiTileEcologyPrefetch.populate(level,data,id,area,pass,parallelPlan,fr.proutlost.worldprep.WorldPrepConfig.MULTITILE_WORKERS.get())
-                    : EcologyParallelPreviewRuntime.populate(level,data,id,area,pass,parallelPlan,fr.proutlost.worldprep.WorldPrepConfig.PARALLEL_ECOLOGY_WORKERS.get());
-                if(!ready)return;
-                publish(level,data,area,parallelPlan,true);blocks.plans().put(key,parallelPlan);
+                       ||fr.proutlost.worldprep.WorldPrepConfig.PARALLEL_ECOLOGY_PLANNING.get()))){
+                var parallelPlan=TerrainPreviewGuard.pendingParallel(level,id);
+                if(parallelPlan==null){
+                    parallelPlan=new BlockWorldPrepData.Plan(area.id(),pass,"development",input(level,data,area,pass),"");
+                    boolean ready=fr.proutlost.worldprep.WorldPrepConfig.MULTITILE_PREFETCH.get()&&area.id().startsWith("proutlost:batch_")
+                        ? MultiTileEcologyPrefetch.populate(level,data,id,area,pass,parallelPlan,fr.proutlost.worldprep.WorldPrepConfig.MULTITILE_WORKERS.get())
+                        : EcologyParallelPreviewRuntime.populate(level,data,id,area,pass,parallelPlan,fr.proutlost.worldprep.WorldPrepConfig.PARALLEL_ECOLOGY_WORKERS.get());
+                    if(!ready)return;
+                    TerrainPreviewGuard.pendingParallel(level,id,parallelPlan);
+                }
+                var binding=TerrainPreviewGuard.verifyParallel(level,id,area,input(level,data,area,pass),budget);
+                if(binding.isEmpty()||!publishTerrainParallel(level,id,area,parallelPlan,binding.orElseThrow(),budget))return;
+                blocks.plans().put(key,parallelPlan);TerrainPreviewGuard.finishPreview(level,id);
                 if(pass.equals("GEOLOGY"))blocks.plans().remove(BlockWorldPrepData.planKey(area.id(),"ORES"));
                 blocks.changed();data.jobs().put(id,job.withCursor(parallelPlan.entryCount()).withState(WorldPrepSavedData.JobState.COMPLETED));data.changed();return;
             }
             previewSlice(level,data,blocks,id,job,area,pass,budget);return;
         }
         plan=requirePlan(level,data,area,pass);
+        if(job.snapshotId()==null){
+            var binding=terrainBinding(level,plan).orElseThrow(()->new IllegalStateException("PREVIEW STALE: legacy preview has no terrain binding; create a new preview"));
+            if(!TerrainPreviewGuard.admit(level,data,id,area,binding,budget))return;
+            initializeApplyJournal(level,data,blocks,id,area,plan);
+            TerrainPreviewGuard.finishAdmission(level,id);
+            return; // checkpointReady must acknowledge journal ownership before any physical effect.
+        }
         applyBatch(level,data,blocks,id,job,area,plan,budget);
     }
 
@@ -258,7 +274,7 @@ public final class BlockMutationRuntime {
                 var plan=new BlockWorldPrepData.Plan(area.id(),pass,"development",input(level,data,area,pass),"");plan.planId(UUID.randomUUID());
                 if(upstream!=null){plan.upstreamPlanId(upstream.planId());plan.upstreamRoot(upstream.fingerprint());}
                 var writer=PagedPlanStore.begin(RuntimePlanStore.root(level),plan.planId(),RuntimePlanStore.pass(pass),area.id(),area.dimension(),
-                    plan.profile,PlanFingerprint.of(plan.input).value(),RuntimePlanStore.ENGINE_VERSION,PlanSelectionTrace.PLANNER_VERSION,
+                    plan.profile,PlanFingerprint.of(plan.input).value(),RuntimePlanStore.ENGINE_VERSION,TerrainInputTrace.PLANNER_VERSION,
                     RuntimePlanStore.ENTRIES_PER_PAGE,RuntimePlanStore.BLOCK_CODEC);
                 preview=new BlockPreview(plan,writer);previews.put(id,preview);job=job.withCursor(0);data.jobs().put(id,job);data.changed();
             }
@@ -270,20 +286,73 @@ public final class BlockMutationRuntime {
             }
             long height=level.getMaxBuildHeight()-level.getMinBuildHeight(),width=(long)area.maxX()-area.minX()+1;
             long total=width*((long)area.maxZ()-area.minZ()+1)*height;int remaining=Math.max(1,budget);
+            TerrainPreviewGuard.beginSerialSlice(level,id,remaining);
             while(remaining-->0&&preview.scanned<total){
                 long cursor=preview.scanned;int y=level.getMinBuildHeight()+(int)(cursor%height);long column=cursor/height;
                 int x=area.minX()+(int)(column%width),z=area.minZ()+(int)(column/width);
                 if(preview.maskX!=x||preview.maskZ!=z){preview.maskX=x;preview.maskZ=z;preview.maskAccepted=MinecraftTerrainSampler.matchesMask(level,area.mask(),x,z,1,1);}
+                TerrainPreviewGuard.observeSerialCell(level,id,area,preview.scanned,x,y,z);
                 var change=preview.maskAccepted?plannedChange(level,data,preview.plan,area,x,y,z,preview):null;if(change!=null)preview.writer.appendSelected(change,PlanSelectionTrace.Selection.DIRECT);
                 preview.scanned++;
             }
             data.jobs().put(id,job.withCursor(preview.scanned));data.changed();if(preview.scanned<total)return;
+            preview.writer.bindTerrainInput(TerrainPreviewGuard.finishSerial(level,id,preview.plan.input));
             var completed=preview.writer.finish(Math.max(1,budget/RuntimePlanStore.ENTRIES_PER_PAGE));if(completed.isEmpty())return;
             var manifest=completed.orElseThrow().manifest();preview.plan.entryCount(manifest.pages().stream().mapToLong(PlanManifest.PageReference::entryCount).sum());
             preview.plan.fingerprint(manifest.rootFingerprint());blocks.plans().put(BlockWorldPrepData.planKey(area.id(),pass),preview.plan);
             if(pass.equals("GEOLOGY"))blocks.plans().remove(BlockWorldPrepData.planKey(area.id(),"ORES"));blocks.changed();
-            data.jobs().put(id,data.jobs().get(id).withCursor(preview.plan.entryCount()).withState(WorldPrepSavedData.JobState.COMPLETED));data.changed();previews.remove(id);
+            data.jobs().put(id,data.jobs().get(id).withCursor(preview.plan.entryCount()).withState(WorldPrepSavedData.JobState.COMPLETED));data.changed();previews.remove(id);TerrainPreviewGuard.finishPreview(level,id);
         }catch(IOException e){throw new IllegalStateException("Incremental block preview failed",e);}
+    }
+
+    private static java.util.Optional<TerrainInputTrace.Binding> terrainBinding(ServerLevel level,BlockWorldPrepData.Plan plan){
+        try{
+            var binding=TerrainInputTrace.read(RuntimePlanStore.directory(level,plan.planId()),manifest(level,plan));
+            if(binding.isPresent()&&!binding.orElseThrow().baseSemanticDigest().equals(PlanFingerprint.of(plan.input).value()))
+                throw new IOException("Terrain input belongs to another semantic plan context");
+            return binding;
+        }catch(IOException error){throw new IllegalStateException("Sealed terrain input unavailable",error);}
+    }
+    private static void initializeApplyJournal(ServerLevel level,WorldPrepSavedData data,BlockWorldPrepData blocks,
+            UUID id,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan){
+        var job=data.jobs().get(id);
+        if(job.snapshotId()!=null)throw new IllegalStateException("Apply journal already owned");
+        var snapshotId=UUID.randomUUID();
+        var journal=new BlockWorldPrepData.Journal(snapshotId,id,plan.planId(),area.id(),plan.pass,plan.fingerprint());
+        RuntimePageJournal.initialize(level,journal);blocks.journals().put(snapshotId,journal);
+        data.jobs().put(id,job.withSnapshot(snapshotId));blocks.changed();data.changed();level.getDataStorage().save();
+    }
+    /** Read-only observation of actual bounded terrain work; not an alternate authority. */
+    public static java.util.Optional<TerrainInputProgress> terrainInputProgress(ServerLevel level,UUID job){
+        return TerrainPreviewGuard.progress(level,job).map(p->new TerrainInputProgress(p.phase(),p.cells(),p.total(),p.sliceCells(),p.maximumSliceCells()));
+    }
+    public record TerrainInputProgress(String phase,long cells,long total,int sliceCells,int maximumSliceCells){}
+    private static boolean publishTerrainParallel(ServerLevel level,UUID id,WorldPrepSavedData.Area area,
+            BlockWorldPrepData.Plan plan,TerrainInputTrace.Binding binding,int budget){
+        try{
+            var states=PREVIEWS.computeIfAbsent(level,k->new java.util.HashMap<>());
+            var preview=states.get(id);
+            if(preview==null){
+                plan.planId(UUID.randomUUID());
+                var writer=PagedPlanStore.begin(RuntimePlanStore.root(level),plan.planId(),RuntimePlanStore.pass(plan.pass),
+                    area.id(),area.dimension(),plan.profile,PlanFingerprint.of(plan.input).value(),RuntimePlanStore.ENGINE_VERSION,
+                    TerrainInputTrace.PLANNER_VERSION,RuntimePlanStore.ENTRIES_PER_PAGE,RuntimePlanStore.BLOCK_CODEC);
+                preview=new BlockPreview(plan,writer);preview.parallelEntries=ordered(plan.changes.values()).iterator();states.put(id,preview);
+            }
+            if(preview.plan!=plan||preview.parallelEntries==null)throw new IllegalStateException("Parallel publication owner changed");
+            int remaining=Math.max(1,budget);
+            while(remaining-->0&&preview.parallelEntries.hasNext()){
+                var change=preview.parallelEntries.next();
+                if(MinecraftTerrainSampler.matchesMask(level,area.mask(),change.x(),change.z(),1,1))
+                    preview.writer.appendSelected(change,PlanSelectionTrace.Selection.DIRECT);
+            }
+            if(preview.parallelEntries.hasNext())return false;
+            preview.writer.bindTerrainInput(binding);
+            var result=preview.writer.finish(Math.max(1,budget/RuntimePlanStore.ENTRIES_PER_PAGE));
+            if(result.isEmpty())return false;
+            var manifest=result.orElseThrow().manifest();plan.entryCount(manifest.pages().stream().mapToLong(PlanManifest.PageReference::entryCount).sum());
+            plan.fingerprint(manifest.rootFingerprint());plan.changes.clear();states.remove(id);return true;
+        }catch(IOException error){throw new IllegalStateException("Bound terrain parallel publication failed",error);}
     }
 
     /** Publish intent before writes; recover each immutable prefix once, and each own suffix once. */
@@ -420,6 +489,29 @@ public final class BlockMutationRuntime {
     /** Publishes hand-authored acceptance-test plans through the same production sealing path. */
     public static void publishSealed(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan){seal(plan);publish(level,data,area,plan);}
     public static String stateString(BlockState state){return encode(state);}
+    /** Explicit new candidate publication. Persisted legacy previews cannot be upgraded by this entry. */
+    public static void publishSealed(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,
+            BlockWorldPrepData.Plan plan,TerrainInputTrace.Binding binding){
+        if(!level.getServer().isSameThread())throw new IllegalStateException("WorldPrep requires the server thread");
+        if(plan.planId()!=null)throw new IllegalStateException("A new unsealed candidate is required");
+        if(!binding.baseSemanticDigest().equals(PlanFingerprint.of(plan.input).value())
+                ||!binding.bounds().equals(TerrainPreviewGuard.bounds(level,area)))
+            throw new IllegalArgumentException("Candidate terrain binding context mismatch");
+        try{
+            plan.planId(UUID.randomUUID());
+            var writer=PagedPlanStore.begin(RuntimePlanStore.root(level),plan.planId(),RuntimePlanStore.pass(plan.pass),
+                area.id(),area.dimension(),plan.profile,PlanFingerprint.of(plan.input).value(),RuntimePlanStore.ENGINE_VERSION,
+                TerrainInputTrace.PLANNER_VERSION,RuntimePlanStore.ENTRIES_PER_PAGE,RuntimePlanStore.BLOCK_CODEC);
+            for(var change:ordered(plan.changes.values()))
+                if(MinecraftTerrainSampler.matchesMask(level,area.mask(),change.x(),change.z(),1,1))
+                    writer.appendSelected(change,PlanSelectionTrace.Selection.DIRECT);
+            writer.bindTerrainInput(binding);
+            java.util.Optional<PagedPlanStore.Publication> result;
+            do{result=writer.finish(1);}while(result.isEmpty());
+            var m=result.orElseThrow().manifest();plan.entryCount(m.pages().stream().mapToLong(PlanManifest.PageReference::entryCount).sum());
+            plan.fingerprint(m.rootFingerprint());plan.changes.clear();
+        }catch(IOException error){throw new IllegalStateException("Explicit terrain-bound candidate publication failed",error);}
+    }
     /** Analysis uses the exact production host tags; no plan publication or mutation authority. */
     public static boolean geologicalHostForAnalysis(BlockState state){return state.is(GEOLOGY);}
     public static boolean oreHostForAnalysis(BlockState state){return state.is(STONE)||state.is(DEEPSLATE);}
