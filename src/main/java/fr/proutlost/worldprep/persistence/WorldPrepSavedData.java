@@ -85,6 +85,8 @@ public final class WorldPrepSavedData extends AcknowledgedSavedData {
         public long samples,waterSamples,protectedSamples;public double surfaceSum,slopeSum,roughnessSum,waterDepthSum,coastSum;
         public int minSurface=Integer.MAX_VALUE,maxSurface=Integer.MIN_VALUE,maxWaterDepth;public boolean complete;
         public String terrainDigest;
+        /** Null only for retained legacy analyses; never report missing measurements as computed zero. */
+        public fr.proutlost.worldprep.analysis.TerrainAnalysisExtras extended;
         public final Map<String,Long> altitudeBands=new java.util.TreeMap<>(),slopeBands=new java.util.TreeMap<>(),biomes=new java.util.TreeMap<>(),missingBiomes=new java.util.TreeMap<>();
         public Analysis(PlanInput input,long totalCells,int minBuildHeight,int maxBuildHeight,int registryEntries,int protectedZones,String terrainDigest){
             this.input=java.util.Objects.requireNonNull(input);if(totalCells<1||maxBuildHeight<=minBuildHeight||registryEntries<0||protectedZones<0)throw new IllegalArgumentException("Invalid analysis geometry");
@@ -315,7 +317,9 @@ public final class WorldPrepSavedData extends AcknowledgedSavedData {
         t.putLong("samples",a.samples);t.putLong("waterSamples",a.waterSamples);t.putLong("protectedSamples",a.protectedSamples);
         t.putDouble("surfaceSum",a.surfaceSum);t.putDouble("slopeSum",a.slopeSum);t.putDouble("roughnessSum",a.roughnessSum);t.putDouble("waterDepthSum",a.waterDepthSum);t.putDouble("coastSum",a.coastSum);
         t.putInt("minSurface",a.minSurface);t.putInt("maxSurface",a.maxSurface);t.putInt("maxWaterDepth",a.maxWaterDepth);t.putBoolean("complete",a.complete);t.putString("terrainDigest",a.terrainDigest);
-        t.put("altitudeBands",countsTag(a.altitudeBands));t.put("slopeBands",countsTag(a.slopeBands));t.put("biomes",countsTag(a.biomes));t.put("missingBiomes",countsTag(a.missingBiomes));list.add(t);
+        t.put("altitudeBands",countsTag(a.altitudeBands));t.put("slopeBands",countsTag(a.slopeBands));t.put("biomes",countsTag(a.biomes));t.put("missingBiomes",countsTag(a.missingBiomes));
+        if(a.extended!=null){a.extended.requirePrefix(a.samples);t.putInt("extendedAnalysisSchema",1);t.put("extendedAnalysis",a.extended.save());}
+        list.add(t);
     }return list;}
     private static CompoundTag countsTag(Map<String,Long> values){var tag=new CompoundTag();values.forEach(tag::putLong);return tag;}
     private static void readCounts(CompoundTag tag,Map<String,Long> values){if(tag.getAllKeys().size()>4096)throw new IllegalStateException("Analysis histogram bound");for(var key:tag.getAllKeys()){long count=tag.getLong(key);if(count<1)throw new IllegalStateException("Invalid analysis count");values.put(key,count);}}
@@ -327,6 +331,16 @@ public final class WorldPrepSavedData extends AcknowledgedSavedData {
             ||!Double.isFinite(a.surfaceSum)||!Double.isFinite(a.slopeSum)||!Double.isFinite(a.roughnessSum)||!Double.isFinite(a.waterDepthSum)||!Double.isFinite(a.coastSum))throw new IllegalStateException("Invalid persisted analysis prefix");
         if(a.terrainSamples<0||a.terrainSamples>a.samples||a.inlandDistanceSamples<0||a.inlandDistanceSamples>a.terrainSamples||a.inlandUnresolvedSamples<0||a.inlandUnresolvedSamples>a.terrainSamples||a.inlandNoWaterSamples<0||a.inlandNoWaterSamples>a.terrainSamples
             ||!Double.isFinite(a.inlandDistanceSum)||a.inlandDistanceSum<0||a.inlandDistanceSum>4.0*a.inlandDistanceSamples||!Double.isFinite(a.noiseSum)||!Double.isFinite(a.noiseMin)||!Double.isFinite(a.noiseMax)||a.terrainSamples>0&&a.noiseMin>a.noiseMax)throw new IllegalStateException("Invalid persisted local terrain measures");
+        boolean marked=t.contains("extendedAnalysisSchema"),payload=t.contains("extendedAnalysis");
+        if(marked!=payload)throw new IllegalStateException("Missing marked extended analysis");
+        if(marked){
+            if(!t.contains("extendedAnalysisSchema",Tag.TAG_INT)||t.getInt("extendedAnalysisSchema")!=1||!t.contains("extendedAnalysis",Tag.TAG_COMPOUND))
+                throw new IllegalStateException("Unknown marked extended analysis");
+            a.extended=fr.proutlost.worldprep.analysis.TerrainAnalysisExtras.load(t.getCompound("extendedAnalysis"),a.samples);
+            var expected=new fr.proutlost.worldprep.analysis.TerrainAnalysisExtras.Geometry(a.input.minX(),a.minBuildHeight,a.input.minZ(),a.input.maxX(),a.maxBuildHeight,a.input.maxZ());
+            if(!expected.equals(a.extended.geometry)||a.complete&&a.extended.volumeCells!=expected.cells())
+                throw new IllegalStateException("Extended analysis geometry/completion mismatch");
+        }
         new fr.proutlost.worldprep.plan.PlanFingerprint(a.terrainDigest);readCounts(t.getCompound("altitudeBands"),a.altitudeBands);readCounts(t.getCompound("slopeBands"),a.slopeBands);readCounts(t.getCompound("biomes"),a.biomes);readCounts(t.getCompound("missingBiomes"),a.missingBiomes);
         if(a.altitudeBands.values().stream().reduce(0L,Math::addExact)!=a.samples||a.slopeBands.values().stream().reduce(0L,Math::addExact)!=a.samples||a.biomes.values().stream().reduce(0L,Math::addExact)!=a.samples)throw new IllegalStateException("Analysis histogram/prefix mismatch");return a;
     }

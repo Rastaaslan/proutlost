@@ -157,22 +157,35 @@ public final class WorldPrepRuntime {
         if(analysis==null){
             if(job.cursor()!=0)throw new IllegalStateException("Analysis cursor has no persisted aggregates");
             int zones=(int)data.protections().values().stream().filter(p->p.dimension().equals(area.dimension())&&p.minX()<=area.maxX()&&p.maxX()>=area.minX()&&p.minZ()<=area.maxZ()&&p.maxZ()>=area.minZ()).count();
-            analysis=new WorldPrepSavedData.Analysis(input,bounds.cells(),level.getMinBuildHeight(),level.getMaxBuildHeight(),level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).keySet().size(),zones,PlanFingerprint.of("terrain-analysis-v2-inland4-noise256",PlanIdentity.fingerprint(input)).value());
+            analysis=new WorldPrepSavedData.Analysis(input,bounds.cells(),level.getMinBuildHeight(),level.getMaxBuildHeight(),level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).keySet().size(),zones,PlanFingerprint.of("terrain-analysis-v3-exact-host-quarts-surface-estimates",PlanIdentity.fingerprint(input)).value());
+            analysis.extended=new fr.proutlost.worldprep.analysis.TerrainAnalysisExtras(TerrainVolumeAnalysis.geometry(level,area));
             data.analyses().put(id,analysis);data.changed();
         }
         PlanIdentity.requireCurrent(analysis.input,input);
         if(analysis.samples!=job.cursor()||analysis.totalCells!=bounds.cells())throw new IllegalStateException("Analysis prefix/cursor mismatch");
         if(analysis.terrainSamples!=analysis.samples)throw new IllegalStateException("Legacy analysis lacks local terrain measures; create a new analysis");
+        if(analysis.extended==null||!analysis.extended.geometry.equals(TerrainVolumeAnalysis.geometry(level,area)))
+            throw new IllegalStateException("Legacy analysis lacks extended volume/suitability measures; create a new analysis");
+        analysis.extended.requirePrefix(analysis.samples);
+        if(analysis.samples==analysis.totalCells){
+            TerrainVolumeAnalysis.slice(level,data,job,analysis,budget);
+            if(analysis.extended.volumeCells==analysis.extended.geometry.cells()){
+                analysis.complete=true;data.jobs().put(id,data.jobs().get(id).withState(WorldPrepSavedData.JobState.COMPLETED));data.changed();
+            }
+            return;
+        }
         var noise=new net.minecraft.world.level.levelgen.synth.SimplexNoise(net.minecraft.util.RandomSource.create(input.seed()));
-        // At most 335 existing terrain probes + 81 inland probes per atomic observation.
+        // At most335 existing terrain probes +81 inland probes +16 local suitability probes per atomic observation.
         // Retain a one-cell minimum for positive budgets; cap larger slices by actual worst-case read work.
-        int remaining=budget>0?Math.max(1,budget/416):0;
+        int remaining=budget>0?Math.max(1,budget/432):0;
         while(remaining-->0&&analysis.samples<analysis.totalCells){
             long cursor=analysis.samples;int qx=bounds.minQuartX()+(int)(cursor%bounds.width()),qz=bounds.minQuartZ()+(int)(cursor/bounds.width());
             int x=Math.max(area.minX(),Math.min(area.maxX(),QuartPos.toBlock(qx)+2)),z=Math.max(area.minZ(),Math.min(area.maxZ(),QuartPos.toBlock(qz)+2));
             var sample=MinecraftTerrainSampler.sample(level,x,z);var biome=chooseBiome(level,data,sample,input.seed(),qx,qz);
             var inland=MinecraftTerrainSampler.inlandWater(level,x,z);double noiseValue=noise.getValue(x/256.0,z/256.0);
             boolean present=level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).getHolder(net.minecraft.resources.ResourceLocation.parse(biome)).isPresent();
+            long represented=analysis.extended.geometry.surfaceColumnsBefore(analysis.samples+1)-analysis.extended.geometry.surfaceColumnsBefore(analysis.samples);
+            var surfaceSuitability=TerrainVolumeAnalysis.surface(level,data,area,sample,biome,x,z,represented);
             String altitudeBand=Integer.toString(Math.floorDiv(sample.surfaceY(),16)*16),slopeBand=Integer.toString((int)sample.slope());
             analysisCountAllowed(analysis.altitudeBands,altitudeBand);analysisCountAllowed(analysis.slopeBands,slopeBand);analysisCountAllowed(analysis.biomes,biome);if(!present)analysisCountAllowed(analysis.missingBiomes,biome);
             analysis.altitudeBands.merge(altitudeBand,1L,Math::addExact);analysis.slopeBands.merge(slopeBand,1L,Math::addExact);analysis.biomes.merge(biome,1L,Math::addExact);if(!present)analysis.missingBiomes.merge(biome,1L,Math::addExact);
@@ -181,14 +194,15 @@ public final class WorldPrepRuntime {
             if(sample.water())analysis.waterSamples++;if(data.protectedAt(area.dimension(),qx,qz))analysis.protectedSamples++;
             if(inland.observedDistance()>=0){analysis.inlandDistanceSamples++;analysis.inlandDistanceSum+=inland.observedDistance();}if(inland.unresolvedBoundary())analysis.inlandUnresolvedSamples++;if(inland.noWater())analysis.inlandNoWaterSamples++;
             analysis.noiseSum+=noiseValue;analysis.noiseMin=analysis.terrainSamples==0?noiseValue:Math.min(analysis.noiseMin,noiseValue);analysis.noiseMax=analysis.terrainSamples==0?noiseValue:Math.max(analysis.noiseMax,noiseValue);analysis.terrainSamples++;
+            analysis.extended.appendSurface(surfaceSuitability);
             analysis.terrainDigest=PlanFingerprint.of(analysis.terrainDigest,Integer.toString(x),Integer.toString(z),Long.toString(sample.signature()),biome,Boolean.toString(present),inland.toString(),Double.toString(noiseValue)).value();analysis.samples++;
             data.jobs().put(id,job.withCursor(analysis.samples));data.changed();
         }
-        if(analysis.samples==analysis.totalCells){analysis.complete=true;data.jobs().put(id,data.jobs().get(id).withState(WorldPrepSavedData.JobState.COMPLETED));data.changed();}
+        // Full surface observations precede a separate bounded exact volume phase; never finish early.
     }
     private static WorldPrepSavedData.PlanInput analysisInput(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area){
         var i=PlanIdentity.capture(level,data,area);String keys=PlanFingerprint.of(level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).keySet().stream().map(Object::toString).sorted().toArray(String[]::new)).value();
-        return new WorldPrepSavedData.PlanInput(i.dimension(),i.minX(),i.minZ(),i.maxX(),i.maxZ(),i.seed(),i.profile(),i.profileDigest(),i.configDigest(),PlanFingerprint.of(i.registryDigest(),keys,Integer.toString(level.getMinBuildHeight()),Integer.toString(level.getMaxBuildHeight()),Integer.toString(level.getSeaLevel()),"terrain-metrics-v2-inland4-noise256").value(),i.overrideDigest(),i.protectionDigest());
+        return new WorldPrepSavedData.PlanInput(i.dimension(),i.minX(),i.minZ(),i.maxX(),i.maxZ(),i.seed(),i.profile(),i.profileDigest(),i.configDigest(),PlanFingerprint.of(i.registryDigest(),keys,Integer.toString(level.getMinBuildHeight()),Integer.toString(level.getMaxBuildHeight()),Integer.toString(level.getSeaLevel()),"terrain-metrics-v3-exact-host-quarts-surface-estimates",TerrainVolumeAnalysis.policyIdentity(level)).value(),i.overrideDigest(),i.protectionDigest());
     }
     private static void analysisCountAllowed(java.util.Map<String,Long> values,String key){if(!values.containsKey(key)&&values.size()>=4096)throw new IllegalStateException("Analysis histogram bound exceeded");Math.addExact(values.getOrDefault(key,0L),1L);}
     /** Pure routing policy: OFF retains manual loaded-chunk behavior; no multi-chunk lease. */

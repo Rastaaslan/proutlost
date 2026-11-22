@@ -50,6 +50,19 @@ public final class WorldPrepHabitatRuntime {
         }
     };
     private WorldPrepHabitatRuntime() {}
+    /** Pure shared habitat classification; callers supply observed terrain and actual/predicted registry tags. */
+    public static HabitatMap.Cell classify(MinecraftTerrainSampler.Sample terrain,int water,boolean forest,boolean ocean,boolean river) {
+        HabitatMap.Habitat habitat;
+        if (water > 0) habitat = ocean ? (water > 20 ? HabitatMap.Habitat.DEEP_MARINE : water > 6 ? HabitatMap.Habitat.MARINE : HabitatMap.Habitat.SHALLOW_MARINE)
+                : river ? HabitatMap.Habitat.RIVER : HabitatMap.Habitat.WETLAND;
+        else if (terrain.surfaceY() >= 133) habitat = HabitatMap.Habitat.MOUNTAIN;
+        else if (terrain.slope() >= 8) habitat = HabitatMap.Habitat.ROCKY_HIGHLAND;
+        else habitat = forest ? HabitatMap.Habitat.FOREST : HabitatMap.Habitat.OPEN_GRASSLAND;
+        var scores = new HabitatMap.Scores(water == 0 && forest ? 1 : 0, water == 0 && !forest ? 1 : 0,
+                water > 0 ? 1 : 0, Math.min(1, terrain.slope() / 8f), water > 0 && ocean ? 1 : 0);
+        return new HabitatMap.Cell(habitat,scores);
+    }
+
     private static void actor(ServerLevel level) {
         if (!level.getServer().isSameThread()) throw new IllegalStateException("Habitat observations require server actor");
     }
@@ -120,16 +133,9 @@ public final class WorldPrepHabitatRuntime {
                     &&chunk.getFluidState(new BlockPos(x,waterTop,z)).is(FluidTags.WATER)?waterTop-floor:0;
             var biome = chunk.getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(floor), QuartPos.fromBlock(z));
             boolean forest = biome.is(BiomeTags.IS_FOREST), ocean = biome.is(BiomeTags.IS_OCEAN), river = biome.is(BiomeTags.IS_RIVER);
-            HabitatMap.Habitat habitat;
-            if (water > 0) habitat = ocean ? (water > 20 ? HabitatMap.Habitat.DEEP_MARINE : water > 6 ? HabitatMap.Habitat.MARINE : HabitatMap.Habitat.SHALLOW_MARINE)
-                    : river ? HabitatMap.Habitat.RIVER : HabitatMap.Habitat.WETLAND;
-            else if (terrain.surfaceY() >= 133) habitat = HabitatMap.Habitat.MOUNTAIN;
-            else if (terrain.slope() >= 8) habitat = HabitatMap.Habitat.ROCKY_HIGHLAND;
-            else habitat = forest ? HabitatMap.Habitat.FOREST : HabitatMap.Habitat.OPEN_GRASSLAND;
-            var scores = new HabitatMap.Scores(water == 0 && forest ? 1 : 0, water == 0 && !forest ? 1 : 0,
-                    water > 0 ? 1 : 0, Math.min(1, terrain.slope() / 8f), water > 0 && ocean ? 1 : 0);
+            var classified=classify(terrain,water,forest,ocean,river);
             boolean protect = state.protectedBlock(area.dimension(), x, z) || !chunk.getAllStarts().isEmpty() || !chunk.getAllReferences().isEmpty();
-            run.append(index, new Observation(floor, water, forest, ocean, river, protect, new HabitatMap.Cell(habitat, scores)));
+            run.append(index, new Observation(floor, water, forest, ocean, river, protect, classified));
             if(saved.get(id)==null)saved.put(run);else saved.setDirty();
         }
         state.jobs().put(id, job.withCursor(run.cursor()));state.changed();

@@ -420,6 +420,16 @@ public final class BlockMutationRuntime {
     /** Publishes hand-authored acceptance-test plans through the same production sealing path. */
     public static void publishSealed(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,BlockWorldPrepData.Plan plan){seal(plan);publish(level,data,area,plan);}
     public static String stateString(BlockState state){return encode(state);}
+    /** Analysis uses the exact production host tags; no plan publication or mutation authority. */
+    public static boolean geologicalHostForAnalysis(BlockState state){return state.is(GEOLOGY);}
+    public static boolean oreHostForAnalysis(BlockState state){return state.is(STONE)||state.is(DEEPSLATE);}
+    public static String hostTagFingerprintForAnalysis(){
+        return PlanFingerprint.of(net.minecraft.core.registries.BuiltInRegistries.BLOCK.stream()
+            .filter(b->geologicalHostForAnalysis(b.defaultBlockState())||oreHostForAnalysis(b.defaultBlockState()))
+            .map(b->net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(b)+":"+geologicalHostForAnalysis(b.defaultBlockState())+":"+oreHostForAnalysis(b.defaultBlockState()))
+            .sorted().toArray(String[]::new)).value();
+    }
+
     private static String input(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass){if(EcologyMutationPlanner.supports(pass))return ecologyInput(level,data,area,pass);String protections=data.locations().isEmpty()?Long.toString(data.protections().values().stream().filter(p->p.dimension().equals(area.dimension())).mapToLong(Object::hashCode).sum()):data.protectionFingerprint();String geology=pass.equals("ORES")?java.util.Optional.ofNullable(data(level).plans().get(BlockWorldPrepData.planKey(area.id(),"GEOLOGY"))).map(p->p.fingerprint()).orElse(""):"";return area.dimension()+":"+area.minX()+":"+area.minZ()+":"+area.maxX()+":"+area.maxZ()+":"+level.getSeed()+":"+protections+":"+geology+(area.mask()==WorldPrepSavedData.AreaMask.FULL_AREA?"":":area-mask-v1:"+area.mask().name());}
 
     private static String ecologyInput(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass){
