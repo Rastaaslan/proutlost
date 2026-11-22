@@ -261,6 +261,7 @@ public final class WorldPrepCommands {
         if(state==WorldPrepSavedData.JobState.CANCELLED&&job.operation()==WorldPrepSavedData.Operation.BATCH_ECOLOGY&&job.snapshotId()!=null){
             var child=data.jobs().get(job.snapshotId());if(child!=null&&child.state()!=WorldPrepSavedData.JobState.COMPLETED)data.jobs().put(child.id(),child.withState(WorldPrepSavedData.JobState.CANCELLED));
         }
+        WorldPrepRuntime.discardBiomeApplyRecovery(level(source),id);
         data.jobs().put(id,job.withState(state));data.changed();level(source).getDataStorage().save();return 1;
     }
 

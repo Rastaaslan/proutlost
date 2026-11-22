@@ -28,15 +28,39 @@ import fr.proutlost.worldprep.storage.PlanManifest;
 public final class WorldPrepRuntime {
     static final class PreviewResumeRequired extends IllegalStateException{PreviewResumeRequired(){super("Unsealed preview scan lost after restart; cancel and create a fresh preview. Existing sealed plans remain unchanged.");}}
     private static final java.util.Map<ServerLevel,java.util.Map<UUID,BiomePreview>> PREVIEWS=new java.util.WeakHashMap<>();
+    private static final java.util.Map<ServerLevel,java.util.Map<UUID,BiomeApplyRecovery>> BIOME_RECOVERY=new java.util.WeakHashMap<>();
+    private static final class BiomeApplyRecovery {
+        fr.proutlost.worldprep.storage.PagedJournalStore.Manifest manifest;
+        final BiomeApplyRecoveryCursor cursor;
+        BiomeApplyRecovery(fr.proutlost.worldprep.storage.PagedJournalStore.Manifest manifest){
+            this.manifest=manifest;cursor=new BiomeApplyRecoveryCursor(manifest.pages().size());
+        }
+    }
+    public static java.util.Optional<BiomeApplyRecoveryCursor.Progress> biomeApplyRecoveryProgress(ServerLevel level,UUID job){
+        var states=BIOME_RECOVERY.get(level);
+        var recovery=states==null?null:states.get(job);
+        return recovery==null?java.util.Optional.empty():java.util.Optional.of(recovery.cursor.progress());
+    }
+    /** A pause/resume command is a recovery boundary even within one server tick. */
+    public static void discardBiomeApplyRecovery(ServerLevel level,UUID id){forgetBiomeRecovery(level,id);}
+    private static void forgetBiomeRecovery(ServerLevel level,UUID id){
+        var states=BIOME_RECOVERY.get(level);
+        if(states!=null){states.remove(id);if(states.isEmpty())BIOME_RECOVERY.remove(level);}
+    }
     private static final class BiomePreview {
         final WorldPrepSavedData.Plan plan;final PagedPlanStore.Writer<WorldPrepSavedData.BiomeCell> writer;long scanned;
         BiomePreview(WorldPrepSavedData.Plan plan,PagedPlanStore.Writer<WorldPrepSavedData.BiomeCell> writer){this.plan=plan;this.writer=writer;}
     }
     private static void prunePreviews(ServerLevel level,WorldPrepSavedData data){
         var previews=PREVIEWS.get(level);if(previews!=null){previews.keySet().removeIf(id->{var job=data.jobs().get(id);return job==null||!(job.state()==WorldPrepSavedData.JobState.RUNNING||job.state()==WorldPrepSavedData.JobState.QUEUED||job.state()==WorldPrepSavedData.JobState.PAUSED);});if(previews.isEmpty())PREVIEWS.remove(level);}
+        var recoveries=BIOME_RECOVERY.get(level);
+        if(recoveries!=null){
+            recoveries.keySet().removeIf(id->{var job=data.jobs().get(id);return job==null||job.state()!=WorldPrepSavedData.JobState.RUNNING;});
+            if(recoveries.isEmpty())BIOME_RECOVERY.remove(level);
+        }
         BlockMutationRuntime.prunePreviews(level,data);
     }
-    private static void forgetPreview(ServerLevel level,UUID id){var previews=PREVIEWS.get(level);if(previews!=null)previews.remove(id);BlockMutationRuntime.forgetPreview(level,id);}
+    private static void forgetPreview(ServerLevel level,UUID id){forgetBiomeRecovery(level,id);var previews=PREVIEWS.get(level);if(previews!=null)previews.remove(id);BlockMutationRuntime.forgetPreview(level,id);}
     public static WorldPrepSavedData data(ServerLevel level){return fr.proutlost.worldprep.persistence.PagedSavedDataRuntime.withServerLevel(level,WorldPrepSavedData.FILE_ID,()->level.getDataStorage().computeIfAbsent(WorldPrepSavedData.FACTORY,WorldPrepSavedData.FILE_ID));}
     public static UUID enqueue(ServerLevel level,WorldPrepSavedData.Operation op,String areaId){
         if(op.name().startsWith("ROLLBACK"))throw new IllegalArgumentException("Rollback requires an exact snapshot id");
@@ -48,10 +72,10 @@ public final class WorldPrepRuntime {
     }
     private static UUID enqueue(ServerLevel level,WorldPrepSavedData.Operation op,String areaId,UUID snapshot){requireEnabled();var d=data(level);var area=requireArea(d,areaId);if(!area.dimension().equals(level.dimension().location().toString()))throw new IllegalStateException("Area belongs to another dimension");if(op.name().startsWith("APPLY")||op.name().startsWith("ROLLBACK")||op==WorldPrepSavedData.Operation.BATCH_ECOLOGY){fr.proutlost.worldprep.physical.NativePhysicalRuntime.requireNoPhysicalHistory(level);assertUnlocked(d,area);}UUID id=UUID.randomUUID();d.jobs().put(id,new WorldPrepSavedData.Job(id,op,areaId,WorldPrepSavedData.JobState.QUEUED,0,"",snapshot));d.changed();if(BlockMutationRuntime.isBlockOperation(op)){try{BlockMutationRuntime.prepare(level,d,id,op,area);}catch(RuntimeException failure){d.jobs().put(id,d.jobs().get(id).failed(failure.getMessage()));d.changed();throw failure;}}return id;}
     public static void tick(ServerTickEvent.Post event){
-        if(!WorldPrepConfig.ENABLED.get()||WorldPrepConfig.STRUCTURES_ONLY.get()){for(ServerLevel level:event.getServer().getAllLevels()){MultiTileEcologyPrefetch.cancelLevel(level);ExistingChunkLoader.release(level);}return;}
+        if(!WorldPrepConfig.ENABLED.get()||WorldPrepConfig.STRUCTURES_ONLY.get()){for(ServerLevel level:event.getServer().getAllLevels()){MultiTileEcologyPrefetch.cancelLevel(level);ExistingChunkLoader.release(level);BIOME_RECOVERY.remove(level);}return;}
         var stop=fr.proutlost.worldprep.ecology.ExecutionSafety.check(event.getServer().getPlayerCount(),event.getServer().getAverageTickTimeNanos(),WorldPrepConfig.MAX_TICK_MILLIS.get());
         for(ServerLevel level:event.getServer().getAllLevels()){
-            if(stop!=fr.proutlost.worldprep.ecology.ExecutionSafety.Stop.NONE){ExistingChunkLoader.release(level);var d=data(level);EcologyParallelPreviewRuntime.cancel(d);MultiTileEcologyPrefetch.cancel(d);d.jobs().replaceAll((id,j)->j.state()==WorldPrepSavedData.JobState.RUNNING||j.state()==WorldPrepSavedData.JobState.QUEUED?new WorldPrepSavedData.Job(j.id(),j.operation(),j.area(),WorldPrepSavedData.JobState.PAUSED,j.cursor(),"SAFETY_STOP: "+stop,j.snapshotId()):j);d.changed();}
+            if(stop!=fr.proutlost.worldprep.ecology.ExecutionSafety.Stop.NONE){BIOME_RECOVERY.remove(level);ExistingChunkLoader.release(level);var d=data(level);EcologyParallelPreviewRuntime.cancel(d);MultiTileEcologyPrefetch.cancel(d);d.jobs().replaceAll((id,j)->j.state()==WorldPrepSavedData.JobState.RUNNING||j.state()==WorldPrepSavedData.JobState.QUEUED?new WorldPrepSavedData.Job(j.id(),j.operation(),j.area(),WorldPrepSavedData.JobState.PAUSED,j.cursor(),"SAFETY_STOP: "+stop,j.snapshotId()):j);d.changed();}
             else tickLevel(level,WorldPrepConfig.CELLS_PER_TICK.get());
         }
     }
@@ -80,9 +104,13 @@ public final class WorldPrepRuntime {
             forgetPreview(level,entry.getKey());
             var current=d.jobs().get(entry.getKey());
             d.jobs().put(entry.getKey(),current.failed(ex.getClass().getSimpleName()+": "+ex.getMessage()));d.changed();
-        }finally{ExistingChunkLoader.cleanup(level,d);}
+        }finally{
+            var current=d.jobs().get(entry.getKey());
+            if(current==null||current.state()!=WorldPrepSavedData.JobState.RUNNING)forgetBiomeRecovery(level,entry.getKey());
+            ExistingChunkLoader.cleanup(level,d);
+        }
     }
-    private static void process(ServerLevel level,WorldPrepSavedData d,UUID id,WorldPrepSavedData.Job job,int budget){if(!d.checkpointReady()){level.getDataStorage().save();return;}if(job.operation()==WorldPrepSavedData.Operation.BATCH_ECOLOGY){EcologyBatchRuntime.process(level,d,job,budget);return;}if(job.operation()==WorldPrepSavedData.Operation.ANALYZE){analyzeSlice(level,d,id,job,budget);return;}if(job.operation()==WorldPrepSavedData.Operation.PREVIEW_HABITATS){try{WorldPrepHabitatRuntime.process(level,d,id,job,budget);}catch(IOException ex){throw new IllegalStateException("Habitat publication failed: "+ex.getMessage(),ex);}return;}if(BlockMutationRuntime.isBlockOperation(job.operation())){var target=rollbackLoadingTarget(job.operation(),requireArea(d,job.area()),WorldPrepConfig.LOAD_EXISTING_CHUNKS.get());if(target!=null&&!ExistingChunkLoader.ensure(level,id,target.x,target.z))return;BlockMutationRuntime.process(level,d,id,job,budget);return;}var area=requireArea(d,job.area());var bounds=BiomeBounds.inside(area);if(job.operation()==WorldPrepSavedData.Operation.ROLLBACK_BIOMES){rollback(level,d,id,job,budget,area,bounds);return;}var plan=d.plans().get(area.id());if(job.operation()==WorldPrepSavedData.Operation.PREVIEW_BIOMES){previewBiomeSlice(level,d,id,job,area,bounds,budget);return;}if(job.operation()==WorldPrepSavedData.Operation.APPLY_BIOMES){if(plan==null||plan.fingerprint.isEmpty())throw new IllegalStateException("No persisted preview");PlanIdentity.requireCurrent(plan.input,PlanIdentity.capture(level,d,area));if(plan.planId==null)publishBiome(level,d,area,bounds,plan);var manifest=biomeManifest(level,plan);var activePlan=plan;if(job.snapshotId()==null){UUID snapshotId=UUID.randomUUID();var snapshot=new WorldPrepSavedData.Snapshot(snapshotId,id,plan.planId,area.dimension(),area.id(),"BIOMES",plan.fingerprint);RuntimeBiomeJournal.initialize(level,snapshot);d.snapshots().put(snapshotId,snapshot);job=job.withSnapshot(snapshotId);d.jobs().put(id,job);d.changed();level.getDataStorage().save();return;}var activeSnapshot=validateSnapshot(d,job,area,plan);reconcileBiomeApply(level,d,area,activeSnapshot);long durable=activeSnapshot.pageCount;if(durable>plan.entryCount)throw new IllegalStateException("Biome journal exceeds exact plan");job=job.withCursor(durable);d.jobs().put(id,job);/* A sealed entry is an entire vertical quart column, not one biome cell. Charge its full height against the unchanged cell budget; preserve the atomic journal-before-world column minimum. */var touched=new LinkedHashSet<LevelChunk>();long start=durable;long[] sequence={start};try{var active=job;PagedPlanStore.readRange(RuntimePlanStore.directory(level,plan.planId),manifest,RuntimePlanStore.BIOME_CODEC,start,budget<=0?budget:Math.max(1,budget/Math.max(1,QuartPos.fromBlock(level.getMaxBuildHeight())-QuartPos.fromBlock(level.getMinBuildHeight()))),cell->{if(applyPlannedCell(level,d,area,activePlan,d.snapshots().get(active.snapshotId()),cell,sequence[0]++))touched.add(ServerExistingChunkAccess.requireChunk(level,QuartPos.toBlock(cell.quartX())>>4,QuartPos.toBlock(cell.quartZ())>>4));var current=d.jobs().get(id);d.jobs().put(id,current.withCursor(current.cursor()+1));d.changed();});}catch(IOException e){throw new IllegalStateException("Paged biome plan validation failed",e);}BiomeRuntime.refresh(level,touched);job=d.jobs().get(id);if(job.cursor()>=plan.entryCount)d.jobs().put(id,job.withState(WorldPrepSavedData.JobState.COMPLETED));d.changed();}}
+    private static void process(ServerLevel level,WorldPrepSavedData d,UUID id,WorldPrepSavedData.Job job,int budget){if(!d.checkpointReady()){level.getDataStorage().save();return;}if(job.operation()==WorldPrepSavedData.Operation.BATCH_ECOLOGY){EcologyBatchRuntime.process(level,d,job,budget);return;}if(job.operation()==WorldPrepSavedData.Operation.ANALYZE){analyzeSlice(level,d,id,job,budget);return;}if(job.operation()==WorldPrepSavedData.Operation.PREVIEW_HABITATS){try{WorldPrepHabitatRuntime.process(level,d,id,job,budget);}catch(IOException ex){throw new IllegalStateException("Habitat publication failed: "+ex.getMessage(),ex);}return;}if(BlockMutationRuntime.isBlockOperation(job.operation())){var target=rollbackLoadingTarget(job.operation(),requireArea(d,job.area()),WorldPrepConfig.LOAD_EXISTING_CHUNKS.get());if(target!=null&&!ExistingChunkLoader.ensure(level,id,target.x,target.z))return;BlockMutationRuntime.process(level,d,id,job,budget);return;}var area=requireArea(d,job.area());var bounds=BiomeBounds.inside(area);if(job.operation()==WorldPrepSavedData.Operation.ROLLBACK_BIOMES){rollback(level,d,id,job,budget,area,bounds);return;}var plan=d.plans().get(area.id());if(job.operation()==WorldPrepSavedData.Operation.PREVIEW_BIOMES){previewBiomeSlice(level,d,id,job,area,bounds,budget);return;}if(job.operation()==WorldPrepSavedData.Operation.APPLY_BIOMES){if(plan==null||plan.fingerprint.isEmpty())throw new IllegalStateException("No persisted preview");PlanIdentity.requireCurrent(plan.input,PlanIdentity.capture(level,d,area));if(plan.planId==null)publishBiome(level,d,area,bounds,plan);var manifest=biomeManifest(level,plan);var activePlan=plan;if(job.snapshotId()==null){UUID snapshotId=UUID.randomUUID();var snapshot=new WorldPrepSavedData.Snapshot(snapshotId,id,plan.planId,area.dimension(),area.id(),"BIOMES",plan.fingerprint);RuntimeBiomeJournal.initialize(level,snapshot);d.snapshots().put(snapshotId,snapshot);job=job.withSnapshot(snapshotId);d.jobs().put(id,job);d.changed();level.getDataStorage().save();return;}var activeSnapshot=validateSnapshot(d,job,area,plan);if(!reconcileBiomeApply(level,d,id,area,activeSnapshot,budget))return;long durable=activeSnapshot.pageCount;if(durable>plan.entryCount)throw new IllegalStateException("Biome journal exceeds exact plan");job=job.withCursor(durable);d.jobs().put(id,job);/* A sealed entry is an entire vertical quart column, not one biome cell. Charge its full height against the unchanged cell budget; preserve the atomic journal-before-world column minimum. */var touched=new LinkedHashSet<LevelChunk>();long start=durable;long[] sequence={start};try{var active=job;PagedPlanStore.readRange(RuntimePlanStore.directory(level,plan.planId),manifest,RuntimePlanStore.BIOME_CODEC,start,budget<=0?budget:Math.max(1,budget/Math.max(1,QuartPos.fromBlock(level.getMaxBuildHeight())-QuartPos.fromBlock(level.getMinBuildHeight()))),cell->{if(applyPlannedCell(level,d,area,activePlan,d.snapshots().get(active.snapshotId()),cell,sequence[0]++))touched.add(ServerExistingChunkAccess.requireChunk(level,QuartPos.toBlock(cell.quartX())>>4,QuartPos.toBlock(cell.quartZ())>>4));var current=d.jobs().get(id);d.jobs().put(id,current.withCursor(current.cursor()+1));d.changed();});}catch(IOException e){throw new IllegalStateException("Paged biome plan validation failed",e);}acknowledgeOwnBiomeAppends(level,id,activeSnapshot);BiomeRuntime.refresh(level,touched);job=d.jobs().get(id);if(job.cursor()>=plan.entryCount)d.jobs().put(id,job.withState(WorldPrepSavedData.JobState.COMPLETED));d.changed();}}
     /** An unsealed preview has no world authority. After process restart its scan safely starts from zero. */
     private static void previewBiomeSlice(ServerLevel level,WorldPrepSavedData data,UUID id,WorldPrepSavedData.Job job,
             WorldPrepSavedData.Area area,BiomeBounds bounds,int budget){
@@ -201,7 +229,53 @@ public final class WorldPrepRuntime {
         d.jobs().put(id,advanced);d.changed();level.getDataStorage().save();
     }
     private static void preflightBiomeRollback(ServerLevel level,WorldPrepSavedData d,WorldPrepSavedData.Area area,BiomeBounds bounds,WorldPrepSavedData.Snapshot snapshot){RuntimeBiomeJournal.visit(level,snapshot,(sequence,cells)->{for(var cell:cells){if(!bounds.contains(cell.quartX(),cell.quartZ())||!bounds.footprintInside(area,cell.quartX(),cell.quartZ()))throw new IllegalStateException("Snapshot cell outside owned area");if(d.protectedAt(area.dimension(),cell.quartX(),cell.quartZ()))throw new IllegalStateException("Rollback cell is now protected");String current=BiomeRuntime.biomeId(level,cell.quartX(),cell.quartY(),cell.quartZ());if(!current.equals(cell.beforeBiome())&&!current.equals(cell.appliedBiome()))throw new IllegalStateException("Biome ownership conflict during rollback");}});}
-    private static void reconcileBiomeApply(ServerLevel level,WorldPrepSavedData d,WorldPrepSavedData.Area area,WorldPrepSavedData.Snapshot snapshot){if(snapshot.pageCount==0&&!java.nio.file.Files.exists(fr.proutlost.worldprep.storage.PagedJournalStore.manifestPath(RuntimeBiomeJournal.directory(level,snapshot.id))))return;RuntimeBiomeJournal.requireManifest(level,snapshot);RuntimeBiomeJournal.visit(level,snapshot,(sequence,cells)->{for(var cell:cells){if(d.protectedAt(area.dimension(),cell.quartX(),cell.quartZ()))throw new IllegalStateException("Journaled biome mutation is protected");String current=BiomeRuntime.biomeId(level,cell.quartX(),cell.quartY(),cell.quartZ());if(!current.equals(cell.beforeBiome())&&!current.equals(cell.appliedBiome()))throw new IllegalStateException("Biome ownership conflict during apply recovery");}});RuntimeBiomeJournal.visit(level,snapshot,(sequence,cells)->{for(var cell:cells)BiomeRuntime.applyOwnedCell(level,cell);});d.changed();}
+    /** Full-prefix ownership preflight before any recovery write, with both passes budgeted.
+     * In the same uninterrupted run, new pages were already journaled and applied by
+     * applyPlannedCell. They are acknowledged, never replayed on every later slice. */
+    private static boolean reconcileBiomeApply(ServerLevel level,WorldPrepSavedData d,UUID id,
+            WorldPrepSavedData.Area area,WorldPrepSavedData.Snapshot snapshot,int budget){
+        var manifest=RuntimeBiomeJournal.requireMetadata(level,snapshot);
+        var states=BIOME_RECOVERY.computeIfAbsent(level,k->new java.util.HashMap<>());
+        var recovery=states.computeIfAbsent(id,k->new BiomeApplyRecovery(manifest));
+        if(!recovery.manifest.equals(manifest))
+            throw new IllegalStateException("Biome journal changed outside the active apply slice");
+        var touched=new LinkedHashSet<LevelChunk>();
+        var bounds=BiomeBounds.inside(area);
+        int visited=recovery.cursor.advance(budget,
+            page->manifest.pages().get(Math.toIntExact(page)).entryCount(),
+            (page,offset,count,phase)->RuntimeBiomeJournal.visitRecoverySlice(
+                level,snapshot,manifest,page,offset,count,cell->{
+                    if(!bounds.contains(cell.quartX(),cell.quartZ())
+                            ||!bounds.footprintInside(area,cell.quartX(),cell.quartZ()))
+                        throw new IllegalStateException("Journaled biome mutation outside owned area");
+                    if(d.protectedAt(area.dimension(),cell.quartX(),cell.quartZ()))
+                        throw new IllegalStateException("Journaled biome mutation is protected");
+                    String current=BiomeRuntime.biomeId(level,cell.quartX(),cell.quartY(),cell.quartZ());
+                    if(!current.equals(cell.beforeBiome())&&!current.equals(cell.appliedBiome()))
+                        throw new IllegalStateException("Biome ownership conflict during apply recovery");
+                    if(phase==BiomeApplyRecoveryCursor.Phase.REPLAY&&!current.equals(cell.appliedBiome())){
+                        // applyOwnedCell rechecks the exact live before/post palette too.
+                        BiomeRuntime.applyOwnedCell(level,cell);
+                        touched.add(ServerExistingChunkAccess.requireChunk(level,
+                            QuartPos.toBlock(cell.quartX())>>4,QuartPos.toBlock(cell.quartZ())>>4));
+                    }
+                }));
+        BiomeRuntime.refresh(level,touched);
+        if(visited>0){d.changed();return false;}
+        return recovery.cursor.progress().phase()==BiomeApplyRecoveryCursor.Phase.READY;
+    }
+    private static void acknowledgeOwnBiomeAppends(ServerLevel level,UUID id,
+            WorldPrepSavedData.Snapshot snapshot){
+        var recovery=BIOME_RECOVERY.get(level).get(id);
+        if(recovery.cursor.progress().phase()!=BiomeApplyRecoveryCursor.Phase.READY)
+            throw new IllegalStateException("Biome recovery incomplete before append");
+        var advanced=RuntimeBiomeJournal.requireMetadata(level,snapshot);
+        var prior=recovery.manifest;
+        if(advanced.pages().size()<prior.pages().size()
+                ||!advanced.pages().subList(0,prior.pages().size()).equals(prior.pages()))
+            throw new IllegalStateException("Biome append changed an authenticated prefix");
+        recovery.manifest=advanced;
+    }
     /** Rollback is owned by its exact durable snapshot, independently of newer previews. */
     private static WorldPrepSavedData.Snapshot validateRollbackSnapshot(WorldPrepSavedData d,WorldPrepSavedData.Job job,WorldPrepSavedData.Area area){
         if(job.snapshotId()==null)throw new IllegalStateException("Job has no snapshot ownership");

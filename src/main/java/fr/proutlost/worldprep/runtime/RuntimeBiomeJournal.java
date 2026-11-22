@@ -36,6 +36,28 @@ public final class RuntimeBiomeJournal {
         }catch(IOException e){throw new IllegalStateException("Durable biome journal publication failed",e);}
     }
 
+    /** Authenticate exact metadata without decoding every historical page on the server thread.
+     * Each recovery slice still authenticates its selected page through visitPage. */
+    public static PagedJournalStore.Manifest requireMetadata(ServerLevel level,WorldPrepSavedData.Snapshot snapshot){
+        try {
+            var manifest=PagedJournalStore.readManifest(directory(level,snapshot.id));
+            requireIdentity(snapshot,manifest);
+            update(snapshot,manifest);
+            return manifest;
+        } catch(IOException e){throw new IllegalStateException("Biome journal recovery required",e);}
+    }
+    public static void visitRecoverySlice(ServerLevel level,WorldPrepSavedData.Snapshot snapshot,
+            PagedJournalStore.Manifest expected,long page,int offset,int count,
+            java.util.function.Consumer<WorldPrepSavedData.SnapshotCell> consumer){
+        try {
+            PagedJournalStore.visitPage(directory(level,snapshot.id),expected,page,CODEC,(sequence,cells)->{
+                if(offset<0||count<1||offset>cells.size()-count)
+                    throw new IOException("Biome recovery slice outside exact page");
+                for(int n=offset;n<offset+count;n++)consumer.accept(cells.get(n));
+            });
+        } catch(IOException e){throw new IllegalStateException("Biome journal recovery required",e);}
+    }
+
     public static PagedJournalStore.Manifest requireManifest(ServerLevel level,WorldPrepSavedData.Snapshot snapshot){try{var manifest=PagedJournalStore.readManifest(directory(level,snapshot.id));requireIdentity(snapshot,manifest);PagedJournalStore.validateAll(directory(level,snapshot.id),manifest);DurablePageStore.forceDirectory(directory(level,snapshot.id));update(snapshot,manifest);return manifest;}catch(IOException e){throw new IllegalStateException("Biome journal recovery required",e);}}
     public static PagedJournalStore.Metrics visit(ServerLevel level,WorldPrepSavedData.Snapshot snapshot,PagedJournalStore.PageConsumer<WorldPrepSavedData.SnapshotCell> consumer){try{var manifest=requireManifest(level,snapshot);return PagedJournalStore.visitPages(directory(level,snapshot.id),manifest,CODEC,consumer);}catch(IOException e){throw new IllegalStateException("Biome journal recovery required",e);}}
     public static long durablePageCount(ServerLevel level,WorldPrepSavedData.Snapshot snapshot){Path manifest=PagedJournalStore.manifestPath(directory(level,snapshot.id));if(!Files.exists(manifest))return 0;return requireManifest(level,snapshot).pages().size();}
