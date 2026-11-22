@@ -36,6 +36,40 @@ public final class WorldPrepSavedData extends AcknowledgedSavedData {
     public enum Operation{ANALYZE,PREVIEW_BIOMES,APPLY_BIOMES,ROLLBACK_BIOMES,PREVIEW_GEOLOGY,APPLY_GEOLOGY,ROLLBACK_GEOLOGY,PREVIEW_ORES,APPLY_ORES,ROLLBACK_ORES,PREVIEW_SOILS,APPLY_SOILS,ROLLBACK_SOILS,PREVIEW_FLORA,APPLY_FLORA,ROLLBACK_FLORA,PREVIEW_TREES,APPLY_TREES,ROLLBACK_TREES,PREVIEW_AQUATIC,APPLY_AQUATIC,ROLLBACK_AQUATIC,PREVIEW_HABITATS,BATCH_ECOLOGY}
     public enum JobState{QUEUED,RUNNING,PAUSED,COMPLETED,CANCELLED,FAILED}
     public record Job(UUID id,Operation operation,String area,JobState state,long cursor,String error,UUID snapshotId){
+
+        /** Functional phase derived solely from the persisted operation and execution state.
+         * Legacy schema-7 state names and cold PAUSED revalidation remain authoritative. */
+        public fr.proutlost.worldprep.job.WorldPrepJob.State functionalState() {
+            return switch (state) {
+                case QUEUED -> fr.proutlost.worldprep.job.WorldPrepJob.State.QUEUED;
+                case PAUSED -> fr.proutlost.worldprep.job.WorldPrepJob.State.PAUSED;
+                case CANCELLED -> fr.proutlost.worldprep.job.WorldPrepJob.State.CANCELLED;
+                case FAILED -> fr.proutlost.worldprep.job.WorldPrepJob.State.FAILED;
+                case RUNNING -> switch (operation) {
+                    case ANALYZE -> fr.proutlost.worldprep.job.WorldPrepJob.State.ANALYZING;
+                    case PREVIEW_BIOMES, PREVIEW_GEOLOGY, PREVIEW_ORES, PREVIEW_SOILS,
+                            PREVIEW_FLORA, PREVIEW_TREES, PREVIEW_AQUATIC, PREVIEW_HABITATS ->
+                            fr.proutlost.worldprep.job.WorldPrepJob.State.PREVIEWING;
+                    case APPLY_BIOMES, APPLY_GEOLOGY, APPLY_ORES, APPLY_SOILS,
+                            APPLY_FLORA, APPLY_TREES, APPLY_AQUATIC, BATCH_ECOLOGY ->
+                            fr.proutlost.worldprep.job.WorldPrepJob.State.APPLYING;
+                    case ROLLBACK_BIOMES, ROLLBACK_GEOLOGY, ROLLBACK_ORES, ROLLBACK_SOILS,
+                            ROLLBACK_FLORA, ROLLBACK_TREES, ROLLBACK_AQUATIC ->
+                            fr.proutlost.worldprep.job.WorldPrepJob.State.ROLLING_BACK;
+                };
+                case COMPLETED -> switch (operation) {
+                    case PREVIEW_BIOMES, PREVIEW_GEOLOGY, PREVIEW_ORES, PREVIEW_SOILS,
+                            PREVIEW_FLORA, PREVIEW_TREES, PREVIEW_AQUATIC, PREVIEW_HABITATS ->
+                            fr.proutlost.worldprep.job.WorldPrepJob.State.PREVIEW_READY;
+                    case ROLLBACK_BIOMES, ROLLBACK_GEOLOGY, ROLLBACK_ORES, ROLLBACK_SOILS,
+                            ROLLBACK_FLORA, ROLLBACK_TREES, ROLLBACK_AQUATIC ->
+                            fr.proutlost.worldprep.job.WorldPrepJob.State.ROLLED_BACK;
+                    case ANALYZE, APPLY_BIOMES, APPLY_GEOLOGY, APPLY_ORES, APPLY_SOILS,
+                            APPLY_FLORA, APPLY_TREES, APPLY_AQUATIC, BATCH_ECOLOGY ->
+                            fr.proutlost.worldprep.job.WorldPrepJob.State.COMPLETED;
+                };
+            };
+        }
         public Job withState(JobState value){return new Job(id,operation,area,value,cursor,error,snapshotId);}
         public Job withCursor(long value){return new Job(id,operation,area,state,value,error,snapshotId);}
         public Job failed(String value){return new Job(id,operation,area,JobState.FAILED,cursor,value,snapshotId);}
