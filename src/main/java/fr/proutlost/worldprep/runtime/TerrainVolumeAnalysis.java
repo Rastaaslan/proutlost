@@ -15,7 +15,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 
 /** Read-only ANALYZE extension. Counts actual host blocks, estimates sampled surface suitability.
- * A slice charges aligned 4x4x4 cells to the existing budget (at most64 block reads/cell).
+ * A slice debits up to64 block probes per aligned4x4x4 cell against the existing budget.
  * Existing terrain-sampling units/cursor and every mutation/admission rule remain unchanged.
  */
 public final class TerrainVolumeAnalysis {
@@ -69,7 +69,8 @@ public final class TerrainVolumeAnalysis {
         var area=WorldPrepRuntime.requireArea(data,job.area());var extra=analysis.extended;
         if(extra==null||!extra.geometry.equals(geometry(level,area)))throw new IllegalStateException("Analysis volume identity changed");
         extra.requirePrefix(analysis.samples);
-        int remaining=Math.max(0,budget);
+        // Keep the existing probe budget, not256 groups of64. Preserve the atomic-cell minimum.
+        int remaining=budget>0?Math.max(1,budget/64):0;
         while(remaining-->0&&extra.volumeCells<extra.geometry.cells()) {
             var cell=extra.geometry.at(extra.volumeCells);int cx=cell.minX()>>4,cz=cell.minZ()>>4;
             if(level.getChunkSource().getChunkNow(cx,cz)==null&&!ExistingChunkLoader.ensure(level,job.id(),cx,cz))return;
