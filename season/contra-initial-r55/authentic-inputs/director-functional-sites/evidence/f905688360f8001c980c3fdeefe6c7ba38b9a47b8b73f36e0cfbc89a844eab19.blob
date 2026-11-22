@@ -1,0 +1,434 @@
+{
+  "schema": 1,
+  "world_id": "0cce2707-bd35-4d4b-874f-82103ef4209c",
+  "location_id": "04b401a5-a661-3213-a950-595056d56363",
+  "checked_at": "2026-11-06T00:14:00.473657+00:00",
+  "state": "POSTAPPLICATION_ALL_DELTA_CELLS_DISK_VERIFIED",
+  "native_bounds_inclusive": [
+    1617,
+    -53,
+    1617,
+    1647,
+    -41,
+    1647
+  ],
+  "plan": {
+    "path": "/srv/storage/proutlost-s2-candidates/contra-20261027/CONTRA_NUIT_20261105/full-catalogue-preparation/dungeon-04b401a5-human-access-plan-v1.json",
+    "sha256": "9c6499c54ca1283f93110e963cb6a648ccb0d3dee8a47a3ab463ecfb72e315a2"
+  },
+  "execution_receipt": {
+    "path": "/srv/storage/proutlost-s2-candidates/contra-20261027/CONTRA_NUIT_20261105/full-catalogue-preparation/dungeon-04b401a5-human-access-plan-v1.execution.json",
+    "sha256": "ef45c17340d98fcfa8c031149f314895882536923756af1bd425bcaa467296a4",
+    "state": "PHYSICAL_GEOMETRY_APPLIED_ALL_CELLS_DISK_VERIFIED"
+  },
+  "preplacement_survey": {
+    "path": "/srv/storage/proutlost-s2-candidates/contra-20261027/CONTRA_NUIT_20261105/full-catalogue-preparation/dungeon-04b401a5-human-access-survey-v1.json",
+    "sha256": "0cd416afe172563569e69bbac131fb64c656b5110e8b492740a1a15c9c858160"
+  },
+  "delta_cells_read": 2263,
+  "mismatches": [],
+  "explicit_native_delta": [],
+  "historical_native_generation_receipt_unchanged": true,
+  "entrance": {
+    "position": {
+      "x": 1647,
+      "y": -52,
+      "z": 1637
+    },
+    "floor": "minecraft:cobblestone",
+    "feet": "minecraft:cave_air",
+    "head": "minecraft:cave_air",
+    "strict_standing": true
+  },
+  "surface_approach": [
+    {
+      "position": {
+        "x": 1650,
+        "y": 195,
+        "z": 1637
+      },
+      "floor": "minecraft:stone_bricks",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1649,
+        "y": 195,
+        "z": 1637
+      },
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1648,
+        "y": 195,
+        "z": 1637
+      },
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    }
+  ],
+  "interior_route": [
+    {
+      "position": {
+        "x": 1647,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1646,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1645,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1644,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1643,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1642,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1641,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1640,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1639,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1638,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1637,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1636,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1635,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1634,
+        "y": -52,
+        "z": 1637
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1634,
+        "y": -52,
+        "z": 1636
+      },
+      "floor": "minecraft:cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1634,
+        "y": -52,
+        "z": 1635
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1634,
+        "y": -52,
+        "z": 1634
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1634,
+        "y": -52,
+        "z": 1633
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1634,
+        "y": -52,
+        "z": 1632
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1634,
+        "y": -52,
+        "z": 1631
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 1633,
+        "y": -52,
+        "z": 1631
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:cave_air",
+      "head": "minecraft:cave_air",
+      "strict_standing": true
+    }
+  ],
+  "ladder_all_cells_and_backing_verified": {
+    "x": 1651,
+    "z": 1637,
+    "y_min": -52,
+    "y_max": 195,
+    "state": "minecraft:ladder[facing=west,waterlogged=false]",
+    "backing_xz": [
+      1652,
+      1637
+    ],
+    "lighting": [
+      [
+        1650,
+        -49,
+        1637
+      ],
+      [
+        1650,
+        -33,
+        1637
+      ],
+      [
+        1650,
+        -17,
+        1637
+      ],
+      [
+        1650,
+        -1,
+        1637
+      ],
+      [
+        1650,
+        15,
+        1637
+      ],
+      [
+        1650,
+        31,
+        1637
+      ],
+      [
+        1650,
+        47,
+        1637
+      ],
+      [
+        1650,
+        63,
+        1637
+      ],
+      [
+        1650,
+        79,
+        1637
+      ],
+      [
+        1650,
+        95,
+        1637
+      ],
+      [
+        1650,
+        111,
+        1637
+      ],
+      [
+        1650,
+        127,
+        1637
+      ],
+      [
+        1650,
+        143,
+        1637
+      ],
+      [
+        1650,
+        159,
+        1637
+      ],
+      [
+        1650,
+        175,
+        1637
+      ],
+      [
+        1650,
+        191,
+        1637
+      ]
+    ]
+  },
+  "scope": "Physical human access through ladder and contained corridor, with exact source-state guards and current disk validation. Current hostile occupancy and actual player traversal are not asserted.",
+  "chunks_read": [
+    {
+      "cx": 102,
+      "cz": 101,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.3.3.mca",
+      "mtime_ns": 1793924039322800168,
+      "compressed_chunk_sha256": "c9a88d615810a0c48361627d8b4af5ae01960d64ad295d276b3381330747980c",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 102,
+      "cz": 102,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.3.3.mca",
+      "mtime_ns": 1793924039322800168,
+      "compressed_chunk_sha256": "01eb2389d3996befbc8a795356e01aa46cbbe35713af0e5323cedf2d95c67fad",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 103,
+      "cz": 102,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.3.3.mca",
+      "mtime_ns": 1793924039322800168,
+      "compressed_chunk_sha256": "d56d9fc1c0ff46d2340fd9985e8716190eaf01d12f40266e09bd0dd5ae71d293",
+      "status": "minecraft:full",
+      "data_version": 3955
+    }
+  ]
+}

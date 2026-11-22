@@ -1,0 +1,694 @@
+{
+  "plan": "/srv/storage/proutlost-s2-candidates/contra-20261027/CONTRA_NUIT_20261105/functional-campaign/read-only/f05-natural-site-preparation-plan-v1.json",
+  "sha256": "b42bf4d9de2414e0962d0df33e41723d2a46a79d1ea527f364a1f2c5d5034a3a",
+  "world_id": "0cce2707-bd35-4d4b-874f-82103ef4209c",
+  "operation": "31061f5e-df56-595d-9ec2-8722cb970eed",
+  "cells": 168,
+  "commands": 115,
+  "bounds": [
+    2813,
+    84,
+    3085,
+    2849,
+    92,
+    3095
+  ],
+  "started_at": "2026-11-06T00:09:21.795866+00:00",
+  "state": "PHYSICAL_GEOMETRY_APPLIED_ALL_CELLS_DISK_VERIFIED",
+  "completed_commands": [
+    {
+      "command": "setblock 2813 91 3088 minecraft:air replace",
+      "response": "Changed the block at 2813, 91, 3088"
+    },
+    {
+      "command": "setblock 2813 91 3089 minecraft:air replace",
+      "response": "Changed the block at 2813, 91, 3089"
+    },
+    {
+      "command": "setblock 2813 91 3090 minecraft:air replace",
+      "response": "Changed the block at 2813, 91, 3090"
+    },
+    {
+      "command": "fill 2813 91 3092 2813 92 3092 minecraft:air replace",
+      "response": "Successfully filled 1 block(s)"
+    },
+    {
+      "command": "setblock 2814 91 3085 minecraft:air replace",
+      "response": "Changed the block at 2814, 91, 3085"
+    },
+    {
+      "command": "setblock 2814 91 3090 minecraft:air replace",
+      "response": "Changed the block at 2814, 91, 3090"
+    },
+    {
+      "command": "setblock 2814 91 3094 minecraft:air replace",
+      "response": "Changed the block at 2814, 91, 3094"
+    },
+    {
+      "command": "setblock 2815 91 3091 minecraft:air replace",
+      "response": "Changed the block at 2815, 91, 3091"
+    },
+    {
+      "command": "setblock 2815 91 3093 minecraft:air replace",
+      "response": "Changed the block at 2815, 91, 3093"
+    },
+    {
+      "command": "setblock 2816 91 3087 minecraft:air replace",
+      "response": "Changed the block at 2816, 91, 3087"
+    },
+    {
+      "command": "setblock 2816 91 3090 minecraft:air replace",
+      "response": "Changed the block at 2816, 91, 3090"
+    },
+    {
+      "command": "setblock 2816 91 3092 minecraft:air replace",
+      "response": "Changed the block at 2816, 91, 3092"
+    },
+    {
+      "command": "setblock 2817 91 3086 minecraft:air replace",
+      "response": "Changed the block at 2817, 91, 3086"
+    },
+    {
+      "command": "setblock 2817 91 3092 minecraft:air replace",
+      "response": "Changed the block at 2817, 91, 3092"
+    },
+    {
+      "command": "setblock 2818 91 3086 minecraft:air replace",
+      "response": "Changed the block at 2818, 91, 3086"
+    },
+    {
+      "command": "setblock 2818 91 3093 minecraft:air replace",
+      "response": "Changed the block at 2818, 91, 3093"
+    },
+    {
+      "command": "fill 2819 91 3086 2819 92 3086 minecraft:air replace",
+      "response": "Successfully filled 1 block(s)"
+    },
+    {
+      "command": "setblock 2819 91 3089 minecraft:air replace",
+      "response": "Changed the block at 2819, 91, 3089"
+    },
+    {
+      "command": "setblock 2819 91 3090 minecraft:air replace",
+      "response": "Changed the block at 2819, 91, 3090"
+    },
+    {
+      "command": "setblock 2819 91 3091 minecraft:air replace",
+      "response": "Changed the block at 2819, 91, 3091"
+    },
+    {
+      "command": "setblock 2819 91 3092 minecraft:air replace",
+      "response": "Changed the block at 2819, 91, 3092"
+    },
+    {
+      "command": "setblock 2821 91 3088 minecraft:air replace",
+      "response": "Changed the block at 2821, 91, 3088"
+    },
+    {
+      "command": "setblock 2821 91 3089 minecraft:air replace",
+      "response": "Changed the block at 2821, 91, 3089"
+    },
+    {
+      "command": "setblock 2821 91 3092 minecraft:air replace",
+      "response": "Changed the block at 2821, 91, 3092"
+    },
+    {
+      "command": "setblock 2822 91 3085 minecraft:air replace",
+      "response": "Changed the block at 2822, 91, 3085"
+    },
+    {
+      "command": "setblock 2822 91 3087 minecraft:air replace",
+      "response": "Changed the block at 2822, 91, 3087"
+    },
+    {
+      "command": "fill 2822 91 3088 2822 92 3088 minecraft:air replace",
+      "response": "Successfully filled 1 block(s)"
+    },
+    {
+      "command": "setblock 2822 91 3089 minecraft:air replace",
+      "response": "Changed the block at 2822, 91, 3089"
+    },
+    {
+      "command": "setblock 2822 91 3092 minecraft:air replace",
+      "response": "Changed the block at 2822, 91, 3092"
+    },
+    {
+      "command": "fill 2823 91 3086 2823 92 3086 minecraft:air replace",
+      "response": "Successfully filled 1 block(s)"
+    },
+    {
+      "command": "setblock 2823 91 3091 minecraft:air replace",
+      "response": "Changed the block at 2823, 91, 3091"
+    },
+    {
+      "command": "setblock 2824 91 3085 minecraft:air replace",
+      "response": "Changed the block at 2824, 91, 3085"
+    },
+    {
+      "command": "setblock 2824 91 3086 minecraft:air replace",
+      "response": "Changed the block at 2824, 91, 3086"
+    },
+    {
+      "command": "setblock 2824 91 3088 minecraft:air replace",
+      "response": "Changed the block at 2824, 91, 3088"
+    },
+    {
+      "command": "setblock 2824 91 3089 minecraft:air replace",
+      "response": "Changed the block at 2824, 91, 3089"
+    },
+    {
+      "command": "setblock 2824 91 3090 minecraft:air replace",
+      "response": "Changed the block at 2824, 91, 3090"
+    },
+    {
+      "command": "setblock 2825 91 3085 minecraft:air replace",
+      "response": "Changed the block at 2825, 91, 3085"
+    },
+    {
+      "command": "setblock 2825 91 3086 minecraft:air replace",
+      "response": "Changed the block at 2825, 91, 3086"
+    },
+    {
+      "command": "setblock 2825 91 3090 minecraft:air replace",
+      "response": "Changed the block at 2825, 91, 3090"
+    },
+    {
+      "command": "fill 2825 91 3092 2825 92 3092 minecraft:air replace",
+      "response": "Successfully filled 1 block(s)"
+    },
+    {
+      "command": "setblock 2826 91 3089 minecraft:air replace",
+      "response": "Changed the block at 2826, 91, 3089"
+    },
+    {
+      "command": "setblock 2827 91 3085 minecraft:air replace",
+      "response": "Changed the block at 2827, 91, 3085"
+    },
+    {
+      "command": "setblock 2827 91 3086 minecraft:air replace",
+      "response": "Changed the block at 2827, 91, 3086"
+    },
+    {
+      "command": "setblock 2827 91 3090 minecraft:air replace",
+      "response": "Changed the block at 2827, 91, 3090"
+    },
+    {
+      "command": "setblock 2827 91 3092 minecraft:air replace",
+      "response": "Changed the block at 2827, 91, 3092"
+    },
+    {
+      "command": "setblock 2827 91 3094 minecraft:air replace",
+      "response": "Changed the block at 2827, 91, 3094"
+    },
+    {
+      "command": "setblock 2828 91 3087 minecraft:air replace",
+      "response": "Changed the block at 2828, 91, 3087"
+    },
+    {
+      "command": "setblock 2828 91 3092 minecraft:air replace",
+      "response": "Changed the block at 2828, 91, 3092"
+    },
+    {
+      "command": "setblock 2828 91 3093 minecraft:air replace",
+      "response": "Changed the block at 2828, 91, 3093"
+    },
+    {
+      "command": "setblock 2829 91 3085 minecraft:air replace",
+      "response": "Changed the block at 2829, 91, 3085"
+    },
+    {
+      "command": "setblock 2829 91 3086 minecraft:air replace",
+      "response": "Changed the block at 2829, 91, 3086"
+    },
+    {
+      "command": "setblock 2829 91 3088 minecraft:air replace",
+      "response": "Changed the block at 2829, 91, 3088"
+    },
+    {
+      "command": "setblock 2829 91 3089 minecraft:air replace",
+      "response": "Changed the block at 2829, 91, 3089"
+    },
+    {
+      "command": "setblock 2829 91 3093 minecraft:air replace",
+      "response": "Changed the block at 2829, 91, 3093"
+    },
+    {
+      "command": "setblock 2829 91 3094 minecraft:air replace",
+      "response": "Changed the block at 2829, 91, 3094"
+    },
+    {
+      "command": "setblock 2830 91 3088 minecraft:air replace",
+      "response": "Changed the block at 2830, 91, 3088"
+    },
+    {
+      "command": "setblock 2830 91 3089 minecraft:air replace",
+      "response": "Changed the block at 2830, 91, 3089"
+    },
+    {
+      "command": "setblock 2830 91 3090 minecraft:air replace",
+      "response": "Changed the block at 2830, 91, 3090"
+    },
+    {
+      "command": "setblock 2830 91 3094 minecraft:air replace",
+      "response": "Changed the block at 2830, 91, 3094"
+    },
+    {
+      "command": "setblock 2831 91 3085 minecraft:air replace",
+      "response": "Changed the block at 2831, 91, 3085"
+    },
+    {
+      "command": "setblock 2831 91 3087 minecraft:air replace",
+      "response": "Changed the block at 2831, 91, 3087"
+    },
+    {
+      "command": "setblock 2831 91 3089 minecraft:air replace",
+      "response": "Changed the block at 2831, 91, 3089"
+    },
+    {
+      "command": "setblock 2832 91 3087 minecraft:air replace",
+      "response": "Changed the block at 2832, 91, 3087"
+    },
+    {
+      "command": "setblock 2832 91 3088 minecraft:air replace",
+      "response": "Changed the block at 2832, 91, 3088"
+    },
+    {
+      "command": "setblock 2833 91 3091 minecraft:air replace",
+      "response": "Changed the block at 2833, 91, 3091"
+    },
+    {
+      "command": "setblock 2834 91 3087 minecraft:air replace",
+      "response": "Changed the block at 2834, 91, 3087"
+    },
+    {
+      "command": "setblock 2834 91 3089 minecraft:air replace",
+      "response": "Changed the block at 2834, 91, 3089"
+    },
+    {
+      "command": "setblock 2835 91 3086 minecraft:air replace",
+      "response": "Changed the block at 2835, 91, 3086"
+    },
+    {
+      "command": "setblock 2835 91 3087 minecraft:air replace",
+      "response": "Changed the block at 2835, 91, 3087"
+    },
+    {
+      "command": "setblock 2835 91 3088 minecraft:air replace",
+      "response": "Changed the block at 2835, 91, 3088"
+    },
+    {
+      "command": "setblock 2835 91 3090 minecraft:air replace",
+      "response": "Changed the block at 2835, 91, 3090"
+    },
+    {
+      "command": "fill 2838 84 3095 2838 90 3095 minecraft:air replace",
+      "response": "Successfully filled 6 block(s)"
+    },
+    {
+      "command": "fill 2839 84 3095 2839 89 3095 minecraft:air replace",
+      "response": "Successfully filled 6 block(s)"
+    },
+    {
+      "command": "fill 2840 84 3095 2840 90 3095 minecraft:air replace",
+      "response": "Successfully filled 6 block(s)"
+    },
+    {
+      "command": "fill 2841 84 3095 2841 89 3095 minecraft:air replace",
+      "response": "Successfully filled 6 block(s)"
+    },
+    {
+      "command": "fill 2842 84 3095 2842 89 3095 minecraft:air replace",
+      "response": "Successfully filled 6 block(s)"
+    },
+    {
+      "command": "fill 2843 84 3095 2843 88 3095 minecraft:air replace",
+      "response": "Successfully filled 5 block(s)"
+    },
+    {
+      "command": "fill 2844 84 3095 2844 89 3095 minecraft:air replace",
+      "response": "Successfully filled 5 block(s)"
+    },
+    {
+      "command": "fill 2845 84 3095 2845 88 3095 minecraft:air replace",
+      "response": "Successfully filled 5 block(s)"
+    },
+    {
+      "command": "fill 2846 84 3095 2846 87 3095 minecraft:air replace",
+      "response": "Successfully filled 4 block(s)"
+    },
+    {
+      "command": "fill 2847 85 3095 2847 88 3095 minecraft:air replace",
+      "response": "Successfully filled 3 block(s)"
+    },
+    {
+      "command": "fill 2848 86 3095 2848 88 3095 minecraft:air replace",
+      "response": "Successfully filled 2 block(s)"
+    },
+    {
+      "command": "setblock 2849 87 3095 minecraft:air replace",
+      "response": "Changed the block at 2849, 87, 3095"
+    },
+    {
+      "command": "setblock 2813 90 3088 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2813, 90, 3088"
+    },
+    {
+      "command": "setblock 2813 90 3090 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2813, 90, 3090"
+    },
+    {
+      "command": "setblock 2813 90 3092 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2813, 90, 3092"
+    },
+    {
+      "command": "setblock 2819 90 3086 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2819, 90, 3086"
+    },
+    {
+      "command": "setblock 2821 90 3092 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2821, 90, 3092"
+    },
+    {
+      "command": "setblock 2822 90 3088 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2822, 90, 3088"
+    },
+    {
+      "command": "setblock 2823 90 3086 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2823, 90, 3086"
+    },
+    {
+      "command": "setblock 2824 90 3086 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2824, 90, 3086"
+    },
+    {
+      "command": "setblock 2824 90 3088 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2824, 90, 3088"
+    },
+    {
+      "command": "setblock 2824 90 3089 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2824, 90, 3089"
+    },
+    {
+      "command": "setblock 2825 90 3085 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2825, 90, 3085"
+    },
+    {
+      "command": "setblock 2825 90 3092 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2825, 90, 3092"
+    },
+    {
+      "command": "setblock 2827 90 3094 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2827, 90, 3094"
+    },
+    {
+      "command": "setblock 2828 90 3091 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2828, 90, 3091"
+    },
+    {
+      "command": "setblock 2828 90 3092 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2828, 90, 3092"
+    },
+    {
+      "command": "setblock 2829 90 3085 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2829, 90, 3085"
+    },
+    {
+      "command": "setblock 2829 90 3090 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2829, 90, 3090"
+    },
+    {
+      "command": "setblock 2829 90 3091 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2829, 90, 3091"
+    },
+    {
+      "command": "setblock 2829 90 3092 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2829, 90, 3092"
+    },
+    {
+      "command": "setblock 2830 90 3091 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2830, 90, 3091"
+    },
+    {
+      "command": "setblock 2830 90 3092 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2830, 90, 3092"
+    },
+    {
+      "command": "setblock 2831 90 3085 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2831, 90, 3085"
+    },
+    {
+      "command": "setblock 2831 90 3091 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2831, 90, 3091"
+    },
+    {
+      "command": "setblock 2831 90 3092 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2831, 90, 3092"
+    },
+    {
+      "command": "setblock 2832 90 3088 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2832, 90, 3088"
+    },
+    {
+      "command": "setblock 2832 90 3092 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2832, 90, 3092"
+    },
+    {
+      "command": "setblock 2833 90 3093 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2833, 90, 3093"
+    },
+    {
+      "command": "setblock 2834 90 3087 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2834, 90, 3087"
+    },
+    {
+      "command": "setblock 2834 90 3091 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2834, 90, 3091"
+    },
+    {
+      "command": "setblock 2834 90 3093 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2834, 90, 3093"
+    },
+    {
+      "command": "setblock 2835 90 3085 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2835, 90, 3085"
+    },
+    {
+      "command": "setblock 2835 90 3094 minecraft:grass_block[snowy=false] replace",
+      "response": "Changed the block at 2835, 90, 3094"
+    }
+  ],
+  "own_tickets": [
+    [
+      175,
+      192
+    ],
+    [
+      175,
+      193
+    ],
+    [
+      176,
+      192
+    ],
+    [
+      176,
+      193
+    ],
+    [
+      177,
+      192
+    ],
+    [
+      177,
+      193
+    ],
+    [
+      178,
+      193
+    ]
+  ],
+  "before_chunks": [
+    {
+      "cx": 175,
+      "cz": 192,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923764822802644,
+      "compressed_chunk_sha256": "6a2c1fafe7a0e86338ae8dd44c89354173df2f65dd5090c0d33e83ec0e06ffdb",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 175,
+      "cz": 193,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923764822802644,
+      "compressed_chunk_sha256": "8559c120f86493e3feed5f44bddd429311f575b2f85a0bf288a046f526a93025",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 176,
+      "cz": 192,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923764822802644,
+      "compressed_chunk_sha256": "88ca2951a7d542e58e3d61aad2f1b5ddf94b18398513a02af88f095e199555c5",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 176,
+      "cz": 193,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923764822802644,
+      "compressed_chunk_sha256": "ea5d114a43822d2ab019e63097a3832bf159a40a4563e3a2f1487b1a3fed2587",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 177,
+      "cz": 192,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923764822802644,
+      "compressed_chunk_sha256": "b265e7c501f9fa63445d7eab91b74ea484f6c1e51cdd5ed868854cdbf3de4e6e",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 177,
+      "cz": 193,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923764822802644,
+      "compressed_chunk_sha256": "b88642e816327ac551a14c911ab5e50df963c7e7d53be6cee3bf75874315b6eb",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 178,
+      "cz": 193,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923764822802644,
+      "compressed_chunk_sha256": "a1a102dc81fb66c2b4e4ebe81eb953b6403ae28c34e3e84b116c4aff8d06fdf0",
+      "status": "minecraft:full",
+      "data_version": 3955
+    }
+  ],
+  "save_response": "Saving the game (this may take a moment!)\nSaved the game",
+  "after_chunks": [
+    {
+      "cx": 175,
+      "cz": 192,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "24ae3c3fef1c4db59581b494b5512724034d5ab688d957ee693b8393976b6ab6",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 175,
+      "cz": 193,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "17a059dc7c5f9626e9f4cd84f828dcada9e1ba20ca4998aa2bb0323b7eec6d21",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 176,
+      "cz": 192,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "6672fd9812ea3330a86912b3ff606a03b4c1a0c62c1a42ea3420da040a189d2f",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 176,
+      "cz": 193,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "877c687cc4a6a4b3a96fd4dafb77cf2c95d00692154ee7224fcce6f7b6ce4b1c",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 177,
+      "cz": 192,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "b37841771c197efe15f164322b1ae57b0420ed724e69bc6063c77cafe9a38a32",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 177,
+      "cz": 193,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "aeb24bf50a4fe9bb995c6fa8000a34e80d19d1f717c216ff079d7a4a4608b70c",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 178,
+      "cz": 193,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "b00c3c32b8ea84580240a64e565bb12ef475bba3ec3617c58a2fc1bd957a477e",
+      "status": "minecraft:full",
+      "data_version": 3955
+    }
+  ],
+  "mismatches": [],
+  "removed_tickets": [
+    {
+      "chunk": [
+        175,
+        192
+      ],
+      "response": "Unmarked chunk [175, 192] in Overworld for force loading"
+    },
+    {
+      "chunk": [
+        175,
+        193
+      ],
+      "response": "Unmarked chunk [175, 193] in Overworld for force loading"
+    },
+    {
+      "chunk": [
+        176,
+        192
+      ],
+      "response": "Unmarked chunk [176, 192] in Overworld for force loading"
+    },
+    {
+      "chunk": [
+        176,
+        193
+      ],
+      "response": "Unmarked chunk [176, 193] in Overworld for force loading"
+    },
+    {
+      "chunk": [
+        177,
+        192
+      ],
+      "response": "Unmarked chunk [177, 192] in Overworld for force loading"
+    },
+    {
+      "chunk": [
+        177,
+        193
+      ],
+      "response": "Unmarked chunk [177, 193] in Overworld for force loading"
+    },
+    {
+      "chunk": [
+        178,
+        193
+      ],
+      "response": "Unmarked chunk [178, 193] in Overworld for force loading"
+    }
+  ],
+  "finished_at": "2026-11-06T00:10:06.088183+00:00"
+}

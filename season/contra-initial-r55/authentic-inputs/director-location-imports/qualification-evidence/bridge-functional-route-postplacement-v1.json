@@ -1,0 +1,1850 @@
+{
+  "schema": 1,
+  "state": "POSTPLACEMENT_DISK_GEOMETRY_VERIFIED_NOT_PLAYER_TRAVERSAL",
+  "checked_at": "2026-11-06T00:03:34.719717+00:00",
+  "world_id": "0cce2707-bd35-4d4b-874f-82103ef4209c",
+  "location_id": "2e89868f-9f7a-37d7-ad06-9c1061f1e131",
+  "source_candidate": {
+    "path": "/home/damien/contra-s2-candidate-cow-20261105/structure-runtime/feature-module/c63f9daa-91ba-5c53-ac7f-b8ef433da419/placement-0/director-feature-location-candidate.json",
+    "file_sha256": "0eabf3fc1563b030e55d6f5e4902e34bccadb0d8744c122bd560f25f67e82b44",
+    "payload_sha256": "044b8df4e6bc9270caae2f3ba75ca73bcd458327961d1059dc3ac99bf68ddc5c",
+    "generation_plan_sha256": "46a71f86dfc2efab2077feaba9f95d57fd4150d541239f09ea524eecf4100164",
+    "disk_receipt_sha256": "3e238f1835184078ab14c26481f499c7bff90b061e9f9244d2e671e742394481"
+  },
+  "location_bounds_inclusive": [
+    2684,
+    59,
+    2942,
+    2714,
+    70,
+    2950
+  ],
+  "predicate": {
+    "coordinates": "x/z integer block columns, player center x+0.5/z+0.5, y is exact feet height",
+    "body_width": 0.6,
+    "body_height": 1.8,
+    "support": "full cube from conservative allowlist, or dry full-width vanilla slab with exact top face",
+    "max_cardinal_step": 0.5,
+    "sweep": "step up vertically in origin column then traverse at max feetY; step down traverses first then descends. Both columns are AIR from ceil(max feetY) to body top. Lower slab occupies only the non-player lower half.",
+    "runtime_limit": "Offline NBT block geometry, not actual player navigation or current entity occupancy. Director native collision recheck remains required."
+  },
+  "anchor_proposals": [
+    {
+      "anchor_id": "f5e2567b-a102-5342-b7f8-c80ce56c1c0b",
+      "role": "route_start",
+      "geometry": "STANDING",
+      "position": {
+        "x": 2685,
+        "y": 64.0,
+        "z": 2946
+      }
+    },
+    {
+      "anchor_id": "4b6400c7-643f-5614-99ab-df20a39156e7",
+      "role": "route_end",
+      "geometry": "STANDING",
+      "position": {
+        "x": 2713,
+        "y": 64.0,
+        "z": 2947
+      }
+    }
+  ],
+  "route_proposal": {
+    "route_id": "563bf461-c33d-55be-bc5e-d7cde6c10f5a",
+    "start_anchor_id": "f5e2567b-a102-5342-b7f8-c80ce56c1c0b",
+    "end_anchor_id": "4b6400c7-643f-5614-99ab-df20a39156e7",
+    "path": [
+      {
+        "x": 2685,
+        "y": 64.0,
+        "z": 2946
+      },
+      {
+        "x": 2686,
+        "y": 64.5,
+        "z": 2946
+      },
+      {
+        "x": 2687,
+        "y": 65.0,
+        "z": 2946
+      },
+      {
+        "x": 2688,
+        "y": 65.5,
+        "z": 2946
+      },
+      {
+        "x": 2688,
+        "y": 65.5,
+        "z": 2947
+      },
+      {
+        "x": 2689,
+        "y": 66.0,
+        "z": 2947
+      },
+      {
+        "x": 2690,
+        "y": 66.5,
+        "z": 2947
+      },
+      {
+        "x": 2691,
+        "y": 67.0,
+        "z": 2947
+      },
+      {
+        "x": 2692,
+        "y": 67.0,
+        "z": 2947
+      },
+      {
+        "x": 2693,
+        "y": 67.5,
+        "z": 2947
+      },
+      {
+        "x": 2694,
+        "y": 67.5,
+        "z": 2947
+      },
+      {
+        "x": 2694,
+        "y": 67.5,
+        "z": 2948
+      },
+      {
+        "x": 2695,
+        "y": 68.0,
+        "z": 2948
+      },
+      {
+        "x": 2696,
+        "y": 68.0,
+        "z": 2948
+      },
+      {
+        "x": 2696,
+        "y": 68.0,
+        "z": 2947
+      },
+      {
+        "x": 2697,
+        "y": 68.0,
+        "z": 2947
+      },
+      {
+        "x": 2698,
+        "y": 68.0,
+        "z": 2947
+      },
+      {
+        "x": 2699,
+        "y": 68.0,
+        "z": 2947
+      },
+      {
+        "x": 2700,
+        "y": 68.0,
+        "z": 2947
+      },
+      {
+        "x": 2701,
+        "y": 67.5,
+        "z": 2947
+      },
+      {
+        "x": 2702,
+        "y": 67.0,
+        "z": 2947
+      },
+      {
+        "x": 2703,
+        "y": 67.5,
+        "z": 2947
+      },
+      {
+        "x": 2704,
+        "y": 67.5,
+        "z": 2947
+      },
+      {
+        "x": 2705,
+        "y": 67.5,
+        "z": 2947
+      },
+      {
+        "x": 2705,
+        "y": 67.5,
+        "z": 2946
+      },
+      {
+        "x": 2706,
+        "y": 67.0,
+        "z": 2946
+      },
+      {
+        "x": 2707,
+        "y": 67.0,
+        "z": 2946
+      },
+      {
+        "x": 2708,
+        "y": 66.5,
+        "z": 2946
+      },
+      {
+        "x": 2709,
+        "y": 66.0,
+        "z": 2946
+      },
+      {
+        "x": 2710,
+        "y": 65.5,
+        "z": 2946
+      },
+      {
+        "x": 2711,
+        "y": 65.0,
+        "z": 2946
+      },
+      {
+        "x": 2711,
+        "y": 65.0,
+        "z": 2947
+      },
+      {
+        "x": 2712,
+        "y": 64.5,
+        "z": 2947
+      },
+      {
+        "x": 2713,
+        "y": 64.0,
+        "z": 2947
+      }
+    ]
+  },
+  "whole_access_path": [
+    {
+      "x": 2683,
+      "y": 63.0,
+      "z": 2946
+    },
+    {
+      "x": 2684,
+      "y": 63.5,
+      "z": 2946
+    },
+    {
+      "x": 2685,
+      "y": 64.0,
+      "z": 2946
+    },
+    {
+      "x": 2686,
+      "y": 64.5,
+      "z": 2946
+    },
+    {
+      "x": 2687,
+      "y": 65.0,
+      "z": 2946
+    },
+    {
+      "x": 2688,
+      "y": 65.5,
+      "z": 2946
+    },
+    {
+      "x": 2688,
+      "y": 65.5,
+      "z": 2947
+    },
+    {
+      "x": 2689,
+      "y": 66.0,
+      "z": 2947
+    },
+    {
+      "x": 2690,
+      "y": 66.5,
+      "z": 2947
+    },
+    {
+      "x": 2691,
+      "y": 67.0,
+      "z": 2947
+    },
+    {
+      "x": 2692,
+      "y": 67.0,
+      "z": 2947
+    },
+    {
+      "x": 2693,
+      "y": 67.5,
+      "z": 2947
+    },
+    {
+      "x": 2694,
+      "y": 67.5,
+      "z": 2947
+    },
+    {
+      "x": 2694,
+      "y": 67.5,
+      "z": 2948
+    },
+    {
+      "x": 2695,
+      "y": 68.0,
+      "z": 2948
+    },
+    {
+      "x": 2696,
+      "y": 68.0,
+      "z": 2948
+    },
+    {
+      "x": 2696,
+      "y": 68.0,
+      "z": 2947
+    },
+    {
+      "x": 2697,
+      "y": 68.0,
+      "z": 2947
+    },
+    {
+      "x": 2698,
+      "y": 68.0,
+      "z": 2947
+    },
+    {
+      "x": 2699,
+      "y": 68.0,
+      "z": 2947
+    },
+    {
+      "x": 2700,
+      "y": 68.0,
+      "z": 2947
+    },
+    {
+      "x": 2701,
+      "y": 67.5,
+      "z": 2947
+    },
+    {
+      "x": 2702,
+      "y": 67.0,
+      "z": 2947
+    },
+    {
+      "x": 2703,
+      "y": 67.5,
+      "z": 2947
+    },
+    {
+      "x": 2704,
+      "y": 67.5,
+      "z": 2947
+    },
+    {
+      "x": 2705,
+      "y": 67.5,
+      "z": 2947
+    },
+    {
+      "x": 2705,
+      "y": 67.5,
+      "z": 2946
+    },
+    {
+      "x": 2706,
+      "y": 67.0,
+      "z": 2946
+    },
+    {
+      "x": 2707,
+      "y": 67.0,
+      "z": 2946
+    },
+    {
+      "x": 2708,
+      "y": 66.5,
+      "z": 2946
+    },
+    {
+      "x": 2709,
+      "y": 66.0,
+      "z": 2946
+    },
+    {
+      "x": 2710,
+      "y": 65.5,
+      "z": 2946
+    },
+    {
+      "x": 2711,
+      "y": 65.0,
+      "z": 2946
+    },
+    {
+      "x": 2711,
+      "y": 65.0,
+      "z": 2947
+    },
+    {
+      "x": 2712,
+      "y": 64.5,
+      "z": 2947
+    },
+    {
+      "x": 2713,
+      "y": 64.0,
+      "z": 2947
+    },
+    {
+      "x": 2714,
+      "y": 63.5,
+      "z": 2947
+    },
+    {
+      "x": 2715,
+      "y": 63.0,
+      "z": 2947
+    },
+    {
+      "x": 2715,
+      "y": 63.0,
+      "z": 2946
+    }
+  ],
+  "path_block_evidence": [
+    {
+      "x": 2683,
+      "y": 63.0,
+      "z": 2946,
+      "support": {
+        "x": 2683,
+        "y": 62,
+        "z": 2946,
+        "state": "minecraft:sand"
+      },
+      "air_above_support": [
+        {
+          "y": 63,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 64,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2684,
+      "y": 63.5,
+      "z": 2946,
+      "support": {
+        "x": 2684,
+        "y": 63,
+        "z": 2946,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 64,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 65,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2685,
+      "y": 64.0,
+      "z": 2946,
+      "support": {
+        "x": 2685,
+        "y": 63,
+        "z": 2946,
+        "state": "minecraft:mossy_cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 64,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 65,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2686,
+      "y": 64.5,
+      "z": 2946,
+      "support": {
+        "x": 2686,
+        "y": 64,
+        "z": 2946,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 65,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 66,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2687,
+      "y": 65.0,
+      "z": 2946,
+      "support": {
+        "x": 2687,
+        "y": 64,
+        "z": 2946,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 65,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 66,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2688,
+      "y": 65.5,
+      "z": 2946,
+      "support": {
+        "x": 2688,
+        "y": 65,
+        "z": 2946,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 66,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 67,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2688,
+      "y": 65.5,
+      "z": 2947,
+      "support": {
+        "x": 2688,
+        "y": 65,
+        "z": 2947,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 66,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 67,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2689,
+      "y": 66.0,
+      "z": 2947,
+      "support": {
+        "x": 2689,
+        "y": 65,
+        "z": 2947,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 66,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 67,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2690,
+      "y": 66.5,
+      "z": 2947,
+      "support": {
+        "x": 2690,
+        "y": 66,
+        "z": 2947,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 67,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2691,
+      "y": 67.0,
+      "z": 2947,
+      "support": {
+        "x": 2691,
+        "y": 66,
+        "z": 2947,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 67,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2692,
+      "y": 67.0,
+      "z": 2947,
+      "support": {
+        "x": 2692,
+        "y": 66,
+        "z": 2947,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 67,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2693,
+      "y": 67.5,
+      "z": 2947,
+      "support": {
+        "x": 2693,
+        "y": 67,
+        "z": 2947,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2694,
+      "y": 67.5,
+      "z": 2947,
+      "support": {
+        "x": 2694,
+        "y": 67,
+        "z": 2947,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2694,
+      "y": 67.5,
+      "z": 2948,
+      "support": {
+        "x": 2694,
+        "y": 67,
+        "z": 2948,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2695,
+      "y": 68.0,
+      "z": 2948,
+      "support": {
+        "x": 2695,
+        "y": 67,
+        "z": 2948,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2696,
+      "y": 68.0,
+      "z": 2948,
+      "support": {
+        "x": 2696,
+        "y": 67,
+        "z": 2948,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2696,
+      "y": 68.0,
+      "z": 2947,
+      "support": {
+        "x": 2696,
+        "y": 67,
+        "z": 2947,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2697,
+      "y": 68.0,
+      "z": 2947,
+      "support": {
+        "x": 2697,
+        "y": 67,
+        "z": 2947,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2698,
+      "y": 68.0,
+      "z": 2947,
+      "support": {
+        "x": 2698,
+        "y": 67,
+        "z": 2947,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2699,
+      "y": 68.0,
+      "z": 2947,
+      "support": {
+        "x": 2699,
+        "y": 67,
+        "z": 2947,
+        "state": "minecraft:mossy_cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2700,
+      "y": 68.0,
+      "z": 2947,
+      "support": {
+        "x": 2700,
+        "y": 67,
+        "z": 2947,
+        "state": "minecraft:mossy_cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2701,
+      "y": 67.5,
+      "z": 2947,
+      "support": {
+        "x": 2701,
+        "y": 67,
+        "z": 2947,
+        "state": "minecraft:cobblestone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2702,
+      "y": 67.0,
+      "z": 2947,
+      "support": {
+        "x": 2702,
+        "y": 66,
+        "z": 2947,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 67,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2703,
+      "y": 67.5,
+      "z": 2947,
+      "support": {
+        "x": 2703,
+        "y": 67,
+        "z": 2947,
+        "state": "minecraft:cobblestone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2704,
+      "y": 67.5,
+      "z": 2947,
+      "support": {
+        "x": 2704,
+        "y": 67,
+        "z": 2947,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2705,
+      "y": 67.5,
+      "z": 2947,
+      "support": {
+        "x": 2705,
+        "y": 67,
+        "z": 2947,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2705,
+      "y": 67.5,
+      "z": 2946,
+      "support": {
+        "x": 2705,
+        "y": 67,
+        "z": 2946,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 69,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2706,
+      "y": 67.0,
+      "z": 2946,
+      "support": {
+        "x": 2706,
+        "y": 66,
+        "z": 2946,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 67,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2707,
+      "y": 67.0,
+      "z": 2946,
+      "support": {
+        "x": 2707,
+        "y": 66,
+        "z": 2946,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 67,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2708,
+      "y": 66.5,
+      "z": 2946,
+      "support": {
+        "x": 2708,
+        "y": 66,
+        "z": 2946,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 67,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 68,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2709,
+      "y": 66.0,
+      "z": 2946,
+      "support": {
+        "x": 2709,
+        "y": 65,
+        "z": 2946,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 66,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 67,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2710,
+      "y": 65.5,
+      "z": 2946,
+      "support": {
+        "x": 2710,
+        "y": 65,
+        "z": 2946,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 66,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 67,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2711,
+      "y": 65.0,
+      "z": 2946,
+      "support": {
+        "x": 2711,
+        "y": 64,
+        "z": 2946,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 65,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 66,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2711,
+      "y": 65.0,
+      "z": 2947,
+      "support": {
+        "x": 2711,
+        "y": 64,
+        "z": 2947,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 65,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 66,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2712,
+      "y": 64.5,
+      "z": 2947,
+      "support": {
+        "x": 2712,
+        "y": 64,
+        "z": 2947,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 65,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 66,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2713,
+      "y": 64.0,
+      "z": 2947,
+      "support": {
+        "x": 2713,
+        "y": 63,
+        "z": 2947,
+        "state": "minecraft:cobblestone"
+      },
+      "air_above_support": [
+        {
+          "y": 64,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 65,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2714,
+      "y": 63.5,
+      "z": 2947,
+      "support": {
+        "x": 2714,
+        "y": 63,
+        "z": 2947,
+        "state": "minecraft:smooth_stone_slab[type=bottom,waterlogged=false]"
+      },
+      "air_above_support": [
+        {
+          "y": 64,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 65,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2715,
+      "y": 63.0,
+      "z": 2947,
+      "support": {
+        "x": 2715,
+        "y": 62,
+        "z": 2947,
+        "state": "minecraft:sand"
+      },
+      "air_above_support": [
+        {
+          "y": 63,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 64,
+          "state": "minecraft:air"
+        }
+      ]
+    },
+    {
+      "x": 2715,
+      "y": 63.0,
+      "z": 2946,
+      "support": {
+        "x": 2715,
+        "y": 62,
+        "z": 2946,
+        "state": "minecraft:sand"
+      },
+      "air_above_support": [
+        {
+          "y": 63,
+          "state": "minecraft:air"
+        },
+        {
+          "y": 64,
+          "state": "minecraft:air"
+        }
+      ]
+    }
+  ],
+  "banks": [
+    {
+      "side": "west",
+      "dry_walkable_cells": [
+        {
+          "x": 2680,
+          "y": 63.0,
+          "z": 2945,
+          "support": {
+            "x": 2680,
+            "y": 62,
+            "z": 2945,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2680,
+          "y": 63.0,
+          "z": 2946,
+          "support": {
+            "x": 2680,
+            "y": 62,
+            "z": 2946,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2680,
+          "y": 63.0,
+          "z": 2947,
+          "support": {
+            "x": 2680,
+            "y": 62,
+            "z": 2947,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2681,
+          "y": 63.0,
+          "z": 2945,
+          "support": {
+            "x": 2681,
+            "y": 62,
+            "z": 2945,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2681,
+          "y": 63.0,
+          "z": 2946,
+          "support": {
+            "x": 2681,
+            "y": 62,
+            "z": 2946,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2681,
+          "y": 63.0,
+          "z": 2947,
+          "support": {
+            "x": 2681,
+            "y": 62,
+            "z": 2947,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2682,
+          "y": 63.0,
+          "z": 2945,
+          "support": {
+            "x": 2682,
+            "y": 62,
+            "z": 2945,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2682,
+          "y": 63.0,
+          "z": 2946,
+          "support": {
+            "x": 2682,
+            "y": 62,
+            "z": 2946,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2682,
+          "y": 63.0,
+          "z": 2947,
+          "support": {
+            "x": 2682,
+            "y": 62,
+            "z": 2947,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2683,
+          "y": 63.0,
+          "z": 2945,
+          "support": {
+            "x": 2683,
+            "y": 62,
+            "z": 2945,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2683,
+          "y": 63.0,
+          "z": 2946,
+          "support": {
+            "x": 2683,
+            "y": 62,
+            "z": 2946,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2683,
+          "y": 63.0,
+          "z": 2947,
+          "support": {
+            "x": 2683,
+            "y": 62,
+            "z": 2947,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        }
+      ],
+      "feet_y": 63,
+      "width": 3,
+      "depth": 4
+    },
+    {
+      "side": "east",
+      "dry_walkable_cells": [
+        {
+          "x": 2715,
+          "y": 63.0,
+          "z": 2945,
+          "support": {
+            "x": 2715,
+            "y": 62,
+            "z": 2945,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2715,
+          "y": 63.0,
+          "z": 2946,
+          "support": {
+            "x": 2715,
+            "y": 62,
+            "z": 2946,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2715,
+          "y": 63.0,
+          "z": 2947,
+          "support": {
+            "x": 2715,
+            "y": 62,
+            "z": 2947,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2716,
+          "y": 63.0,
+          "z": 2945,
+          "support": {
+            "x": 2716,
+            "y": 62,
+            "z": 2945,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2716,
+          "y": 63.0,
+          "z": 2946,
+          "support": {
+            "x": 2716,
+            "y": 62,
+            "z": 2946,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2716,
+          "y": 63.0,
+          "z": 2947,
+          "support": {
+            "x": 2716,
+            "y": 62,
+            "z": 2947,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2717,
+          "y": 63.0,
+          "z": 2945,
+          "support": {
+            "x": 2717,
+            "y": 62,
+            "z": 2945,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2717,
+          "y": 63.0,
+          "z": 2946,
+          "support": {
+            "x": 2717,
+            "y": 62,
+            "z": 2946,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        },
+        {
+          "x": 2717,
+          "y": 63.0,
+          "z": 2947,
+          "support": {
+            "x": 2717,
+            "y": 62,
+            "z": 2947,
+            "state": "minecraft:sand"
+          },
+          "air_above_support": [
+            {
+              "y": 63,
+              "state": "minecraft:air"
+            },
+            {
+              "y": 64,
+              "state": "minecraft:air"
+            }
+          ]
+        }
+      ],
+      "feet_y": 63,
+      "width": 3,
+      "depth": 3
+    }
+  ],
+  "whole_bbox_fluid_census": {
+    "cells_checked": 3348,
+    "fluid_cells": 443,
+    "fluid_examples": [
+      [
+        2684,
+        62,
+        2942,
+        "minecraft:water[level=0]"
+      ],
+      [
+        2684,
+        62,
+        2943,
+        "minecraft:water[level=0]"
+      ],
+      [
+        2684,
+        62,
+        2944,
+        "minecraft:water[level=0]"
+      ],
+      [
+        2685,
+        62,
+        2942,
+        "minecraft:water[level=0]"
+      ],
+      [
+        2686,
+        62,
+        2942,
+        "minecraft:water[level=0]"
+      ],
+      [
+        2686,
+        62,
+        2946,
+        "minecraft:kelp[age=22]"
+      ],
+      [
+        2686,
+        62,
+        2950,
+        "minecraft:water[level=0]"
+      ],
+      [
+        2687,
+        62,
+        2942,
+        "minecraft:water[level=0]"
+      ],
+      [
+        2687,
+        62,
+        2943,
+        "minecraft:water[level=0]"
+      ],
+      [
+        2687,
+        62,
+        2944,
+        "minecraft:water[level=0]"
+      ],
+      [
+        2687,
+        62,
+        2945,
+        "minecraft:water[level=0]"
+      ],
+      [
+        2687,
+        62,
+        2946,
+        "minecraft:water[level=0]"
+      ]
+    ],
+    "submerged_false_not_asserted": true,
+    "scope_note": "The bridge location contains river water under the elevated dry deck; do not equate dry route with a wholly fluid-free native bounding box."
+  },
+  "context_fact_proposals": [
+    {
+      "tag": "proutlost:river_crossing",
+      "value": "TRUE",
+      "basis": "A continuous elevated walking route connects the two dry natural river banks; preplacement bank/span survey v2 and current route/deck blocks are recorded."
+    }
+  ],
+  "chunks_read": [
+    {
+      "cx": 167,
+      "cz": 183,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.5.mca",
+      "mtime_ns": 1793922054638056758,
+      "compressed_chunk_sha256": "7ab4530c639ce7e974d516dca9eafa80ee291389e83b2f1cf88238541ed30c9d",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 167,
+      "cz": 184,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.5.mca",
+      "mtime_ns": 1793922054638056758,
+      "compressed_chunk_sha256": "b12a4935e17e1131aec503ea2ea6f19d7aa93cebee884610104e3982fd642eba",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 168,
+      "cz": 183,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.5.mca",
+      "mtime_ns": 1793922054638056758,
+      "compressed_chunk_sha256": "37c1eda6ffe90a0bd376975c0b855c3631fe69149a9852c56f78aa8338a34647",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 168,
+      "cz": 184,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.5.mca",
+      "mtime_ns": 1793922054638056758,
+      "compressed_chunk_sha256": "5cf91cb86961a6a9b3d6808995f326bab52d1fa6ec1d7b73c0527a542df94ff2",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 169,
+      "cz": 183,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.5.mca",
+      "mtime_ns": 1793922054638056758,
+      "compressed_chunk_sha256": "2fc7b0b259269194d51447588b34de8425feea8315962df582e89d13291369be",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 169,
+      "cz": 184,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.5.mca",
+      "mtime_ns": 1793922054638056758,
+      "compressed_chunk_sha256": "45d5cf38a46fe976d9125d4c68f2e6f2ea35a9ccfdfb053c84ff14096151a312",
+      "status": "minecraft:full",
+      "data_version": 3955
+    }
+  ]
+}

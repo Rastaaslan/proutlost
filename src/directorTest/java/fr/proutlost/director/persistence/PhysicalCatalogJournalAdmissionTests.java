@@ -62,7 +62,7 @@ public final class PhysicalCatalogJournalAdmissionTests {
                 if(binding.regions().values().stream().anyMatch(id->reserved.contains(id.value()))
                     ||binding.locations().values().stream().anyMatch(id->reserved.contains(id.value()))
                     ||binding.anchors().stream().anyMatch(a->reserved.contains(a.directorAnchor().value())))throw new IllegalArgumentException("binding collides with actual core/G0 identity");
-            },()->true,owner->lane.get()==owner||lane.compareAndSet(null,owner),
+            },()->lane.get()==null,owner->lane.get()==owner||lane.compareAndSet(null,owner),
             owner->{if(!lane.compareAndSet(owner,null))throw new IllegalStateException("TEST lane owner");},
             ()->Map.of(WORLD_SCOPE,new Revision(1)),worker,fixtureCompiler);
         return new Harness(runtime,publication,lane,authorized,actor,issued);
@@ -219,9 +219,33 @@ public final class PhysicalCatalogJournalAdmissionTests {
         }
         check(manifests(reopened)==1,"IO recovery retains exactly one committed manifest");recovered.runtime.close();await(reopened.closeAsync());
     }
+    private static void ownedLaneOnly(Path root,Executor worker)throws Exception{
+        var store=await(JournalStore.open(root,WORLD,OPTIONS));world(store);
+        var h=harness(store,worker);until(h,h.runtime::ready);var d=document((byte)'o');h.issued.add(d.binding());
+        h.runtime.submit(h.actor,d);until(h,()->h.runtime.poll(h.actor,d.key()).state()==State.DURABLE);
+        check(h.lane.get()==null&&h.published.get()!=null,"catalogue progresses and releases its own busy lane");h.runtime.close();
+        var lane=new AtomicReference<Object>();var published=new AtomicBoolean();Thread actor=Thread.currentThread();
+        var binding=BlobContent.capture(PhysicalCatalogFacts.BINDING_CODEC,1,new ModelCodec<>(Binding.class).encode(d.binding()));
+        var adapters=BlobContent.capture(PhysicalMetadataFacts.ADAPTERS_CODEC,1,new byte[]{'{','}'});
+        var index=new PhysicalCatalogConfiguration(1,d.key(),d.completeSource().reference(),binding.reference(),adapters.reference(),BlobContent.hash(new byte[]{1}),"test_only_receipt.json");
+        var journal=new fr.proutlost.director.bootstrap.PhysicalMetadataJournal(store,
+            ()->{if(Thread.currentThread()!=actor)throw new IllegalStateException("TEST actor thread");},
+            (i,recovery)->{if(!i.equals(index))throw new IllegalArgumentException("TEST configuration mismatch");},
+            ()->lane.get()==null,owner->lane.compareAndSet(null,owner),owner->{if(!lane.compareAndSet(owner,null))throw new IllegalStateException("TEST lane owner");},
+            ()->Map.of(WORLD_SCOPE,new Revision(1)),worker,(i,bytes)->new fr.proutlost.director.bootstrap.PhysicalMetadataJournal.Prepared(commit->published.set(true)),
+            i->fr.proutlost.director.bootstrap.PhysicalMetadataJournal.RecoveryUse.HYDRATE);
+        long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(5);
+        while(!journal.ready()&&System.nanoTime()<deadline){journal.tick();Thread.sleep(2);}
+        check(journal.ready(),"configuration recovery ready");
+        journal.submit(index,List.of(d.completeSource(),binding,adapters));
+        while(journal.state(index)==fr.proutlost.director.bootstrap.PhysicalMetadataJournal.State.PENDING&&System.nanoTime()<deadline){journal.tick();Thread.sleep(2);}
+        check(journal.state(index)==fr.proutlost.director.bootstrap.PhysicalMetadataJournal.State.DURABLE&&published.get()&&lane.get()==null,"configuration progresses and releases its own busy lane");
+        journal.close();await(store.closeAsync());
+    }
     public static void main(String[] args)throws Exception{
         Path root=Files.createTempDirectory("director-physical-catalog-j04-TEST-ONLY-");ExecutorService worker=Executors.newSingleThreadExecutor();
-        try{refsAndExplicitAnchorIdentities();completeAndCold(root.resolve("complete"),worker);
+        try{if(args.length==1&&args[0].equals("--owned-lane-only")){ownedLaneOnly(root.resolve("owned-lane"),worker);System.out.println("OWNED_METADATA_AND_CATALOGUE_LANE_PASS assertions="+assertions+" full_suite=false");return;}
+            refsAndExplicitAnchorIdentities();completeAndCold(root.resolve("complete"),worker);
             pendingBodyAndActualOwnerCollision(root.resolve("binding-owner"),worker);
             retainedSnapshotAndExplicitOrder(root.resolve("concurrent-history"),worker);
             delayedReadRevocationAndClose(root.resolve("read-authority"),worker);

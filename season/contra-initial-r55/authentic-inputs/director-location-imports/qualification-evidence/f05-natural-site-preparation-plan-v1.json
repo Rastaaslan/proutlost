@@ -1,0 +1,2226 @@
+{
+  "schema": 1,
+  "kind": "NATURAL_SITE_PREPARATION",
+  "operation": "31061f5e-df56-595d-9ec2-8722cb970eed",
+  "world_id": "0cce2707-bd35-4d4b-874f-82103ef4209c",
+  "created_at": "2026-11-06T00:08:07.101821+00:00",
+  "purpose": "Explicitly prepared fauna pasture plus exposed existing stone-side terrain and human escape. This is authored terrain preparation, not untouched natural geometry and not an executed event, risk observation, scar, camp history or goal.",
+  "providerContract": {
+    "faunaOriginFeet": [
+      2813,
+      91,
+      3085
+    ],
+    "floorY": 90,
+    "feetY": 91,
+    "headY": 92,
+    "widthX": 23,
+    "depthZ": 10,
+    "routes": [
+      [
+        [
+          2813,
+          91,
+          3085
+        ],
+        [
+          2814,
+          91,
+          3085
+        ],
+        [
+          2815,
+          91,
+          3085
+        ]
+      ],
+      [
+        [
+          2817,
+          91,
+          3085
+        ],
+        [
+          2818,
+          91,
+          3085
+        ],
+        [
+          2819,
+          91,
+          3085
+        ]
+      ],
+      [
+        [
+          2821,
+          91,
+          3085
+        ],
+        [
+          2822,
+          91,
+          3085
+        ],
+        [
+          2823,
+          91,
+          3085
+        ]
+      ],
+      [
+        [
+          2825,
+          91,
+          3085
+        ],
+        [
+          2826,
+          91,
+          3085
+        ],
+        [
+          2827,
+          91,
+          3085
+        ]
+      ],
+      [
+        [
+          2829,
+          91,
+          3085
+        ],
+        [
+          2830,
+          91,
+          3085
+        ],
+        [
+          2831,
+          91,
+          3085
+        ]
+      ],
+      [
+        [
+          2833,
+          91,
+          3085
+        ],
+        [
+          2834,
+          91,
+          3085
+        ],
+        [
+          2835,
+          91,
+          3085
+        ]
+      ],
+      [
+        [
+          2813,
+          91,
+          3088
+        ],
+        [
+          2814,
+          91,
+          3088
+        ],
+        [
+          2815,
+          91,
+          3088
+        ]
+      ],
+      [
+        [
+          2817,
+          91,
+          3088
+        ],
+        [
+          2818,
+          91,
+          3088
+        ],
+        [
+          2819,
+          91,
+          3088
+        ]
+      ],
+      [
+        [
+          2821,
+          91,
+          3088
+        ],
+        [
+          2822,
+          91,
+          3088
+        ],
+        [
+          2823,
+          91,
+          3088
+        ]
+      ],
+      [
+        [
+          2825,
+          91,
+          3088
+        ],
+        [
+          2826,
+          91,
+          3088
+        ],
+        [
+          2827,
+          91,
+          3088
+        ]
+      ],
+      [
+        [
+          2829,
+          91,
+          3088
+        ],
+        [
+          2830,
+          91,
+          3088
+        ],
+        [
+          2831,
+          91,
+          3088
+        ]
+      ],
+      [
+        [
+          2833,
+          91,
+          3088
+        ],
+        [
+          2834,
+          91,
+          3088
+        ],
+        [
+          2835,
+          91,
+          3088
+        ]
+      ],
+      [
+        [
+          2813,
+          91,
+          3091
+        ],
+        [
+          2814,
+          91,
+          3091
+        ],
+        [
+          2815,
+          91,
+          3091
+        ]
+      ],
+      [
+        [
+          2817,
+          91,
+          3091
+        ],
+        [
+          2818,
+          91,
+          3091
+        ],
+        [
+          2819,
+          91,
+          3091
+        ]
+      ],
+      [
+        [
+          2821,
+          91,
+          3091
+        ],
+        [
+          2822,
+          91,
+          3091
+        ],
+        [
+          2823,
+          91,
+          3091
+        ]
+      ],
+      [
+        [
+          2825,
+          91,
+          3091
+        ],
+        [
+          2826,
+          91,
+          3091
+        ],
+        [
+          2827,
+          91,
+          3091
+        ]
+      ],
+      [
+        [
+          2829,
+          91,
+          3091
+        ],
+        [
+          2830,
+          91,
+          3091
+        ],
+        [
+          2831,
+          91,
+          3091
+        ]
+      ],
+      [
+        [
+          2833,
+          91,
+          3091
+        ],
+        [
+          2834,
+          91,
+          3091
+        ],
+        [
+          2835,
+          91,
+          3091
+        ]
+      ],
+      [
+        [
+          2813,
+          91,
+          3094
+        ],
+        [
+          2814,
+          91,
+          3094
+        ],
+        [
+          2815,
+          91,
+          3094
+        ]
+      ],
+      [
+        [
+          2817,
+          91,
+          3094
+        ],
+        [
+          2818,
+          91,
+          3094
+        ],
+        [
+          2819,
+          91,
+          3094
+        ]
+      ],
+      [
+        [
+          2821,
+          91,
+          3094
+        ],
+        [
+          2822,
+          91,
+          3094
+        ],
+        [
+          2823,
+          91,
+          3094
+        ]
+      ],
+      [
+        [
+          2825,
+          91,
+          3094
+        ],
+        [
+          2826,
+          91,
+          3094
+        ],
+        [
+          2827,
+          91,
+          3094
+        ]
+      ],
+      [
+        [
+          2829,
+          91,
+          3094
+        ],
+        [
+          2830,
+          91,
+          3094
+        ],
+        [
+          2831,
+          91,
+          3094
+        ]
+      ],
+      [
+        [
+          2833,
+          91,
+          3094
+        ],
+        [
+          2834,
+          91,
+          3094
+        ],
+        [
+          2835,
+          91,
+          3094
+        ]
+      ]
+    ],
+    "sourceStone": [
+      2837,
+      85,
+      3095
+    ],
+    "destinationAir": [
+      2838,
+      84,
+      3095
+    ],
+    "escapeRoute": [
+      [
+        2838,
+        84,
+        3095
+      ],
+      [
+        2839,
+        84,
+        3095
+      ],
+      [
+        2840,
+        84,
+        3095
+      ],
+      [
+        2841,
+        84,
+        3095
+      ],
+      [
+        2842,
+        84,
+        3095
+      ],
+      [
+        2843,
+        84,
+        3095
+      ],
+      [
+        2844,
+        84,
+        3095
+      ],
+      [
+        2845,
+        84,
+        3095
+      ],
+      [
+        2846,
+        84,
+        3095
+      ]
+    ],
+    "surfaceSteps": [
+      [
+        2847,
+        85,
+        3095
+      ],
+      [
+        2848,
+        86,
+        3095
+      ],
+      [
+        2849,
+        87,
+        3095
+      ]
+    ],
+    "hazardBoundsExclusive": [
+      2837,
+      84,
+      3094,
+      2840,
+      87,
+      3097
+    ],
+    "weather5x5Feet": [
+      [
+        2813,
+        91,
+        3085
+      ],
+      [
+        2813,
+        91,
+        3086
+      ],
+      [
+        2813,
+        91,
+        3087
+      ],
+      [
+        2813,
+        91,
+        3088
+      ],
+      [
+        2813,
+        91,
+        3089
+      ],
+      [
+        2814,
+        91,
+        3085
+      ],
+      [
+        2814,
+        91,
+        3086
+      ],
+      [
+        2814,
+        91,
+        3087
+      ],
+      [
+        2814,
+        91,
+        3088
+      ],
+      [
+        2814,
+        91,
+        3089
+      ],
+      [
+        2815,
+        91,
+        3085
+      ],
+      [
+        2815,
+        91,
+        3086
+      ],
+      [
+        2815,
+        91,
+        3087
+      ],
+      [
+        2815,
+        91,
+        3088
+      ],
+      [
+        2815,
+        91,
+        3089
+      ],
+      [
+        2816,
+        91,
+        3085
+      ],
+      [
+        2816,
+        91,
+        3086
+      ],
+      [
+        2816,
+        91,
+        3087
+      ],
+      [
+        2816,
+        91,
+        3088
+      ],
+      [
+        2816,
+        91,
+        3089
+      ],
+      [
+        2817,
+        91,
+        3085
+      ],
+      [
+        2817,
+        91,
+        3086
+      ],
+      [
+        2817,
+        91,
+        3087
+      ],
+      [
+        2817,
+        91,
+        3088
+      ],
+      [
+        2817,
+        91,
+        3089
+      ]
+    ]
+  },
+  "preflight": {
+    "pastureDeltaCells": 108,
+    "totalDeltaCells": 168,
+    "blockEntitiesTouched": 0,
+    "fluidCellsTouched": 0,
+    "treeTrunksTouched": 0,
+    "existingStoneSourceModified": false,
+    "chunks": [
+      {
+        "cx": 175,
+        "cz": 192,
+        "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+        "mtime_ns": 1793922336774145433,
+        "compressed_chunk_sha256": "99626d8cfc45eeec99a11dabf0c3c50d345819cc243fa09811246a25b13390f6",
+        "status": "minecraft:full",
+        "data_version": 3955
+      },
+      {
+        "cx": 175,
+        "cz": 193,
+        "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+        "mtime_ns": 1793922336774145433,
+        "compressed_chunk_sha256": "449b8fd27b7fa39b3fdcf50c22f0e6c304d1579da7777cd466a1e014b516cd68",
+        "status": "minecraft:full",
+        "data_version": 3955
+      },
+      {
+        "cx": 176,
+        "cz": 192,
+        "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+        "mtime_ns": 1793922336774145433,
+        "compressed_chunk_sha256": "85ae4d73907820c61ffa9e8fdcac03f8ab271515eab002b2a6e7bc68584d805e",
+        "status": "minecraft:full",
+        "data_version": 3955
+      },
+      {
+        "cx": 176,
+        "cz": 193,
+        "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+        "mtime_ns": 1793922336774145433,
+        "compressed_chunk_sha256": "62f98b43608722ff0b506a2308bde2caf7b210187288f1911ec0c1938be0cffb",
+        "status": "minecraft:full",
+        "data_version": 3955
+      },
+      {
+        "cx": 177,
+        "cz": 192,
+        "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+        "mtime_ns": 1793922336774145433,
+        "compressed_chunk_sha256": "ce068f5edf626c5e77f678b00fbcee8481c3a47546fe97b745e1a5864a163e6a",
+        "status": "minecraft:full",
+        "data_version": 3955
+      },
+      {
+        "cx": 177,
+        "cz": 193,
+        "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+        "mtime_ns": 1793922336774145433,
+        "compressed_chunk_sha256": "1752d9e2d422eace5823f7a6399632509696d9c1a43622ba936ebe9c1eef44d8",
+        "status": "minecraft:full",
+        "data_version": 3955
+      },
+      {
+        "cx": 178,
+        "cz": 193,
+        "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+        "mtime_ns": 1793922336774145433,
+        "compressed_chunk_sha256": "71cdc2181d38e5977b1e04876b2337bb6cbbfae085b25057cac3c39248052da1",
+        "status": "minecraft:full",
+        "data_version": 3955
+      }
+    ]
+  },
+  "cells": [
+    {
+      "x": 2813,
+      "y": 91,
+      "z": 3088,
+      "before": "minecraft:dandelion",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2813,
+      "y": 91,
+      "z": 3089,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2813,
+      "y": 91,
+      "z": 3090,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2813,
+      "y": 91,
+      "z": 3092,
+      "before": "minecraft:tall_grass[half=lower]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2813,
+      "y": 92,
+      "z": 3092,
+      "before": "minecraft:tall_grass[half=upper]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture head cell"
+    },
+    {
+      "x": 2814,
+      "y": 91,
+      "z": 3085,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2814,
+      "y": 91,
+      "z": 3090,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2814,
+      "y": 91,
+      "z": 3094,
+      "before": "minecraft:dandelion",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2815,
+      "y": 91,
+      "z": 3091,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2815,
+      "y": 91,
+      "z": 3093,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2816,
+      "y": 91,
+      "z": 3087,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2816,
+      "y": 91,
+      "z": 3090,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2816,
+      "y": 91,
+      "z": 3092,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2817,
+      "y": 91,
+      "z": 3086,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2817,
+      "y": 91,
+      "z": 3092,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2818,
+      "y": 91,
+      "z": 3086,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2818,
+      "y": 91,
+      "z": 3093,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2819,
+      "y": 91,
+      "z": 3086,
+      "before": "minecraft:tall_grass[half=lower]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2819,
+      "y": 92,
+      "z": 3086,
+      "before": "minecraft:tall_grass[half=upper]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture head cell"
+    },
+    {
+      "x": 2819,
+      "y": 91,
+      "z": 3089,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2819,
+      "y": 91,
+      "z": 3090,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2819,
+      "y": 91,
+      "z": 3091,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2819,
+      "y": 91,
+      "z": 3092,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2821,
+      "y": 91,
+      "z": 3088,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2821,
+      "y": 91,
+      "z": 3089,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2821,
+      "y": 91,
+      "z": 3092,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2822,
+      "y": 91,
+      "z": 3085,
+      "before": "minecraft:dandelion",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2822,
+      "y": 91,
+      "z": 3087,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2822,
+      "y": 91,
+      "z": 3088,
+      "before": "minecraft:tall_grass[half=lower]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2822,
+      "y": 92,
+      "z": 3088,
+      "before": "minecraft:tall_grass[half=upper]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture head cell"
+    },
+    {
+      "x": 2822,
+      "y": 91,
+      "z": 3089,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2822,
+      "y": 91,
+      "z": 3092,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2823,
+      "y": 91,
+      "z": 3086,
+      "before": "minecraft:tall_grass[half=lower]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2823,
+      "y": 92,
+      "z": 3086,
+      "before": "minecraft:tall_grass[half=upper]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture head cell"
+    },
+    {
+      "x": 2823,
+      "y": 91,
+      "z": 3091,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2824,
+      "y": 91,
+      "z": 3085,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2824,
+      "y": 91,
+      "z": 3086,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2824,
+      "y": 91,
+      "z": 3088,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2824,
+      "y": 91,
+      "z": 3089,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2824,
+      "y": 91,
+      "z": 3090,
+      "before": "minecraft:dandelion",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2825,
+      "y": 91,
+      "z": 3085,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2825,
+      "y": 91,
+      "z": 3086,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2825,
+      "y": 91,
+      "z": 3090,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2825,
+      "y": 91,
+      "z": 3092,
+      "before": "minecraft:tall_grass[half=lower]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2825,
+      "y": 92,
+      "z": 3092,
+      "before": "minecraft:tall_grass[half=upper]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture head cell"
+    },
+    {
+      "x": 2826,
+      "y": 91,
+      "z": 3089,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2827,
+      "y": 91,
+      "z": 3085,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2827,
+      "y": 91,
+      "z": 3086,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2827,
+      "y": 91,
+      "z": 3090,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2827,
+      "y": 91,
+      "z": 3092,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2827,
+      "y": 91,
+      "z": 3094,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2828,
+      "y": 91,
+      "z": 3087,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2828,
+      "y": 91,
+      "z": 3092,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2828,
+      "y": 91,
+      "z": 3093,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2829,
+      "y": 91,
+      "z": 3085,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2829,
+      "y": 91,
+      "z": 3086,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2829,
+      "y": 91,
+      "z": 3088,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2829,
+      "y": 91,
+      "z": 3089,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2829,
+      "y": 91,
+      "z": 3093,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2829,
+      "y": 91,
+      "z": 3094,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2830,
+      "y": 91,
+      "z": 3088,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2830,
+      "y": 91,
+      "z": 3089,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2830,
+      "y": 91,
+      "z": 3090,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2830,
+      "y": 91,
+      "z": 3094,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2831,
+      "y": 91,
+      "z": 3085,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2831,
+      "y": 91,
+      "z": 3087,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2831,
+      "y": 91,
+      "z": 3089,
+      "before": "minecraft:dandelion",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2832,
+      "y": 91,
+      "z": 3087,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2832,
+      "y": 91,
+      "z": 3088,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2833,
+      "y": 91,
+      "z": 3091,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2834,
+      "y": 91,
+      "z": 3087,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2834,
+      "y": 91,
+      "z": 3089,
+      "before": "minecraft:dandelion",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2835,
+      "y": 91,
+      "z": 3086,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2835,
+      "y": 91,
+      "z": 3087,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2835,
+      "y": 91,
+      "z": 3088,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2835,
+      "y": 91,
+      "z": 3090,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Clear pasture feet cell"
+    },
+    {
+      "x": 2838,
+      "y": 84,
+      "z": 3095,
+      "before": "minecraft:stone",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2838,
+      "y": 85,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2838,
+      "y": 86,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2838,
+      "y": 87,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2838,
+      "y": 88,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2838,
+      "y": 89,
+      "z": 3095,
+      "before": "minecraft:grass_block[snowy=false]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2838,
+      "y": 90,
+      "z": 3095,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2839,
+      "y": 84,
+      "z": 3095,
+      "before": "minecraft:stone",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2839,
+      "y": 85,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2839,
+      "y": 86,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2839,
+      "y": 87,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2839,
+      "y": 88,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2839,
+      "y": 89,
+      "z": 3095,
+      "before": "minecraft:grass_block[snowy=false]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2840,
+      "y": 84,
+      "z": 3095,
+      "before": "minecraft:stone",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2840,
+      "y": 85,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2840,
+      "y": 86,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2840,
+      "y": 87,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2840,
+      "y": 88,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2840,
+      "y": 89,
+      "z": 3095,
+      "before": "minecraft:grass_block[snowy=false]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2840,
+      "y": 90,
+      "z": 3095,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2841,
+      "y": 84,
+      "z": 3095,
+      "before": "minecraft:stone",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2841,
+      "y": 85,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2841,
+      "y": 86,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2841,
+      "y": 87,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2841,
+      "y": 88,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2841,
+      "y": 89,
+      "z": 3095,
+      "before": "minecraft:grass_block[snowy=false]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2842,
+      "y": 84,
+      "z": 3095,
+      "before": "minecraft:stone",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2842,
+      "y": 85,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2842,
+      "y": 86,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2842,
+      "y": 87,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2842,
+      "y": 88,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2842,
+      "y": 89,
+      "z": 3095,
+      "before": "minecraft:grass_block[snowy=false]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2843,
+      "y": 84,
+      "z": 3095,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2843,
+      "y": 85,
+      "z": 3095,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2843,
+      "y": 86,
+      "z": 3095,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2843,
+      "y": 87,
+      "z": 3095,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2843,
+      "y": 88,
+      "z": 3095,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2844,
+      "y": 84,
+      "z": 3095,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2844,
+      "y": 85,
+      "z": 3095,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2844,
+      "y": 86,
+      "z": 3095,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2844,
+      "y": 87,
+      "z": 3095,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2844,
+      "y": 88,
+      "z": 3095,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2844,
+      "y": 89,
+      "z": 3095,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2845,
+      "y": 84,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2845,
+      "y": 85,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2845,
+      "y": 86,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2845,
+      "y": 87,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2845,
+      "y": 88,
+      "z": 3095,
+      "before": "minecraft:grass_block[snowy=false]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2846,
+      "y": 84,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2846,
+      "y": 85,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2846,
+      "y": 86,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2846,
+      "y": 87,
+      "z": 3095,
+      "before": "minecraft:grass_block[snowy=false]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Expose short stone-side hollow and same-height escape corridor to sky"
+    },
+    {
+      "x": 2847,
+      "y": 85,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Visible human step approach from surface to escape corridor"
+    },
+    {
+      "x": 2847,
+      "y": 86,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Visible human step approach from surface to escape corridor"
+    },
+    {
+      "x": 2847,
+      "y": 87,
+      "z": 3095,
+      "before": "minecraft:grass_block[snowy=false]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Visible human step approach from surface to escape corridor"
+    },
+    {
+      "x": 2847,
+      "y": 88,
+      "z": 3095,
+      "before": "minecraft:white_tulip",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Visible human step approach from surface to escape corridor"
+    },
+    {
+      "x": 2848,
+      "y": 86,
+      "z": 3095,
+      "before": "minecraft:dirt",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Visible human step approach from surface to escape corridor"
+    },
+    {
+      "x": 2848,
+      "y": 87,
+      "z": 3095,
+      "before": "minecraft:grass_block[snowy=false]",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Visible human step approach from surface to escape corridor"
+    },
+    {
+      "x": 2848,
+      "y": 88,
+      "z": 3095,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Visible human step approach from surface to escape corridor"
+    },
+    {
+      "x": 2849,
+      "y": 87,
+      "z": 3095,
+      "before": "minecraft:short_grass",
+      "after": "minecraft:air",
+      "stage": 0,
+      "purpose": "Visible human step approach from surface to escape corridor"
+    },
+    {
+      "x": 2813,
+      "y": 90,
+      "z": 3088,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2813,
+      "y": 90,
+      "z": 3090,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2813,
+      "y": 90,
+      "z": 3092,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2819,
+      "y": 90,
+      "z": 3086,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2821,
+      "y": 90,
+      "z": 3092,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2822,
+      "y": 90,
+      "z": 3088,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2823,
+      "y": 90,
+      "z": 3086,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2824,
+      "y": 90,
+      "z": 3086,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2824,
+      "y": 90,
+      "z": 3088,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2824,
+      "y": 90,
+      "z": 3089,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2825,
+      "y": 90,
+      "z": 3085,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2825,
+      "y": 90,
+      "z": 3092,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2827,
+      "y": 90,
+      "z": 3094,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2828,
+      "y": 90,
+      "z": 3091,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2828,
+      "y": 90,
+      "z": 3092,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2829,
+      "y": 90,
+      "z": 3085,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2829,
+      "y": 90,
+      "z": 3090,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2829,
+      "y": 90,
+      "z": 3091,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2829,
+      "y": 90,
+      "z": 3092,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2830,
+      "y": 90,
+      "z": 3091,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2830,
+      "y": 90,
+      "z": 3092,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2831,
+      "y": 90,
+      "z": 3085,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2831,
+      "y": 90,
+      "z": 3091,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2831,
+      "y": 90,
+      "z": 3092,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2832,
+      "y": 90,
+      "z": 3088,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2832,
+      "y": 90,
+      "z": 3092,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2833,
+      "y": 90,
+      "z": 3093,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2834,
+      "y": 90,
+      "z": 3087,
+      "before": "minecraft:podzol[snowy=false]",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2834,
+      "y": 90,
+      "z": 3091,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2834,
+      "y": 90,
+      "z": 3093,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2835,
+      "y": 90,
+      "z": 3085,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    },
+    {
+      "x": 2835,
+      "y": 90,
+      "z": 3094,
+      "before": "minecraft:moss_block",
+      "after": "minecraft:grass_block[snowy=false]",
+      "stage": 1,
+      "purpose": "Exact contiguous GRASS_BLOCK pasture plane"
+    }
+  ]
+}

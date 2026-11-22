@@ -1,0 +1,163 @@
+{
+  "schema": 1,
+  "world_id": "0cce2707-bd35-4d4b-874f-82103ef4209c",
+  "location_id": "3858fe9b-d362-3738-a8ad-c707843e2d7a",
+  "checked_at": "2026-11-06T00:07:22.676624+00:00",
+  "state": "POSTPLACEMENT_DISK_GEOMETRY_REVIEW",
+  "bounds_inclusive": [
+    2918,
+    88,
+    3175,
+    2921,
+    93,
+    3177
+  ],
+  "strict_standing_inside": [],
+  "nearby_external_viewing_points": [
+    {
+      "position": {
+        "x": 2919,
+        "y": 89,
+        "z": 3173
+      },
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2920,
+        "y": 89,
+        "z": 3173
+      },
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2918,
+        "y": 89,
+        "z": 3172
+      },
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2921,
+        "y": 89,
+        "z": 3173
+      },
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2922,
+        "y": 89,
+        "z": 3173
+      },
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2922,
+        "y": 89,
+        "z": 3175
+      },
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2920,
+        "y": 89,
+        "z": 3178
+      },
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2922,
+        "y": 89,
+        "z": 3172
+      },
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    }
+  ],
+  "conclusion": "Tiny decorative ruin/cubby, no AIR+AIR/full-cube standing pocket inside native bounds. No entrance, gathering, camp, shelter occupancy, or abandonment qualification is assigned. Complex stair/candle collision has not been used to infer usable interior.",
+  "chunks_read": [
+    {
+      "cx": 182,
+      "cz": 198,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "6af8feb088e648598b0a79888cec58a8a4825c3ed1eb181cf54116533c776734",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 183,
+      "cz": 199,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "fef54747439bc09d1f02b34d9a6f391e864230f22683a9a1fb16f83430a1b95e",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 183,
+      "cz": 200,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "7fb3adb101443aea9e05ecca976f9d2cdfd2168f8ff01f458528bd7905954f4f",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 184,
+      "cz": 199,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "9269e74ff90e6418955dbe8da4528ae7119d6fde55118e855722352fbe17a659",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 184,
+      "cz": 200,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "0b0d43b50461ea95289ecd97a07c530cbc84f478a113b0120c90e6e20d9652b6",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 185,
+      "cz": 199,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "8956683e0ee37655bfdd9f394830e895c24fcabc730fcb713fee56f3adc34eb8",
+      "status": "minecraft:full",
+      "data_version": 3955
+    }
+  ]
+}

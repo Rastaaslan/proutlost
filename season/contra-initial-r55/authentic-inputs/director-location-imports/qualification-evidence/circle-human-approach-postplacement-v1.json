@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "location_id": "55a06290-3f36-321d-a5a6-f38c4860c261",
+  "checked_at": "2026-11-06T00:13:10.410107+00:00",
+  "state": "POSTPLACEMENT_HUMAN_APPROACH_GEOMETRY_VERIFIED",
+  "path": [
+    {
+      "x": 2939,
+      "y": 90,
+      "z": 3190,
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "jump_head_clear": "minecraft:air"
+    },
+    {
+      "x": 2939,
+      "y": 90,
+      "z": 3191,
+      "floor": "minecraft:moss_block",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "jump_head_clear": "minecraft:air"
+    },
+    {
+      "x": 2939,
+      "y": 91,
+      "z": 3192,
+      "floor": "minecraft:stone_bricks",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "jump_head_clear": "minecraft:air"
+    },
+    {
+      "x": 2939,
+      "y": 91,
+      "z": 3193,
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "jump_head_clear": "minecraft:air"
+    }
+  ],
+  "interpretation": "Native surface approach from open natural ground to gathering point. One normal player jump up a single full block at Z3191->3192; all floors full, feet/head/jump headroom AIR. Not asserted as a walk-only half-step route or actual player traversal.",
+  "native_blocks_modified": false
+}

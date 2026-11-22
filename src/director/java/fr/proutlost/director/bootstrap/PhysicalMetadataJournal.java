@@ -104,7 +104,9 @@ public final class PhysicalMetadataJournal {
     private void advance(){
         var p=pending;
         if(p.prepared==null){if(!p.compilation.isDone())return;p.prepared=p.compilation.getNow(null);require(p.prepared!=null,"physical metadata compiler result");}
-        if(p.append==null){if(!held){if(!quiescent.getAsBoolean()||!acquire.test(lane))return;held=true;}if(!quiescent.getAsBoolean())return;
+        // Acquisition is actor-atomic and makes the shared anchor owner busy.
+        // Rechecking external quiescence here would wait on our own held lane.
+        if(p.append==null){if(!held){if(!quiescent.getAsBoolean()||!acquire.test(lane))return;held=true;}
             approval.accept(p.index,false);var cas=Map.copyOf(revisions.get());require(cas.containsKey(new ScopeRef(ScopeKind.WORLD,session.worldId().value())),"actual metadata world CAS absent");
             var id=PhysicalMetadataFacts.id(p.index);var transaction=new TransactionId(UUID.nameUUIDFromBytes(("physical-metadata-transaction-v1/"+id.value()).getBytes(StandardCharsets.UTF_8)));
             p.batch=ResultTransaction.batch(transaction,session.storeGeneration(),cas,List.of(new DurableFact(PhysicalMetadataFacts.fact(p.index))),p.supplied);

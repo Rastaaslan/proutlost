@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "id": "PLS2-S2-AUTHOR-20261122-CONTRA-INITIAL",
+  "approved_by": "Damien Lagorce",
+  "recorded_utc": "2026-11-22T22:45:17.210Z",
+  "author_message": "Je retiens le Contra candidat des 5–6 novembre comme base de référence pour Proutlost Saison 2. J’approuve les valeurs de départ récapitulées pour constituer le profil initial de la saison. Elles devront rester configurables pour les ajustements ultérieurs. Cette approbation concerne le choix du monde et ces réglages. Conserve les contenus, les fonctionnalités et les portées des quêtes déjà validés dans le cahier des charges et QUESTSPEC.",
+  "approved_world": "contra-s2-candidate-cow-20261105",
+  "approved_settings_reference": {
+    "library_file_id": "libfile_fde3_f-ae3d67916e9881918047190dfd57f53f_9533de78c85c8191b15530c577c75000",
+    "file_name": "DECISION_SAISON_R54.md",
+    "source_profile": "src/director/resources/data/proutlost_director/director/profiles/default_for_testing.json",
+    "runtime_source_git_head": "9c59ec01befb681753c7eff8276fa62ffd71e85a"
+  },
+  "scope": [
+    "reference world",
+    "existing initial season settings",
+    "settings remain configurable",
+    "technical generation and integration authorized"
+  ],
+  "preserved": [
+    "CDC content and functionality",
+    "QUESTSPEC scopes and content",
+    "R54 corrections and valid results"
+  ],
+  "not_attested": [
+    "missing physical witnesses",
+    "human acceptance",
+    "20-25 player load",
+    "8h soak",
+    "FULLSTACK_ACCEPTED"
+  ]
+}

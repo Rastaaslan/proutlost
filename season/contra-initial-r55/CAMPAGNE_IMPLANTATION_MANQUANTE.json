@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "campaign": "QUESTSPEC-1.0",
+  "no_narrative_change": true,
+  "existing_quest_definitions": 27,
+  "default_definition_scope": "SERVER_UNCHANGED",
+  "personal_group_engine": "PRESERVED",
+  "physical_binding_count_recovered": 0,
+  "required_site_kinds": [
+    {
+      "kind": "WRECK",
+      "required_count": 1,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "SAFE_SHORE",
+      "required_count": 1,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "CAMP",
+      "required_count": 1,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "SIGNAL",
+      "required_count": 1,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "OLD_CAMP",
+      "required_count": 1,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "ARCHIVE",
+      "required_count": 1,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "OLD_SHELTER",
+      "required_count": 1,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "PERCEPTION",
+      "required_count": 1,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "PASSAGE",
+      "required_count": 2,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "DETOUR",
+      "required_count": 2,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "SIGNAL_REGION",
+      "required_count": 2,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "TRANSMITTER",
+      "required_count": 1,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "RETREAT",
+      "required_count": 1,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    },
+    {
+      "kind": "MEMORY",
+      "required_count": 1,
+      "status": "NO_AUTHENTIC_CAMPAIGN_BINDING_RECOVERED"
+    }
+  ],
+  "missing_exact_data": "Coordinates and canonical content association of the campaign physical supports in the author-chosen Contra world; initial arrival requires a real wreck and safe shore. The recovered Director functional sites are not evidence of those narrative supports.",
+  "source_evidence": [
+    "Contra runtime data recovery: no existing proutlost_quest_v1.dat",
+    "Contra physical catalogue and functional preparation: Director events/structures only, no shipwreck or canonical campaign-site map",
+    "QUESTSPEC section 21: exact site appearance and narrative assets still to produce"
+  ],
+  "not_replaced_by": [
+    "QA fixture",
+    "arbitrary dungeon-as-wreck aliases",
+    "invented canonical text"
+  ],
+  "not_a_test_qualification_gap": true,
+  "FULLSTACK_ACCEPTED": false
+}

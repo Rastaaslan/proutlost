@@ -1,0 +1,274 @@
+{
+  "schema": 1,
+  "world_id": "0cce2707-bd35-4d4b-874f-82103ef4209c",
+  "location_id": "55a06290-3f36-321d-a5a6-f38c4860c261",
+  "checked_at": "2026-11-06T00:07:22.676624+00:00",
+  "state": "POSTPLACEMENT_DISK_GEOMETRY_VERIFIED",
+  "bounds_inclusive": [
+    2936,
+    89,
+    3192,
+    2944,
+    93,
+    3200
+  ],
+  "group_cells": [
+    {
+      "position": {
+        "x": 2938,
+        "y": 91,
+        "z": 3193
+      },
+      "floor": "minecraft:mossy_stone_bricks",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2938,
+        "y": 91,
+        "z": 3194
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2939,
+        "y": 91,
+        "z": 3193
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2939,
+        "y": 91,
+        "z": 3194
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2940,
+        "y": 91,
+        "z": 3193
+      },
+      "floor": "minecraft:cobblestone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2940,
+        "y": 91,
+        "z": 3194
+      },
+      "floor": "minecraft:cobblestone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2941,
+        "y": 91,
+        "z": 3193
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2941,
+        "y": 91,
+        "z": 3194
+      },
+      "floor": "minecraft:cobblestone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2942,
+        "y": 91,
+        "z": 3193
+      },
+      "floor": "minecraft:mossy_stone_bricks",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    },
+    {
+      "position": {
+        "x": 2942,
+        "y": 91,
+        "z": 3194
+      },
+      "floor": "minecraft:mossy_cobblestone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air",
+      "strict_standing": true
+    }
+  ],
+  "anchors": [
+    {
+      "role": "gathering",
+      "position": {
+        "position": {
+          "x": 2939,
+          "y": 91,
+          "z": 3193
+        },
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:air",
+        "head": "minecraft:air",
+        "strict_standing": true
+      }
+    },
+    {
+      "role": "interaction",
+      "position": {
+        "position": {
+          "x": 2941,
+          "y": 91,
+          "z": 3193
+        },
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:air",
+        "head": "minecraft:air",
+        "strict_standing": true
+      }
+    }
+  ],
+  "known_fire": {
+    "position": [
+      2940,
+      90,
+      3196
+    ],
+    "state": "minecraft:campfire[facing=west,lit=true,signal_fire=false,waterlogged=false]",
+    "minimum_group_cell_horizontal_center_distance": 2.0,
+    "anchor_horizontal_center_distances": [
+      3.1622776601683795,
+      3.1622776601683795
+    ]
+  },
+  "sky_columns": [
+    {
+      "x": 2938,
+      "z": 3193,
+      "opaque_or_nonair_above_y93": []
+    },
+    {
+      "x": 2938,
+      "z": 3194,
+      "opaque_or_nonair_above_y93": []
+    },
+    {
+      "x": 2939,
+      "z": 3193,
+      "opaque_or_nonair_above_y93": []
+    },
+    {
+      "x": 2939,
+      "z": 3194,
+      "opaque_or_nonair_above_y93": []
+    },
+    {
+      "x": 2940,
+      "z": 3193,
+      "opaque_or_nonair_above_y93": []
+    },
+    {
+      "x": 2940,
+      "z": 3194,
+      "opaque_or_nonair_above_y93": []
+    },
+    {
+      "x": 2941,
+      "z": 3193,
+      "opaque_or_nonair_above_y93": []
+    },
+    {
+      "x": 2941,
+      "z": 3194,
+      "opaque_or_nonair_above_y93": []
+    },
+    {
+      "x": 2942,
+      "z": 3193,
+      "opaque_or_nonair_above_y93": []
+    },
+    {
+      "x": 2942,
+      "z": 3194,
+      "opaque_or_nonair_above_y93": []
+    }
+  ],
+  "whole_bbox_fluid_census": {
+    "cells": 405,
+    "fluids": [],
+    "water_cauldron_note": "Contained cauldron water is a cauldron block state, not a FluidState in the walking volume."
+  },
+  "native_block_entities": [
+    {
+      "x": 2940,
+      "y": 90,
+      "z": 3196,
+      "id": "minecraft:campfire"
+    }
+  ],
+  "caution": "Native witch-circle spawn override/cats are not a guarantee of entity safety. Current hostile occupancy, player group, and event admission remain runtime checks. No camp history or player intent is asserted.",
+  "chunks_read": [
+    {
+      "cx": 183,
+      "cz": 199,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "fef54747439bc09d1f02b34d9a6f391e864230f22683a9a1fb16f83430a1b95e",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 183,
+      "cz": 200,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "7fb3adb101443aea9e05ecca976f9d2cdfd2168f8ff01f458528bd7905954f4f",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 184,
+      "cz": 199,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "9269e74ff90e6418955dbe8da4528ae7119d6fde55118e855722352fbe17a659",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 184,
+      "cz": 200,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "0b0d43b50461ea95289ecd97a07c530cbc84f478a113b0120c90e6e20d9652b6",
+      "status": "minecraft:full",
+      "data_version": 3955
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "world_id": "0cce2707-bd35-4d4b-874f-82103ef4209c",
+  "location_id": "9c1f623c-9752-3992-815b-35d5f3de596d",
+  "checked_at": "2026-11-06T00:07:22.676624+00:00",
+  "state": "POSTPLACEMENT_DISK_GEOMETRY_VERIFIED",
+  "bounds_inclusive": [
+    2974,
+    88,
+    3190,
+    2977,
+    94,
+    3193
+  ],
+  "support": {
+    "position": {
+      "x": 2975,
+      "y": 90,
+      "z": 3192
+    },
+    "state": "minecraft:mossy_stone_bricks",
+    "purpose": "Solid low visible signal support, not a player standing point on top of pillar."
+  },
+  "nearby_standing_witness": {
+    "position": {
+      "x": 2975,
+      "y": 89,
+      "z": 3194
+    },
+    "floor": "minecraft:grass_block[snowy=false]",
+    "feet": "minecraft:air",
+    "head": "minecraft:air",
+    "strict_standing": true
+  },
+  "between_face_air": {
+    "position": [
+      2975,
+      90,
+      3193
+    ],
+    "state": "minecraft:air"
+  },
+  "limitations": [
+    "Goal binding and durable player goal are runtime requirements, not static facts.",
+    "No summit traversal is claimed."
+  ],
+  "chunks_read": [
+    {
+      "cx": 183,
+      "cz": 199,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "fef54747439bc09d1f02b34d9a6f391e864230f22683a9a1fb16f83430a1b95e",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 183,
+      "cz": 200,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "7fb3adb101443aea9e05ecca976f9d2cdfd2168f8ff01f458528bd7905954f4f",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 184,
+      "cz": 199,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "9269e74ff90e6418955dbe8da4528ae7119d6fde55118e855722352fbe17a659",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 184,
+      "cz": 200,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "0b0d43b50461ea95289ecd97a07c530cbc84f478a113b0120c90e6e20d9652b6",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 185,
+      "cz": 199,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793922336774145433,
+      "compressed_chunk_sha256": "8956683e0ee37655bfdd9f394830e895c24fcabc730fcb713fee56f3adc34eb8",
+      "status": "minecraft:full",
+      "data_version": 3955
+    }
+  ]
+}

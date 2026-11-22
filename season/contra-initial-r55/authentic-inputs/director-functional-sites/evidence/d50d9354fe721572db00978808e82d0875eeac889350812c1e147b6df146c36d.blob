@@ -1,0 +1,437 @@
+{
+  "schema": 1,
+  "checked_at": "2026-11-06T00:08:04.179493+00:00",
+  "world_id": "0cce2707-bd35-4d4b-874f-82103ef4209c",
+  "mode": "BOUNDED_CURRENT_DISK_OBSERVATION",
+  "instances": [
+    {
+      "location_id": "20f2fc9e-6fb5-3612-9970-e498be5e3ac7",
+      "bounds": {
+        "max_x_exclusive": 1125,
+        "max_y_exclusive": -42,
+        "max_z_exclusive": 613,
+        "min_x": 1116,
+        "min_y": -49,
+        "min_z": 604
+      },
+      "volume_cells_checked": 567,
+      "fluid_cells": [],
+      "min_persisted_motion_blocking_no_leaves": 155,
+      "observation": {
+        "position": {
+          "x": 1120,
+          "y": -48,
+          "z": 607
+        },
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air"
+      },
+      "apparition": {
+        "position": {
+          "x": 1120,
+          "y": -48,
+          "z": 611
+        },
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air"
+      },
+      "original_pair_geometry": {
+        "position": [
+          1120,
+          -48,
+          611
+        ],
+        "distance_to_observation": 4.0,
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air",
+        "straight_head_height_ray_clear": true
+      }
+    },
+    {
+      "location_id": "04b401a5-a661-3213-a950-595056d56363",
+      "bounds": {
+        "max_x_exclusive": 1648,
+        "max_y_exclusive": -40,
+        "max_z_exclusive": 1648,
+        "min_x": 1617,
+        "min_y": -53,
+        "min_z": 1617
+      },
+      "volume_cells_checked": 12493,
+      "fluid_cells": [],
+      "min_persisted_motion_blocking_no_leaves": 193,
+      "observation": {
+        "position": {
+          "x": 1633,
+          "y": -52,
+          "z": 1631
+        },
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air"
+      },
+      "apparition": {
+        "position": {
+          "x": 1633,
+          "y": -52,
+          "z": 1627
+        },
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air"
+      },
+      "original_pair_geometry": {
+        "position": [
+          1633,
+          -52,
+          1627
+        ],
+        "distance_to_observation": 4.0,
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air",
+        "straight_head_height_ray_clear": true
+      }
+    },
+    {
+      "location_id": "b0147f1a-bef9-3afc-a528-e2027028af6c",
+      "bounds": {
+        "max_x_exclusive": 2148,
+        "max_y_exclusive": 54,
+        "max_z_exclusive": 3174,
+        "min_x": 2141,
+        "min_y": 47,
+        "min_z": 3163
+      },
+      "volume_cells_checked": 539,
+      "fluid_cells": [],
+      "min_persisted_motion_blocking_no_leaves": 126,
+      "observation": {
+        "position": {
+          "x": 2144,
+          "y": 48,
+          "z": 3167
+        },
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air"
+      },
+      "apparition": {
+        "position": {
+          "x": 2144,
+          "y": 48,
+          "z": 3171
+        },
+        "floor": "minecraft:cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air"
+      },
+      "original_pair_geometry": {
+        "position": [
+          2144,
+          48,
+          3171
+        ],
+        "distance_to_observation": 4.0,
+        "floor": "minecraft:cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air",
+        "straight_head_height_ray_clear": true
+      }
+    },
+    {
+      "location_id": "77d06309-d27a-38af-97f0-0ad8570f202f",
+      "bounds": {
+        "max_x_exclusive": 870,
+        "max_y_exclusive": -20,
+        "max_z_exclusive": 1636,
+        "min_x": 859,
+        "min_y": -27,
+        "min_z": 1629
+      },
+      "volume_cells_checked": 539,
+      "fluid_cells": [],
+      "min_persisted_motion_blocking_no_leaves": 182,
+      "observation": {
+        "position": {
+          "x": 864,
+          "y": -26,
+          "z": 1631
+        },
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air"
+      },
+      "apparition": {
+        "position": {
+          "x": 860,
+          "y": -26,
+          "z": 1632
+        },
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air"
+      },
+      "original_pair_geometry": {
+        "position": [
+          860,
+          -26,
+          1632
+        ],
+        "distance_to_observation": 4.123,
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air",
+        "straight_head_height_ray_clear": true
+      }
+    }
+  ],
+  "access_checks": [
+    {
+      "location_id": "20f2fc9e-6fb5-3612-9970-e498be5e3ac7",
+      "plan": "/srv/storage/proutlost-s2-candidates/contra-20261027/CONTRA_NUIT_20261105/full-catalogue-preparation/dungeon-20f2fc9e-human-access-plan-v1.json",
+      "plan_sha256": "7698c2d3e5663e73e180b83e2e4439e27978d3b152ea1647f7e7fc69c5b6f69f",
+      "changed_cells_rechecked": 1866,
+      "mismatches": [],
+      "entrance": {
+        "position": {
+          "x": 1116,
+          "y": -47,
+          "z": 607
+        },
+        "floor": "minecraft:mossy_cobblestone",
+        "feet": "minecraft:cave_air",
+        "head": "minecraft:cave_air"
+      },
+      "surface_exit": {
+        "position": {
+          "x": 1113,
+          "y": 156,
+          "z": 607
+        },
+        "floor": "minecraft:stone_bricks",
+        "feet": "minecraft:air",
+        "head": "minecraft:air"
+      }
+    },
+    {
+      "location_id": "e1c768fe-4b12-3ca4-b61b-044f3bec770d",
+      "plan": "/srv/storage/proutlost-s2-candidates/contra-20261027/CONTRA_NUIT_20261105/functional-campaign/read-only/mine-spruce-human-access-plan-v1.json",
+      "plan_sha256": "2b87480eba8eb67a3e3167cf4780a2435a04614c379aa437dd25f8bad023dffa",
+      "changed_cells_rechecked": 674,
+      "mismatches": [],
+      "entrance": {
+        "position": {
+          "x": 2662,
+          "y": 14,
+          "z": 1635
+        },
+        "floor": "minecraft:cracked_stone_bricks",
+        "feet": "minecraft:air",
+        "head": "minecraft:air"
+      },
+      "surface_exit": {
+        "position": {
+          "x": 2661,
+          "y": 146,
+          "z": 1635
+        },
+        "floor": "minecraft:stone_bricks",
+        "feet": "minecraft:air",
+        "head": "minecraft:air"
+      }
+    }
+  ],
+  "mine_points": [
+    {
+      "role": "observation",
+      "position": {
+        "x": 2670,
+        "y": 14,
+        "z": 1635
+      },
+      "floor": "minecraft:spruce_planks",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "role": "apparition",
+      "position": {
+        "x": 2705,
+        "y": 14,
+        "z": 1635
+      },
+      "floor": "minecraft:spruce_planks",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    }
+  ],
+  "mine_global_context": "UNKNOWN: native allocated bbox exceeds bounded whole-location check; actual role anchors and human access are independently checked.",
+  "chunks_read": [
+    {
+      "cx": 53,
+      "cz": 101,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.1.3.mca",
+      "mtime_ns": 1793918855407480943,
+      "compressed_chunk_sha256": "56f60d7a4f6e69e6610a41e3241519bb07e4a1942e324d4f8daefb10fcdb4051",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 53,
+      "cz": 102,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.1.3.mca",
+      "mtime_ns": 1793918855407480943,
+      "compressed_chunk_sha256": "f4475bb2d820349ed07a3ebd8e5ab0dacc01d67d4a0e2a088661f42e7b37347e",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 54,
+      "cz": 101,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.1.3.mca",
+      "mtime_ns": 1793918855407480943,
+      "compressed_chunk_sha256": "3bddf695345924a8936f29b477776b5967352d4ea9c67ff9bcd0e24c89e24b6e",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 54,
+      "cz": 102,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.1.3.mca",
+      "mtime_ns": 1793918855407480943,
+      "compressed_chunk_sha256": "c4fce8edf0e602fd7ce08abec9ba15c1be65bfade3c6bce64b059cd666ccae10",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 69,
+      "cz": 37,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.2.1.mca",
+      "mtime_ns": 1793923182814340034,
+      "compressed_chunk_sha256": "f0a14b31c98f1770c6724a49a7f0f8e7b4ee54f9a631e52a9e3e821b3ed7fae9",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 69,
+      "cz": 38,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.2.1.mca",
+      "mtime_ns": 1793923182814340034,
+      "compressed_chunk_sha256": "f022f5664f47cd2494db7873d434355957f740276e888ad168d9ba204db7cc35",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 70,
+      "cz": 37,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.2.1.mca",
+      "mtime_ns": 1793923182814340034,
+      "compressed_chunk_sha256": "330bb13fafe850f8955c9c0d22e56ec634d12eefb7187d4636b38483995ec026",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 70,
+      "cz": 38,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.2.1.mca",
+      "mtime_ns": 1793923182814340034,
+      "compressed_chunk_sha256": "4a80f66e0f8ebfb3803ad5b06501dbed9b3285830081b23dc5ee3793e5805b23",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 101,
+      "cz": 101,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.3.3.mca",
+      "mtime_ns": 1793923420725796237,
+      "compressed_chunk_sha256": "892dd958c9a875570931898757824f1e61a61f813d3434e9bf727c1c6826d3cf",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 101,
+      "cz": 102,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.3.3.mca",
+      "mtime_ns": 1793923420725796237,
+      "compressed_chunk_sha256": "505d0949e59a3a539f4810c8781fc9025d3cc56531c09fc86161712a14d3941f",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 102,
+      "cz": 101,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.3.3.mca",
+      "mtime_ns": 1793923420725796237,
+      "compressed_chunk_sha256": "1ea8692c533d82ef0b1a6440c107594f63488d181848ce9712ed9b0ce2684164",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 102,
+      "cz": 102,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.3.3.mca",
+      "mtime_ns": 1793923420725796237,
+      "compressed_chunk_sha256": "ea04940cbae817cdfbe1cdcc35a022d337326f925ab1d115cc08b644b218b4ae",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 133,
+      "cz": 197,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.4.6.mca",
+      "mtime_ns": 1793918856287493910,
+      "compressed_chunk_sha256": "2bc62c26d317b938342b3f4fe18157ea3a8e669c9b9a352aa75672b91d17e3a2",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 133,
+      "cz": 198,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.4.6.mca",
+      "mtime_ns": 1793918856287493910,
+      "compressed_chunk_sha256": "e20ada3abef72601c82d09cdfa7f9bc55bb7c3e88343f046d30c158be28fb0d6",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 134,
+      "cz": 197,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.4.6.mca",
+      "mtime_ns": 1793918856287493910,
+      "compressed_chunk_sha256": "41c5062d026cc4296cc3a09db37981004ef2d32aa70e5d33a483c2c4f513100b",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 134,
+      "cz": 198,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.4.6.mca",
+      "mtime_ns": 1793918856287493910,
+      "compressed_chunk_sha256": "c65405b6e9672b9f8974247b23e73aaa14079d0244d9a6ad6f59f5e450d4b732",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 166,
+      "cz": 102,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.3.mca",
+      "mtime_ns": 1793923401665519146,
+      "compressed_chunk_sha256": "9a0ab4534b65c7a7de3e4c7c9ba1278f67a5a99e7bc73f5d75c579fd354256ef",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 169,
+      "cz": 102,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.3.mca",
+      "mtime_ns": 1793923401665519146,
+      "compressed_chunk_sha256": "5dcccdb60bec7f04e96643293042b78c6a3c9d0781e4f75a51e1ff9d686a113f",
+      "status": "minecraft:full",
+      "data_version": 3955
+    }
+  ]
+}

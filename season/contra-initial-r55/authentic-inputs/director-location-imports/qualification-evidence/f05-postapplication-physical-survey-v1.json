@@ -1,0 +1,3156 @@
+{
+  "schema": 1,
+  "checked_at": "2026-11-06T00:11:11.806783+00:00",
+  "state": "ALL_PHYSICAL_AFTER_CELLS_AND_PROVIDER_STATIC_GEOMETRY_DISK_VERIFIED",
+  "world_id": "0cce2707-bd35-4d4b-874f-82103ef4209c",
+  "source_namespace": "proutlost:worldprep_structures",
+  "export_revision": "2",
+  "site_provenance": "AUTHORED_EXISTING_TERRAIN_PREPARATION",
+  "plan": "/srv/storage/proutlost-s2-candidates/contra-20261027/CONTRA_NUIT_20261105/functional-campaign/read-only/f05-natural-site-preparation-plan-v1.json",
+  "plan_sha256": "b42bf4d9de2414e0962d0df33e41723d2a46a79d1ea527f364a1f2c5d5034a3a",
+  "execution_receipt": "/srv/storage/proutlost-s2-candidates/contra-20261027/CONTRA_NUIT_20261105/functional-campaign/read-only/f05-natural-site-preparation-plan-v1.execution.json",
+  "execution_receipt_sha256": "c5cdbc8d959bde9fc16856a6f44834f2de6d86a4920d18f35918f2f3a952044d",
+  "delta_cells_verified": 168,
+  "pasture_columns_verified": 230,
+  "pasture": [
+    {
+      "position": [
+        2813,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2818,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2818,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2818,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2818,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2818,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2818,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2818,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2818,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2818,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2818,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2819,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2819,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2819,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2819,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2819,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2819,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2819,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2819,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2819,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2819,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2820,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2820,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2820,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2820,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2820,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2820,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2820,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2820,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2820,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2820,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2821,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2821,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2821,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2821,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2821,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2821,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2821,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2821,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2821,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2821,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2822,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2822,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2822,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2822,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2822,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2822,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2822,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2822,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2822,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2822,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2823,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2823,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2823,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2823,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2823,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2823,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2823,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2823,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2823,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2823,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2824,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2824,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2824,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2824,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2824,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2824,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2824,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2824,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2824,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2824,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2825,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2825,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2825,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2825,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2825,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2825,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2825,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2825,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2825,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2825,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2826,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2826,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2826,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2826,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2826,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2826,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2826,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2826,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2826,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2826,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2827,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2827,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2827,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2827,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2827,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2827,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2827,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2827,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2827,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2827,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2828,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2828,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2828,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2828,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2828,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2828,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2828,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2828,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2828,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2828,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2829,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2829,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2829,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2829,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2829,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2829,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2829,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2829,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2829,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2829,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2830,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2830,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2830,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2830,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2830,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2830,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2830,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2830,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2830,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2830,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2831,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2831,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2831,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2831,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2831,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2831,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2831,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2831,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2831,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2831,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2832,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2832,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2832,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2832,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2832,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2832,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2832,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2832,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2832,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2832,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2833,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2833,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2833,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2833,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2833,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2833,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2833,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2833,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2833,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2833,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2834,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2834,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2834,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2834,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2834,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2834,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2834,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2834,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2834,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2834,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2835,
+        91,
+        3085
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2835,
+        91,
+        3086
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2835,
+        91,
+        3087
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2835,
+        91,
+        3088
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2835,
+        91,
+        3089
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2835,
+        91,
+        3090
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2835,
+        91,
+        3091
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2835,
+        91,
+        3092
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2835,
+        91,
+        3093
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2835,
+        91,
+        3094
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    }
+  ],
+  "fauna_routes": [
+    [
+      [
+        2813,
+        91,
+        3085
+      ],
+      [
+        2814,
+        91,
+        3085
+      ],
+      [
+        2815,
+        91,
+        3085
+      ]
+    ],
+    [
+      [
+        2817,
+        91,
+        3085
+      ],
+      [
+        2818,
+        91,
+        3085
+      ],
+      [
+        2819,
+        91,
+        3085
+      ]
+    ],
+    [
+      [
+        2821,
+        91,
+        3085
+      ],
+      [
+        2822,
+        91,
+        3085
+      ],
+      [
+        2823,
+        91,
+        3085
+      ]
+    ],
+    [
+      [
+        2825,
+        91,
+        3085
+      ],
+      [
+        2826,
+        91,
+        3085
+      ],
+      [
+        2827,
+        91,
+        3085
+      ]
+    ],
+    [
+      [
+        2829,
+        91,
+        3085
+      ],
+      [
+        2830,
+        91,
+        3085
+      ],
+      [
+        2831,
+        91,
+        3085
+      ]
+    ],
+    [
+      [
+        2833,
+        91,
+        3085
+      ],
+      [
+        2834,
+        91,
+        3085
+      ],
+      [
+        2835,
+        91,
+        3085
+      ]
+    ],
+    [
+      [
+        2813,
+        91,
+        3088
+      ],
+      [
+        2814,
+        91,
+        3088
+      ],
+      [
+        2815,
+        91,
+        3088
+      ]
+    ],
+    [
+      [
+        2817,
+        91,
+        3088
+      ],
+      [
+        2818,
+        91,
+        3088
+      ],
+      [
+        2819,
+        91,
+        3088
+      ]
+    ],
+    [
+      [
+        2821,
+        91,
+        3088
+      ],
+      [
+        2822,
+        91,
+        3088
+      ],
+      [
+        2823,
+        91,
+        3088
+      ]
+    ],
+    [
+      [
+        2825,
+        91,
+        3088
+      ],
+      [
+        2826,
+        91,
+        3088
+      ],
+      [
+        2827,
+        91,
+        3088
+      ]
+    ],
+    [
+      [
+        2829,
+        91,
+        3088
+      ],
+      [
+        2830,
+        91,
+        3088
+      ],
+      [
+        2831,
+        91,
+        3088
+      ]
+    ],
+    [
+      [
+        2833,
+        91,
+        3088
+      ],
+      [
+        2834,
+        91,
+        3088
+      ],
+      [
+        2835,
+        91,
+        3088
+      ]
+    ],
+    [
+      [
+        2813,
+        91,
+        3091
+      ],
+      [
+        2814,
+        91,
+        3091
+      ],
+      [
+        2815,
+        91,
+        3091
+      ]
+    ],
+    [
+      [
+        2817,
+        91,
+        3091
+      ],
+      [
+        2818,
+        91,
+        3091
+      ],
+      [
+        2819,
+        91,
+        3091
+      ]
+    ],
+    [
+      [
+        2821,
+        91,
+        3091
+      ],
+      [
+        2822,
+        91,
+        3091
+      ],
+      [
+        2823,
+        91,
+        3091
+      ]
+    ],
+    [
+      [
+        2825,
+        91,
+        3091
+      ],
+      [
+        2826,
+        91,
+        3091
+      ],
+      [
+        2827,
+        91,
+        3091
+      ]
+    ],
+    [
+      [
+        2829,
+        91,
+        3091
+      ],
+      [
+        2830,
+        91,
+        3091
+      ],
+      [
+        2831,
+        91,
+        3091
+      ]
+    ],
+    [
+      [
+        2833,
+        91,
+        3091
+      ],
+      [
+        2834,
+        91,
+        3091
+      ],
+      [
+        2835,
+        91,
+        3091
+      ]
+    ],
+    [
+      [
+        2813,
+        91,
+        3094
+      ],
+      [
+        2814,
+        91,
+        3094
+      ],
+      [
+        2815,
+        91,
+        3094
+      ]
+    ],
+    [
+      [
+        2817,
+        91,
+        3094
+      ],
+      [
+        2818,
+        91,
+        3094
+      ],
+      [
+        2819,
+        91,
+        3094
+      ]
+    ],
+    [
+      [
+        2821,
+        91,
+        3094
+      ],
+      [
+        2822,
+        91,
+        3094
+      ],
+      [
+        2823,
+        91,
+        3094
+      ]
+    ],
+    [
+      [
+        2825,
+        91,
+        3094
+      ],
+      [
+        2826,
+        91,
+        3094
+      ],
+      [
+        2827,
+        91,
+        3094
+      ]
+    ],
+    [
+      [
+        2829,
+        91,
+        3094
+      ],
+      [
+        2830,
+        91,
+        3094
+      ],
+      [
+        2831,
+        91,
+        3094
+      ]
+    ],
+    [
+      [
+        2833,
+        91,
+        3094
+      ],
+      [
+        2834,
+        91,
+        3094
+      ],
+      [
+        2835,
+        91,
+        3094
+      ]
+    ]
+  ],
+  "stone_source": {
+    "position": [
+      2837,
+      85,
+      3095
+    ],
+    "state": "minecraft:stone",
+    "original_source_retained": true
+  },
+  "destination": {
+    "position": [
+      2838,
+      84,
+      3095
+    ],
+    "floor": "minecraft:stone",
+    "feet": "minecraft:air",
+    "head": "minecraft:air"
+  },
+  "hazard_bounds_exclusive": [
+    2837,
+    84,
+    3094,
+    2840,
+    87,
+    3097
+  ],
+  "escape_and_surface_access": [
+    {
+      "position": [
+        2838,
+        84,
+        3095
+      ],
+      "floor": "minecraft:stone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2839,
+        84,
+        3095
+      ],
+      "floor": "minecraft:stone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2840,
+        84,
+        3095
+      ],
+      "floor": "minecraft:stone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2841,
+        84,
+        3095
+      ],
+      "floor": "minecraft:stone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2842,
+        84,
+        3095
+      ],
+      "floor": "minecraft:stone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2843,
+        84,
+        3095
+      ],
+      "floor": "minecraft:stone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2844,
+        84,
+        3095
+      ],
+      "floor": "minecraft:stone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2845,
+        84,
+        3095
+      ],
+      "floor": "minecraft:stone",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2846,
+        84,
+        3095
+      ],
+      "floor": "minecraft:dirt",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2847,
+        85,
+        3095
+      ],
+      "floor": "minecraft:dirt",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2848,
+        86,
+        3095
+      ],
+      "floor": "minecraft:dirt",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    },
+    {
+      "position": [
+        2849,
+        87,
+        3095
+      ],
+      "floor": "minecraft:grass_block[snowy=false]",
+      "feet": "minecraft:air",
+      "head": "minecraft:air"
+    }
+  ],
+  "three_cell_exit_end_outside_hazard": [
+    2840,
+    84,
+    3095
+  ],
+  "weather_open_sky_25_columns": [
+    {
+      "position": [
+        2813,
+        91,
+        3085
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3086
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3087
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3088
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2813,
+        91,
+        3089
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3085
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3086
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3087
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3088
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2814,
+        91,
+        3089
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3085
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3086
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3087
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3088
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2815,
+        91,
+        3089
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3085
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3086
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3087
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3088
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2816,
+        91,
+        3089
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3085
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3086
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3087
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3088
+      ],
+      "open_to_sky_from_y": 91
+    },
+    {
+      "position": [
+        2817,
+        91,
+        3089
+      ],
+      "open_to_sky_from_y": 91
+    }
+  ],
+  "block_entities_touched": 0,
+  "chunks": [
+    {
+      "cx": 175,
+      "cz": 192,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "24ae3c3fef1c4db59581b494b5512724034d5ab688d957ee693b8393976b6ab6",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 175,
+      "cz": 193,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "17a059dc7c5f9626e9f4cd84f828dcada9e1ba20ca4998aa2bb0323b7eec6d21",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 176,
+      "cz": 192,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "6672fd9812ea3330a86912b3ff606a03b4c1a0c62c1a42ea3420da040a189d2f",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 176,
+      "cz": 193,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "877c687cc4a6a4b3a96fd4dafb77cf2c95d00692154ee7224fcce6f7b6ce4b1c",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 177,
+      "cz": 192,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "b37841771c197efe15f164322b1ae57b0420ed724e69bc6063c77cafe9a38a32",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 177,
+      "cz": 193,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "aeb24bf50a4fe9bb995c6fa8000a34e80d19d1f717c216ff079d7a4a4608b70c",
+      "status": "minecraft:full",
+      "data_version": 3955
+    },
+    {
+      "cx": 178,
+      "cz": 193,
+      "path": "/home/damien/contra-s2-candidate-cow-20261105/upper/region/r.5.6.mca",
+      "mtime_ns": 1793923804863385597,
+      "compressed_chunk_sha256": "b00c3c32b8ea84580240a64e565bb12ef475bba3ec3617c58a2fc1bd957a477e",
+      "status": "minecraft:full",
+      "data_version": 3955
+    }
+  ],
+  "runtime_conditions_pending": [
+    "Live entity collisions and ownership",
+    "Native sheep spawn light/rules",
+    "Real current players and native exits",
+    "Natural risk observation and actual event eligibility",
+    "No synthetic risk, scar, camp memory or goal created"
+  ]
+}

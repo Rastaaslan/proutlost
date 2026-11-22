@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "requirements": {
+    "schema_version": 1,
+    "bindings": [
+      {
+        "definition": {
+          "hash": "612fd13d23886a8ffb9207ba80a07246a9461ef248ea6c5b3f65354075665832",
+          "id": "proutlost_director:candidate/shared_choice",
+          "revision": "1"
+        },
+        "need": {
+          "channels": [
+            "SYMBOL",
+            "TEMPORARY_CUE",
+            "TEXT_UI"
+          ],
+          "dimensions": [
+            "minecraft:overworld"
+          ],
+          "distinct_from_bindings": [],
+          "evidence": [
+            {
+              "digest": "af5ee13bc236d03939151571db1fd0869d0ad9b13cc3fb9716fd67c4e7bb6fc8",
+              "record_id": "proutlost:contra_native_survey_r55",
+              "validator_id": "proutlost:actual_closed_native_source_survey"
+            }
+          ],
+          "family": "HYBRID",
+          "min_capacity": 2,
+          "need_id": "proutlost:season2_need/shared_choice",
+          "preferences": [],
+          "recovery": {
+            "fallback_refs": [],
+            "preserve_fact_ids": true,
+            "retry_profile": "proutlost:season2_retry",
+            "strategies": [
+              "RETRY"
+            ],
+            "user_cue": "proutlost:season2_retry_cue"
+          },
+          "required_capabilities": [
+            {
+              "id": "proutlost:group_arrival",
+              "predicates": []
+            }
+          ],
+          "required_locations": [],
+          "required_records": [],
+          "required_surface_kinds": [],
+          "resources": [],
+          "same_as_binding": null,
+          "schema_version": "1.0.0",
+          "semantic_region_ids": [],
+          "source_types": [
+            "proutlost:prepared_contra"
+          ],
+          "world_id": "proutlost:contra_0cce2707-bd35-4d4b-874f-82103ef4209c"
+        }
+      },
+      {
+        "definition": {
+          "hash": "737e4738efca56e6aed19d3bb851c6b68c8f142bb88b56756bdfc6c906c33f64",
+          "id": "proutlost_director:candidate/required_signal",
+          "revision": "1"
+        },
+        "need": {
+          "channels": [
+            "SOUND",
+            "SYMBOL",
+            "TEMPORARY_CUE",
+            "TEXT_UI"
+          ],
+          "dimensions": [
+            "minecraft:overworld"
+          ],
+          "distinct_from_bindings": [],
+          "evidence": [
+            {
+              "digest": "af5ee13bc236d03939151571db1fd0869d0ad9b13cc3fb9716fd67c4e7bb6fc8",
+              "record_id": "proutlost:contra_native_survey_r55",
+              "validator_id": "proutlost:actual_closed_native_source_survey"
+            }
+          ],
+          "family": "NARRATIVE",
+          "min_capacity": 1,
+          "need_id": "proutlost:season2_need/required_signal",
+          "preferences": [],
+          "recovery": {
+            "fallback_refs": [],
+            "preserve_fact_ids": true,
+            "retry_profile": "proutlost:season2_retry",
+            "strategies": [
+              "RETRY"
+            ],
+            "user_cue": "proutlost:season2_retry_cue"
+          },
+          "required_capabilities": [
+            {
+              "id": "proutlost:regional_signal",
+              "predicates": []
+            }
+          ],
+          "required_locations": [],
+          "required_records": [],
+          "required_surface_kinds": [],
+          "resources": [],
+          "same_as_binding": null,
+          "schema_version": "1.0.0",
+          "semantic_region_ids": [],
+          "source_types": [
+            "proutlost:prepared_contra"
+          ],
+          "world_id": "proutlost:contra_0cce2707-bd35-4d4b-874f-82103ef4209c"
+        }
+      }
+    ]
+  },
+  "effects": [
+    {
+      "primitive": "proutlost:target_sound",
+      "channels": [
+        "SOUND"
+      ],
+      "observable_actions": [],
+      "physical": false
+    },
+    {
+      "primitive": "proutlost:trace",
+      "channels": [
+        "SYMBOL",
+        "TEXT_UI",
+        "TEMPORARY_CUE"
+      ],
+      "observable_actions": [],
+      "physical": false
+    },
+    {
+      "primitive": "proutlost:shared_choice",
+      "channels": [
+        "SYMBOL",
+        "TEXT_UI",
+        "TEMPORARY_CUE"
+      ],
+      "observable_actions": [],
+      "physical": false
+    }
+  ],
+  "source_types": {
+    "worldprep_static_structure": "proutlost:prepared_contra",
+    "worldprep_prepared_site": "proutlost:prepared_contra",
+    "worldprep_natural_site": "proutlost:prepared_contra"
+  },
+  "policies": {
+    "PRESENTATION": [
+      "proutlost:d0_loaded_read_only",
+      "proutlost:d0_deny"
+    ],
+    "PLAYER_ACTION": [
+      "proutlost:d0_loaded_read_only",
+      "proutlost:d0_deny"
+    ],
+    "ACCESS": [
+      "proutlost:d0_loaded_read_only",
+      "proutlost:d0_deny"
+    ]
+  },
+  "bindings": {}
+}

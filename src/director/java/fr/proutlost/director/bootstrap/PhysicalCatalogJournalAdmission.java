@@ -277,7 +277,9 @@ public final class PhysicalCatalogJournalAdmission implements PhysicalCatalogAdm
         }
         if(p.append==null){
             if(!laneHeld){if(!quiescent.getAsBoolean()||!acquireLane.test(laneOwner))return;laneHeld=true;}
-            if(!quiescent.getAsBoolean())return;validateBinding(p.document,BindingUse.ADMISSION);
+            // The actor-atomic acquisition itself makes external ingress busy.
+            // Our held lane excludes new writers until exact durable readback.
+            validateBinding(p.document,BindingUse.ADMISSION);
             Map<ScopeRef,Revision> cas=Map.copyOf(revisions.get());
             require(cas.containsKey(new ScopeRef(ScopeKind.WORLD,world.value()))&&cas.values().stream().allMatch(r->r.value()>0),"actual world CAS required");
             var transaction=new TransactionId(UUID.nameUUIDFromBytes(("physical-catalog-transaction-v1/"+PhysicalCatalogFacts.factId(p.manifest).value()).getBytes(StandardCharsets.UTF_8)));
