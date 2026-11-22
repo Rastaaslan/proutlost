@@ -209,13 +209,16 @@ public final class BlockMutationRuntime {
         return reconcileCompleted(level,data,job,fr.proutlost.worldprep.WorldPrepConfig.CELLS_PER_TICK.get());
     }
     public static boolean reconcileCompleted(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Job job,int budget){
+        return reconcileCompleted(level,data,job,budget,EcologyRecoveryHistory.EMPTY);
+    }
+    static boolean reconcileCompleted(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Job job,int budget,EcologyRecoveryHistory history){
         if(!level.getServer().isSameThread())throw new IllegalStateException("Server thread required");
         if(job.state()!=WorldPrepSavedData.JobState.COMPLETED||!job.operation().name().startsWith("APPLY_"))
             throw new IllegalStateException("Completed apply required");
         var area=WorldPrepRuntime.requireArea(data,job.area());String pass=pass(job.operation());
         if(!EcologyMutationPlanner.supports(pass))throw new IllegalStateException("Ecology recovery only");
         EcologyMutationPlanner.requireBounded(area);
-        var blocks=data(level);var plan=requirePlan(level,data,area,pass);var journal=requireJournal(blocks,job,area,plan);
+        var blocks=data(level);var plan=requirePlan(level,data,area,pass,history);var journal=requireJournal(blocks,job,area,plan);
         long previousPages=journal.pageCount(),previousEntries=journal.entryCount();String previousRoot=journal.journalRoot();
         var manifest=RuntimePageJournal.requireMetadata(level,journal);
         if(manifest.entryCount()!=plan.entryCount())throw new IllegalStateException("Completed child has incomplete journal");
@@ -405,7 +408,10 @@ public final class BlockMutationRuntime {
     private static List<BlockWorldPrepData.Change> ordered(java.util.Collection<BlockWorldPrepData.Change> values){var result=new ArrayList<>(values);result.sort(Comparator.comparingInt(BlockWorldPrepData.Change::z).thenComparingInt(BlockWorldPrepData.Change::x).thenComparingInt(BlockWorldPrepData.Change::y));return result;}
     private static void requireCompatible(BlockWorldPrepData data){if(!data.compatible())throw new IllegalStateException("Legacy block persistence format is incompatible; block job refused");}
     private static boolean validOreTarget(String target,int y){for(var ore:ORES)if((target.equals("minecraft:"+ore.stone)||target.equals("minecraft:"+ore.deep))&&y>=ore.min&&y<=ore.max)return true;return false;}
-    private static BlockWorldPrepData.Plan requirePlan(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass){var blocks=data(level);requireCompatible(blocks);var plan=blocks.plans().get(BlockWorldPrepData.planKey(area.id(),pass));if(plan==null||plan.fingerprint().isEmpty())throw new IllegalStateException("No persisted "+pass+" preview");if(plan.planId()==null)publish(level,data,area,plan);if(!plan.input.equals(input(level,data,area,pass)))throw new IllegalStateException("Stale "+pass+" preview");if(pass.equals("ORES")){var geology=blocks.plans().get(BlockWorldPrepData.planKey(area.id(),"GEOLOGY"));if(geology==null||plan.upstreamPlanId()==null||!plan.upstreamPlanId().equals(geology.planId())||!plan.upstreamRoot().equals(geology.fingerprint()))throw new IllegalStateException("ORES exact GEOLOGY plan identity is stale");if(!hasAppliedGeology(blocks,area.id()))throw new IllegalStateException("ORES requires applied GEOLOGY");}manifest(level,plan);return plan;}
+    private static BlockWorldPrepData.Plan requirePlan(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass){
+        return requirePlan(level,data,area,pass,EcologyRecoveryHistory.EMPTY);
+    }
+    private static BlockWorldPrepData.Plan requirePlan(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass,EcologyRecoveryHistory history){var blocks=data(level);requireCompatible(blocks);var plan=blocks.plans().get(BlockWorldPrepData.planKey(area.id(),pass));if(plan==null||plan.fingerprint().isEmpty())throw new IllegalStateException("No persisted "+pass+" preview");if(plan.planId()==null)publish(level,data,area,plan);if(!plan.input.equals(EcologyMutationPlanner.supports(pass)?ecologyInput(level,data,area,pass,history):input(level,data,area,pass)))throw new IllegalStateException("Stale "+pass+" preview");if(pass.equals("ORES")){var geology=blocks.plans().get(BlockWorldPrepData.planKey(area.id(),"GEOLOGY"));if(geology==null||plan.upstreamPlanId()==null||!plan.upstreamPlanId().equals(geology.planId())||!plan.upstreamRoot().equals(geology.fingerprint()))throw new IllegalStateException("ORES exact GEOLOGY plan identity is stale");if(!hasAppliedGeology(blocks,area.id()))throw new IllegalStateException("ORES requires applied GEOLOGY");}manifest(level,plan);return plan;}
     private static boolean hasAppliedGeology(BlockWorldPrepData data,String area){return data.journals().values().stream().anyMatch(j->j.area.equals(area)&&j.pass.equals("GEOLOGY"));}
     /** Read-only identity check for exports; unlike legacy authoring it never publishes a plan. */
     public static String readOnlyInputIdentity(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass){return input(level,data,area,pass);}
@@ -417,10 +423,13 @@ public final class BlockMutationRuntime {
     private static String input(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass){if(EcologyMutationPlanner.supports(pass))return ecologyInput(level,data,area,pass);String protections=data.locations().isEmpty()?Long.toString(data.protections().values().stream().filter(p->p.dimension().equals(area.dimension())).mapToLong(Object::hashCode).sum()):data.protectionFingerprint();String geology=pass.equals("ORES")?java.util.Optional.ofNullable(data(level).plans().get(BlockWorldPrepData.planKey(area.id(),"GEOLOGY"))).map(p->p.fingerprint()).orElse(""):"";return area.dimension()+":"+area.minX()+":"+area.minZ()+":"+area.maxX()+":"+area.maxZ()+":"+level.getSeed()+":"+protections+":"+geology+(area.mask()==WorldPrepSavedData.AreaMask.FULL_AREA?"":":area-mask-v1:"+area.mask().name());}
 
     private static String ecologyInput(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass){
+        return ecologyInput(level,data,area,pass,EcologyRecoveryHistory.EMPTY);
+    }
+    private static String ecologyInput(ServerLevel level,WorldPrepSavedData data,WorldPrepSavedData.Area area,String pass,EcologyRecoveryHistory history){
         var blocks=data(level);String biome=java.util.Optional.ofNullable(data.plans().get(area.id())).map(p->p.planId+":"+p.fingerprint).orElse("");
-        String[] journals=blocks.journals().values().stream().filter(j->!j.pass.equals(pass)&&data.areas().containsKey(j.area)&&data.areas().get(j.area).overlaps(area)).map(j->j.id+":"+j.pass+":"+j.pageCount()+":"+j.entryCount()+":"+j.journalRoot()).sorted().toArray(String[]::new);
+        String[] journals=blocks.journals().values().stream().filter(j->!history.journals().contains(j.id)&&!j.pass.equals(pass)&&data.areas().containsKey(j.area)&&data.areas().get(j.area).overlaps(area)).map(j->j.id+":"+j.pass+":"+j.pageCount()+":"+j.entryCount()+":"+j.journalRoot()).sorted().toArray(String[]::new);
         // A rollback changes real upstream terrain without changing the immutable journal root.
-        String[] jobs=data.jobs().values().stream().filter(j->(j.operation().name().startsWith("APPLY_")||j.operation().name().startsWith("ROLLBACK_"))&&!j.operation().name().equals("APPLY_"+pass)&&data.areas().containsKey(j.area())&&data.areas().get(j.area()).overlaps(area)).map(j->j.id()+":"+j.operation()+":"+j.cursor()+":"+j.snapshotId()).sorted().toArray(String[]::new);
+        String[] jobs=data.jobs().values().stream().filter(j->!history.jobs().contains(j.id())).filter(j->(j.operation().name().startsWith("APPLY_")||j.operation().name().startsWith("ROLLBACK_"))&&!j.operation().name().equals("APPLY_"+pass)&&data.areas().containsKey(j.area())&&data.areas().get(j.area()).overlaps(area)).map(j->j.id()+":"+j.operation()+":"+j.cursor()+":"+j.snapshotId()).sorted().toArray(String[]::new);
         return PlanFingerprint.of(EcologyMutationPlanner.VERSION,EcologyMutationPlanner.validateProfile().toString(),EcologyMutationPlanner.tagFingerprint(level),Long.toString(level.getSeed()),area.treeMode().name(),fr.proutlost.worldprep.plan.PlanIdentity.fingerprint(fr.proutlost.worldprep.plan.PlanIdentity.capture(level,data,area)),biome,PlanFingerprint.of(journals).value(),PlanFingerprint.of(jobs).value()).value();
     }
     private static String fingerprint(BlockWorldPrepData.Plan plan){String changes=PlanFingerprint.of(plan.changes.values().stream().map(c->c.x()+","+c.y()+","+c.z()+","+c.before()+","+c.applied()).sorted().toArray(String[]::new)).value();return PlanFingerprint.of(plan.input,changes).value();}

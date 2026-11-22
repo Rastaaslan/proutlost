@@ -69,7 +69,7 @@ public final class EcologyBatchRuntime {
                 if(!BlockMutationRuntime.checkpointReady(level,data))return;
                 var recoveryTile=tiles.at(recovery.next/STAGES.size());
                 if(!ExistingChunkLoader.ensure(level,parent.id(),recoveryTile.minX()>>4,recoveryTile.minZ()>>4))return;
-                if(!reconcileReceipt(level,data,parent,tiles,BatchManifestStore.read(root,header,recovery.next),budget))return;
+                if(!reconcileReceipt(level,data,parent,tiles,header,root,BatchManifestStore.read(root,header,recovery.next),budget))return;
                 boolean physical=STAGES.get((int)(recovery.next%STAGES.size())).startsWith("APPLY_");
                 recovery.next++;if(physical)return;
             }
@@ -102,7 +102,7 @@ public final class EcologyBatchRuntime {
         if(Files.exists(BatchManifestStore.stagePath(root,parent.id(),parent.cursor()))){
             var receipt=BatchManifestStore.read(root,header,parent.cursor());
             if(!receipt.tileId().equals(tileId)||receipt.tileIndex()!=index||!receipt.stage().equals(stage))throw new IOException("Stage schedule mismatch");
-            if(!reconcileReceipt(level,data,parent,tiles,receipt,budget))return;
+            if(!reconcileReceipt(level,data,parent,tiles,header,root,receipt,budget))return;
             advance(level,data,parent);return;
         }
         if (stage.equals("STRUCTURES") || stage.equals("HABITATS")) {
@@ -179,7 +179,7 @@ public final class EcologyBatchRuntime {
         data.changed();level.getDataStorage().save();
     }
 
-    private static boolean reconcileReceipt(ServerLevel level,WorldPrepSavedData data,Job parent,EcologyTiles tiles,
+    private static boolean reconcileReceipt(ServerLevel level,WorldPrepSavedData data,Job parent,EcologyTiles tiles,BatchManifestStore.Header header,Path root,
                                          BatchManifestStore.Stage receipt,int budget) throws IOException {
         long index=receipt.sequence()/STAGES.size();
         String tileId="proutlost:batch_"+parent.id().toString().replace("-","")+"_"+index;
@@ -199,12 +199,38 @@ public final class EcologyBatchRuntime {
             var recovered=receiptChildCandidate(parent,child,receipt);
             // Do not publish COMPLETED merely because a receipt exists. This validates
             // exact plan/journal identity, full journal count and terrain ownership first.
-            if(!reconcileChild(level,data,recovered,budget))return false;
+            if(recovered.operation().name().startsWith("APPLY_")
+                    &&!BlockMutationRuntime.reconcileCompleted(level,data,recovered,Math.min(256,budget),
+                            laterReceiptHistory(level,data,parent,receipt,root,header)))return false;
             if(!recovered.equals(child)) {
                 data.jobs().put(child.id(),recovered);data.changed();level.getDataStorage().save();
             }
         }
         return true;
+    }
+    /** Reconstruct only this tile's authenticated later physical history. The original
+     * profile/seed/registry/protection identity is still recomputed and must match.
+     * At most the remaining fixed ten-stage tile is inspected, never the whole batch.
+     */
+    private static EcologyRecoveryHistory laterReceiptHistory(ServerLevel level,WorldPrepSavedData data,
+            Job parent,BatchManifestStore.Stage current,Path root,BatchManifestStore.Header header) throws IOException {
+        var history=EcologyRecoveryHistory.EMPTY;var blocks=BlockMutationRuntime.data(level);
+        long end=Math.min(parent.cursor(),Math.multiplyExact(current.tileIndex()+1,STAGES.size()));
+        for(long sequence=current.sequence()+1;sequence<end;sequence++) {
+            var later=BatchManifestStore.read(root,header,sequence);
+            if(later.tileIndex()!=current.tileIndex()||!later.tileId().equals(current.tileId())
+                    ||!later.stage().equals(STAGES.get((int)(sequence%STAGES.size()))))
+                throw new IOException("Later receipt outside original tile schedule");
+            if(!later.stage().startsWith("APPLY_"))continue;
+            var child=data.jobs().get(later.childId());
+            var plan=blocks.plans().get(BlockWorldPrepData.planKey(later.tileId(),later.stage().substring(6)));
+            var journal=blocks.journals().get(later.snapshotId());
+            history=history.withLater(current,parent.cursor(),later,child,plan,journal);
+            var manifest=RuntimePageJournal.requireMetadata(level,journal);
+            if(manifest.entryCount()!=later.plannedChanges())
+                throw new IOException("Later receipt has an incomplete durable journal");
+        }
+        return history;
     }
     public static Job receiptChildCandidate(Job parent,Job child,BatchManifestStore.Stage receipt) throws IOException {
         if(child==null)throw new IOException("Missing child ownership metadata; offline exact-state repair required");
