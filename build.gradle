@@ -1213,3 +1213,10 @@ tasks.register('directorTerminalOwnerMemoTest', JavaExec) {
  args project.file('src/directorTest/resources/catalog'), project.file('build/r21-owner-memo-' + providers.gradleProperty('p008RunId').getOrElse('a01')), project.file('docs/worlddirector-v1/spec-1.0.0/DEFAULT_FOR_TESTING.json')
  jvmArgs '-ea', '-Xmx512m', '-XX:ActiveProcessorCount=1'
 }
+
+tasks.register('directorNativeAdminRefusalEvidenceTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.bootstrap.NativeAdminRefusalEvidenceTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}

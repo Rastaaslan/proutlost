@@ -2,6 +2,7 @@ package fr.proutlost.director.bootstrap;
 
 import fr.proutlost.director.adapter.neoforge.network.*;
 import fr.proutlost.director.api.model.*;
+import fr.proutlost.director.api.error.ReasonCode;
 import fr.proutlost.director.api.port.ActorAuthorityPort;
 import fr.proutlost.director.persistence.JournalStore;
 import fr.proutlost.director.runtime.BoundedDecisionWorker;
@@ -132,7 +133,7 @@ public final class DirectorNativeCatalogueRuntime implements AutoCloseable {
             ActorIdentity actor,ActorAuthorityPort authority){
         actor();if(!(command.payload() instanceof TriggerPayload payload)||!AdminContracts.authorized(command,actor)
             ||authority.current(command.actorSession()).filter(actor::equals).isEmpty())
-            return new DirectorNativeChainGameplay.Launch(false,"AUTH_DENIED");
+            return new DirectorNativeChainGameplay.Launch(false,"AUTH_DENIED",false,Optional.of(ReasonCode.AUTH_DENIED));
         var event=UUID.nameUUIDFromBytes(("admin-trigger/"+command.actorSession().value()+"/"+command.requestId().value()).getBytes(java.nio.charset.StandardCharsets.UTF_8));
         if(replies.containsKey(event))return replies.get(event);
         if(jobs.containsKey(event))return new DirectorNativeChainGameplay.Launch(false,"PENDING",true);
@@ -141,11 +142,11 @@ public final class DirectorNativeCatalogueRuntime implements AutoCloseable {
             !enabled.getAsBoolean()?"DISABLED":!executor.catalog().events().containsKey(payload.eventId())?"UNKNOWN_DEFINITION":null;
         if(admissionRefusal!=null){
             System.out.println("DIRECTOR_NATIVE_TRIGGER_ADMISSION_REFUSED request="+command.requestId()+" event="+event+" definition="+payload.eventId()+" predicate="+admissionRefusal);
-            return new DirectorNativeChainGameplay.Launch(false,"CATALOGUE_UNAVAILABLE");
+            return new DirectorNativeChainGameplay.Launch(false,"CATALOGUE_UNAVAILABLE: "+admissionRefusal,false,Optional.of(NativeAdminRefusalEvidence.admission(admissionRefusal)));
         }
         if(participant==null||server.getPlayerList().getPlayer(participant.getUUID())!=participant||!participant.isAlive())
-            return new DirectorNativeChainGameplay.Launch(false,"NO_ACTUAL_PARTICIPANT");
-        var negotiated=client(participant);if(negotiated.isEmpty())return new DirectorNativeChainGameplay.Launch(false,"J06_NOT_QUALIFIED");
+            return new DirectorNativeChainGameplay.Launch(false,"NO_ACTUAL_PARTICIPANT",false,Optional.of(ReasonCode.NO_TARGET));
+        var negotiated=client(participant);if(negotiated.isEmpty())return new DirectorNativeChainGameplay.Launch(false,"J06_NOT_QUALIFIED",false,Optional.of(ReasonCode.CAPABILITY_MISSING));
         var job=new Job();job.command=command;job.authority=authority;job.targets=payload.targets();
         job.event=event;job.actor=participant.getUUID();job.definition=payload.eventId();job.region=Optional.of(payload.regionId());
         job.parent=Optional.empty();job.client=negotiated.get();job.deadline=Math.addExact(clock.getAsLong(),REQUEST_TICKS);
@@ -161,9 +162,12 @@ public final class DirectorNativeCatalogueRuntime implements AutoCloseable {
         if(job.evaluation!=null){executor.cancelEvaluation(job.evaluation);job.evaluation=null;}
     }
     private void reply(Job job,boolean accepted,String detail){
+        reply(job,accepted,detail,accepted?Optional.empty():Optional.of(ReasonCode.DELIVERY_UNCERTAIN));
+    }
+    private void reply(Job job,boolean accepted,String detail,Optional<ReasonCode> reason){
         if(job.event==null)return;
         System.out.println("DIRECTOR_NATIVE_TRIGGER_TERMINAL event="+job.event+" request="+(job.command==null?"NONE":job.command.requestId())+" accepted="+accepted+" detail="+detail);
-        replies.put(job.event,new DirectorNativeChainGameplay.Launch(accepted,detail));
+        replies.put(job.event,new DirectorNativeChainGameplay.Launch(accepted,detail,false,reason));
         while(replies.size()>128)replies.remove(replies.keySet().iterator().next());
     }
     private void retire(Job job){
@@ -176,11 +180,21 @@ public final class DirectorNativeCatalogueRuntime implements AutoCloseable {
     private void cancel(Job job,String reason){
         if(job.evaluation!=null){executor.cancelEvaluation(job.evaluation);job.evaluation=null;}
         if(job.cancelled==null)job.cancelled=reason;
-        if(!job.registered){reply(job,false,reason);retire(job);return;}
+        if(!job.registered){
+            var evidence=NativeAdminRefusalEvidence.cancellation(job.cancelled,job.definition,Optional.empty(),List.of());
+            reply(job,false,evidence.detail(),Optional.of(evidence.reason()));retire(job);return;
+        }
         var result=executor.abortQueuedIntent(new EventInstanceId(job.event),Optional.ofNullable(job.proposal),journal,job.cancelled);
         last="CANCELLING "+result.status()+" "+result.detail();
         switch(result.status()){
-            case DURABLE->{reply(job,false,result.detail());retire(job);}
+            case DURABLE->{
+                Optional<DecisionId> decision=Optional.empty();List<Candidate> candidates=List.of();
+                if(job.proposal!=null&&job.proposal.selectedPlan().isEmpty()&&journal.poll(job.proposal.proposalId()).mayProceedToAdmission()){
+                    decision=Optional.of(job.proposal.proposalId());candidates=job.proposal.audit().candidates();
+                }
+                var evidence=NativeAdminRefusalEvidence.cancellation(job.cancelled,job.definition,decision,candidates);
+                reply(job,false,result.detail()+"; "+evidence.detail(),Optional.of(evidence.reason()));retire(job);
+            }
             case DRIVER_INVOKED->{job.started=true;job.isolated=true;current=null;replies.put(job.event,new DirectorNativeChainGameplay.Launch(false,"EVENT_RECOVERY_REQUIRED",true));last="ISOLATED_EVENT_DRIVER_INVOKED";}
             case REJECTED->{frozen=true;last="RECOVERY_REQUIRED_ABORT_UNCERTAIN";}
             default->{}

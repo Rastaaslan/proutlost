@@ -26,7 +26,10 @@ import net.minecraft.server.level.ServerPlayer;
  * Dispatch intent is durable BEFORE calling an existing native provider. Restart never replays it.
  */
 public final class DirectorNativeChainGameplay implements AutoCloseable {
- public record Launch(boolean accepted,String message,boolean pending){
+ public record Launch(boolean accepted,String message,boolean pending,
+          Optional<fr.proutlost.director.api.error.ReasonCode> refusalReason){
+   public Launch { Objects.requireNonNull(message);Objects.requireNonNull(refusalReason); }
+   public Launch(boolean accepted,String message,boolean pending){this(accepted,message,pending,Optional.empty());}
   public Launch(boolean accepted,String message){this(accepted,message,false);}
  }
  public interface Driver {

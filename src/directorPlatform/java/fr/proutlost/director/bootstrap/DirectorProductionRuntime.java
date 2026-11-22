@@ -507,7 +507,7 @@ public final class DirectorProductionRuntime implements DirectorCommands.Access,
   var result=runtime.get().enqueueAdmin(participant,command,actor,authority);
   if(!result.pending()&&!result.accepted())System.out.println("DIRECTOR_ADMIN_NATIVE_TRIGGER_REJECTED request="+command.requestId()+" definition="+payload.eventId()+" native_detail="+result.message()+" runtime_phase="+phase);
   return result.pending()||result.accepted()?new AdminResult(AdminStatus.PENDING,command.requestId(),revision(),Optional.empty(),Optional.empty()):
-   AdminFacade.failure(command,AdminStatus.REJECTED,result.accepted()?ReasonCode.DELIVERY_UNCERTAIN:ReasonCode.NO_TARGET);
+   AdminFacade.failure(command,AdminStatus.REJECTED,result.refusalReason().orElse(ReasonCode.DELIVERY_UNCERTAIN));
  }
  private Optional<AdminResult> progressPhysical(RuntimeAdminKey key){
   var nativeResult=gameplay.controlProgress(key);if(nativeResult.isPresent())return nativeResult;
@@ -520,8 +520,11 @@ public final class DirectorProductionRuntime implements DirectorCommands.Access,
   var runtime=gameplay.coordinator().runtime();
   if(runtime.isPresent()){
    var reply=runtime.get().adminProgress(key);
-   if(reply.isPresent()&&!reply.get().pending()&&!reply.get().accepted())return Optional.of(new AdminResult(AdminStatus.REJECTED,key.requestId(),revision(),Optional.empty(),
-    Optional.of(new SystemError(ReasonCode.NO_TARGET,Severity.WARNING,false,Optional.empty(),Set.of(),new CorrelationId(key.requestId().value()),SafeState.UNCHANGED))));
+   if(reply.isPresent()&&!reply.get().pending()&&!reply.get().accepted()){
+     System.out.println("DIRECTOR_ADMIN_NATIVE_TRIGGER_REJECTION_EVIDENCE request="+key.requestId()+" event="+event+" reason="+reply.get().refusalReason().orElse(ReasonCode.DELIVERY_UNCERTAIN)+" native_detail="+reply.get().message());
+     return Optional.of(new AdminResult(AdminStatus.REJECTED,key.requestId(),revision(),Optional.empty(),
+    Optional.of(new SystemError(reply.get().refusalReason().orElse(ReasonCode.DELIVERY_UNCERTAIN),Severity.WARNING,false,Optional.empty(),Set.of(),new CorrelationId(key.requestId().value()),SafeState.UNCHANGED))));
+    }
   }
   return Optional.empty();
  }
