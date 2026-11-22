@@ -28,11 +28,11 @@ import fr.proutlost.worldprep.storage.PlanManifest;
 public final class WorldPrepRuntime {
     static final class PreviewResumeRequired extends IllegalStateException{PreviewResumeRequired(){super("Unsealed preview scan lost after restart; cancel and create a fresh preview. Existing sealed plans remain unchanged.");}}
     private static final java.util.Map<ServerLevel,java.util.Map<UUID,BiomePreview>> PREVIEWS=new java.util.WeakHashMap<>();
-    private static final java.util.Map<ServerLevel,java.util.Map<UUID,BiomeApplyRecovery>> BIOME_RECOVERY=new java.util.WeakHashMap<>();
-    private static final class BiomeApplyRecovery {
+    private static final java.util.Map<ServerLevel,java.util.Map<UUID,BiomeJournalRecovery>> BIOME_RECOVERY=new java.util.WeakHashMap<>();
+    private static final class BiomeJournalRecovery {
         fr.proutlost.worldprep.storage.PagedJournalStore.Manifest manifest;
         final BiomeApplyRecoveryCursor cursor;
-        BiomeApplyRecovery(fr.proutlost.worldprep.storage.PagedJournalStore.Manifest manifest){
+        BiomeJournalRecovery(fr.proutlost.worldprep.storage.PagedJournalStore.Manifest manifest){
             this.manifest=manifest;cursor=new BiomeApplyRecoveryCursor(manifest.pages().size());
         }
     }
@@ -207,28 +207,44 @@ public final class WorldPrepRuntime {
 
     public static boolean applyPlannedCell(ServerLevel level,WorldPrepSavedData d,WorldPrepSavedData.Area area,WorldPrepSavedData.Plan plan,WorldPrepSavedData.Snapshot snapshot,WorldPrepSavedData.BiomeCell cell){return applyPlannedCell(level,d,area,plan,snapshot,cell,0);}
     private static boolean applyPlannedCell(ServerLevel level,WorldPrepSavedData d,WorldPrepSavedData.Area area,WorldPrepSavedData.Plan plan,WorldPrepSavedData.Snapshot snapshot,WorldPrepSavedData.BiomeCell cell,long sequence){var bounds=BiomeBounds.inside(area);if(!bounds.contains(cell.quartX(),cell.quartZ())||!bounds.footprintInside(area,cell.quartX(),cell.quartZ()))throw new IllegalStateException("Planned cell outside area");PlanIdentity.requireCurrent(plan.input,PlanIdentity.capture(level,d,area));int bx=QuartPos.toBlock(cell.quartX())+2,bz=QuartPos.toBlock(cell.quartZ())+2;ServerExistingChunkAccess.requireBlock(level,area,bx,level.getMinBuildHeight(),bz);BiomePlanGuard.requireCurrent(cell.terrainSignature(),MinecraftTerrainSampler.sample(level,bx,bz).signature());if(!MinecraftTerrainSampler.matchesMask(level,area.mask(),QuartPos.toBlock(cell.quartX()),QuartPos.toBlock(cell.quartZ()),4,4))throw new IllegalStateException("Sealed biome mutation is outside area mask");if(d.protectedAt(area.dimension(),cell.quartX(),cell.quartZ()))throw new IllegalStateException("Sealed biome mutation is protected");requireSnapshotOwnership(snapshot,area,plan.fingerprint);var proposed=BiomeRuntime.inspectColumn(level,cell.quartX(),cell.quartZ(),cell.biome());var durable=RuntimeBiomeJournal.publishOrRead(level,snapshot,proposed);d.changed();level.getDataStorage().save();for(var owned:durable)BiomeRuntime.applyOwnedCell(level,owned);return true;}
-    private static void rollback(ServerLevel level,WorldPrepSavedData d,UUID id,WorldPrepSavedData.Job job,int budget,WorldPrepSavedData.Area area,BiomeBounds bounds){
-        var snapshot=validateRollbackSnapshot(d,job,area);
-        RuntimeBiomeJournal.requireManifest(level,snapshot);
-        preflightBiomeRollback(level,d,area,bounds,snapshot);
-        var slice=new BiomeRollbackSlice(budget);
+    private static void rollback(ServerLevel level,WorldPrepSavedData data,UUID id,
+            WorldPrepSavedData.Job job,int budget,WorldPrepSavedData.Area area,BiomeBounds bounds){
+        var snapshot=validateRollbackSnapshot(data,job,area);
+        var manifest=RuntimeBiomeJournal.requireMetadata(level,snapshot);
+        var states=BIOME_RECOVERY.computeIfAbsent(level,k->new java.util.HashMap<>());
+        var recovery=states.computeIfAbsent(id,k->new BiomeJournalRecovery(manifest));
+        if(!recovery.manifest.equals(manifest))
+            throw new IllegalStateException("Biome rollback journal changed outside the active slice");
         var touched=new LinkedHashSet<LevelChunk>();
-        RuntimeBiomeJournal.visit(level,snapshot,(sequence,cells)->{
-            for(var cell:cells){
-                String current=BiomeRuntime.biomeId(level,cell.quartX(),cell.quartY(),cell.quartZ());
-                slice.reconcileCell(cell.beforeBiome(),cell.appliedBiome(),current,()->{
-                    BiomeRuntime.restoreOwnedCell(level,cell);
-                    touched.add(ServerExistingChunkAccess.requireChunk(level,QuartPos.toBlock(cell.quartX())>>4,QuartPos.toBlock(cell.quartZ())>>4));
-                });
-            }
-        });
+        recovery.cursor.advance(budget,
+            page->manifest.pages().get(Math.toIntExact(page)).entryCount(),
+            (page,offset,count,phase)->RuntimeBiomeJournal.visitRecoverySlice(
+                level,snapshot,manifest,page,offset,count,cell->{
+                    if(!bounds.contains(cell.quartX(),cell.quartZ())
+                            ||!bounds.footprintInside(area,cell.quartX(),cell.quartZ()))
+                        throw new IllegalStateException("Snapshot cell outside owned area");
+                    if(data.protectedAt(area.dimension(),cell.quartX(),cell.quartZ()))
+                        throw new IllegalStateException("Rollback cell is now protected");
+                    String current=BiomeRuntime.biomeId(level,cell.quartX(),cell.quartY(),cell.quartZ());
+                    if(!current.equals(cell.beforeBiome())&&!current.equals(cell.appliedBiome()))
+                        throw new IllegalStateException("Biome ownership conflict during rollback");
+                    if(phase==BiomeApplyRecoveryCursor.Phase.REPLAY&&!current.equals(cell.beforeBiome())){
+                        BiomeRuntime.restoreOwnedCell(level,cell);
+                        touched.add(ServerExistingChunkAccess.requireChunk(level,
+                            QuartPos.toBlock(cell.quartX())>>4,QuartPos.toBlock(cell.quartZ())>>4));
+                    }
+                }));
         BiomeRuntime.refresh(level,touched);
-        // The authenticated journal and actual palette reconcile a legacy inflated cursor too.
-        var advanced=job.withCursor(slice.reconciledCells());
-        if(!slice.pending())advanced=advanced.withState(WorldPrepSavedData.JobState.COMPLETED);
-        d.jobs().put(id,advanced);d.changed();level.getDataStorage().save();
+        var progress=recovery.cursor.progress();
+        // Validation progress is volatile, read-only and never grants durable restore progress.
+        if(progress.phase()==BiomeApplyRecoveryCursor.Phase.VALIDATE)return;
+        // Reconstruct from authenticated current cells, not a possibly inflated saved cursor.
+        long reconciled=Math.max(0,progress.visitedCells()-manifest.entryCount());
+        var advanced=job.withCursor(reconciled);
+        if(progress.phase()==BiomeApplyRecoveryCursor.Phase.READY)
+            advanced=advanced.withState(WorldPrepSavedData.JobState.COMPLETED);
+        data.jobs().put(id,advanced);data.changed();level.getDataStorage().save();
     }
-    private static void preflightBiomeRollback(ServerLevel level,WorldPrepSavedData d,WorldPrepSavedData.Area area,BiomeBounds bounds,WorldPrepSavedData.Snapshot snapshot){RuntimeBiomeJournal.visit(level,snapshot,(sequence,cells)->{for(var cell:cells){if(!bounds.contains(cell.quartX(),cell.quartZ())||!bounds.footprintInside(area,cell.quartX(),cell.quartZ()))throw new IllegalStateException("Snapshot cell outside owned area");if(d.protectedAt(area.dimension(),cell.quartX(),cell.quartZ()))throw new IllegalStateException("Rollback cell is now protected");String current=BiomeRuntime.biomeId(level,cell.quartX(),cell.quartY(),cell.quartZ());if(!current.equals(cell.beforeBiome())&&!current.equals(cell.appliedBiome()))throw new IllegalStateException("Biome ownership conflict during rollback");}});}
     /** Full-prefix ownership preflight before any recovery write, with both passes budgeted.
      * In the same uninterrupted run, new pages were already journaled and applied by
      * applyPlannedCell. They are acknowledged, never replayed on every later slice. */
@@ -236,7 +252,7 @@ public final class WorldPrepRuntime {
             WorldPrepSavedData.Area area,WorldPrepSavedData.Snapshot snapshot,int budget){
         var manifest=RuntimeBiomeJournal.requireMetadata(level,snapshot);
         var states=BIOME_RECOVERY.computeIfAbsent(level,k->new java.util.HashMap<>());
-        var recovery=states.computeIfAbsent(id,k->new BiomeApplyRecovery(manifest));
+        var recovery=states.computeIfAbsent(id,k->new BiomeJournalRecovery(manifest));
         if(!recovery.manifest.equals(manifest))
             throw new IllegalStateException("Biome journal changed outside the active apply slice");
         var touched=new LinkedHashSet<LevelChunk>();
