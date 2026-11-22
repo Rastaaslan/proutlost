@@ -12,7 +12,7 @@ final class AdminDecisionResultPages {
     private final AdminRow original;
     private final AdminSnapshotStamp stamp;
     private final DecisionAdminData decision;
-    private record Cursor(String token, int offset, int limit, Optional<Revision> expected) {}
+    private record Cursor(String token, int offset, int limit, Revision expected) {}
     private Cursor cursor;
 
     AdminDecisionResultPages(SessionId session, AdminRow row, AdminSnapshotStamp stamp) {
@@ -34,7 +34,7 @@ final class AdminDecisionResultPages {
         int offset=0;
         if(query.cursor().isPresent()) {
             if(cursor==null || !cursor.token().equals(query.cursor().orElseThrow())
-                    || cursor.limit()!=query.limit() || !cursor.expected().equals(query.expectedSnapshotRevision()))
+                    || cursor.limit()!=query.limit() || !cursor.expected().equals(stamp.snapshotRevision()))
                 throw new AdminProjectionPages.Rejected(ReasonCode.STALE_CONTEXT);
             offset=cursor.offset();
         }
@@ -58,7 +58,7 @@ final class AdminDecisionResultPages {
         } while(end<candidates.size());
         // Invalid/oversize requests cannot consume the last valid continuation.
         cursor=result.nextCursor().isPresent()
-                ? new Cursor(token,end,query.limit(),query.expectedSnapshotRevision()) : null;
+                ? new Cursor(token,end,query.limit(),stamp.snapshotRevision()) : null;
         return result;
     }
 }

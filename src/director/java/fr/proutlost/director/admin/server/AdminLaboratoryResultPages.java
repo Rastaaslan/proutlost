@@ -13,7 +13,7 @@ final class AdminLaboratoryResultPages {
     private final AdminSnapshotStamp stamp;
     private final LaboratoryAdminData lab;
     private final Fingerprint proposalHash,auditHash;
-    private record Cursor(String token,int offset,int limit,Optional<Revision> expected) {}
+    private record Cursor(String token,int offset,int limit,Revision expected) {}
     private Cursor cursor;
 
     AdminLaboratoryResultPages(SessionId session,AdminRow row,AdminSnapshotStamp stamp) {
@@ -43,7 +43,7 @@ final class AdminLaboratoryResultPages {
         int offset=0;
         if(query.cursor().isPresent()) {
             if(cursor==null||!cursor.token().equals(query.cursor().get())||cursor.limit()!=query.limit()
-                    ||!cursor.expected().equals(query.expectedSnapshotRevision()))
+                    ||!cursor.expected().equals(stamp.snapshotRevision()))
                 throw new AdminProjectionPages.Rejected(ReasonCode.STALE_CONTEXT);
             offset=cursor.offset();
         }
@@ -67,7 +67,7 @@ final class AdminLaboratoryResultPages {
         }while(end<candidates.size());
         // Advance only after a complete bounded page exists. Rejected queries
         // leave their continuation usable; consumed tokens cannot be replayed.
-        cursor=result.nextCursor().isPresent()?new Cursor(token,end,query.limit(),query.expectedSnapshotRevision()):null;
+        cursor=result.nextCursor().isPresent()?new Cursor(token,end,query.limit(),stamp.snapshotRevision()):null;
         return result;
     }
 }

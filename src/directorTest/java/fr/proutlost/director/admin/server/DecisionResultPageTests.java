@@ -49,7 +49,8 @@ public final class DecisionResultPageTests {
                 Optional.empty(),Optional.empty(),Optional.of(stamp));
         check(!AdminDecisionResultPages.fits(whole),"actual full candidate view exceeds unchanged packet bound");
         var pages=new AdminDecisionResultPages(SESSION,original,stamp);
-        var result=pages.query(query(full.decisionId(),Optional.empty(),25));
+        var result=pages.query(new AdminQuery(SESSION,new RequestId(UUID.randomUUID()),AdminPanel.DECISIONS,
+                new DecisionFilter(Optional.of(full.decisionId())),Optional.empty(),Optional.empty(),25));
         check(result.nextCursor().isPresent(),"genuine bounded continuation required");
         var firstToken=result.nextCursor().orElseThrow();
         refused(()->pages.query(query(full.decisionId(),Optional.of(firstToken),24)),ReasonCode.STALE_CONTEXT);
@@ -85,6 +86,43 @@ public final class DecisionResultPageTests {
         check(restored.equals(many),"every exact candidate and original order restored across all pages");
         check(new HashSet<>(restored.stream().map(Candidate::id).toList()).size()==64,"no candidate duplicated");
         check(Arrays.equals(frozen,new ModelCodec<>(DecisionAdminData.class).encode(full)),"full immutable calculation unchanged");
+        // Actual native F8 sequence: first query has no expected revision;
+        // Suivante echoes the revision returned by that very first page.
+        var fixture=new ResourceId("test:readonly_cursor_revision_contract");
+        var observation=new ObservationContext(Map.of(),Map.of(),Map.of(),Map.of(),Map.of(),Map.of(),List.of(),Map.of());
+        var context=new SnapshotBatch(new RequestId(UUID.randomUUID()),scopes,stamp.capturedTick(),
+                Map.of(scope,REV),observation,Set.of(),Set.of(),HealthMode.NORMAL);
+        var fp=new Fingerprint("0".repeat(64));
+        var audit=new AuditDecision(decisionId,context,REV,fp,REV,fp,many,List.of(),0L,List.of(),
+                full.advisor(),full.selected(),roles,scopes,validations,List.of(),List.of(),full.outcome(),
+                List.of(),Map.of(),List.of(),List.of(),List.of(),Map.of(),List.of());
+        var proposal=new DecisionProposal(decisionId,many,Optional.empty(),audit,List.of());
+        var labRow=new AdminRow(scope,REV,stamp.capturedTick(),new LaboratoryAdminData(fixture,proposal,List.of()));
+        var labPages=new AdminLaboratoryResultPages(SESSION,labRow,stamp);
+        var labFirst=new AdminQuery(SESSION,new RequestId(UUID.randomUUID()),AdminPanel.LABORATORY,
+                new LaboratoryFilter(Optional.of(fixture)),Optional.empty(),Optional.empty(),25);
+        var labResult=labPages.query(labFirst);
+        check(labResult.nextCursor().isPresent(),"laboratory native sequence actually paginates");
+        var labCollected=new ArrayList<Candidate>();int labCount=0;
+        while(true) {
+            labCount++;check(labCount<100,"finite laboratory native-style sequence");
+            check(AdminLaboratoryResultPages.fits(labResult),"laboratory original read/wire limits retained");
+            check(labResult.snapshot().orElseThrow().equals(stamp),"laboratory original capture tuple retained");
+            var part=(LaboratoryResultPageData)labResult.data().getFirst().data();
+            check(part.candidateOffset()==labCollected.size()&&part.candidateCount()==many.size(),"laboratory exact offsets/total");
+            check(part.chosen().equals(full.selected()),"laboratory global choice retained on every page");
+            labCollected.addAll(part.candidates());
+            if(labResult.nextCursor().isEmpty())break;
+            var token=labResult.nextCursor();
+            var wrong=new AdminQuery(SESSION,new RequestId(UUID.randomUUID()),AdminPanel.LABORATORY,
+                    new LaboratoryFilter(Optional.of(fixture)),token,Optional.of(REV.plus(1)),25);
+            refused(()->labPages.query(wrong),ReasonCode.STALE_CONTEXT);
+            var next=new AdminQuery(SESSION,new RequestId(UUID.randomUUID()),AdminPanel.LABORATORY,
+                    new LaboratoryFilter(Optional.of(fixture)),token,Optional.of(REV),25);
+            labResult=labPages.query(next);
+            refused(()->labPages.query(next),ReasonCode.STALE_CONTEXT);
+        }
+        check(labCollected.equals(many),"laboratory all exact candidates restored in native optional-to-known sequence");
         var empty=new DecisionAdminData(full.decisionId(),full.capturedTick(),List.of(),Optional.empty(),
                 full.advisor(),full.validations(),full.outcome());
         var emptyRow=new AdminRow(original.scope(),REV,stamp.capturedTick(),empty);
