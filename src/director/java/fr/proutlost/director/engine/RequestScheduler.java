@@ -7,6 +7,14 @@ import java.util.*;
 /** Durable request deferrals; no selected/started proposal can fulfill a requirement. */
 public final class RequestScheduler {
     public record Service(List<Candidate> candidates, UnitValue credit, Optional<RequestId> request) {}
+    /** Same selectable pool for the decision and its later native opportunity rank. */
+    public Service decisionService(DecisionInput input, List<Candidate> candidates) {
+        boolean regularAvailable = candidates.stream().anyMatch(c -> c.eligible()
+            && !input.catalog().events().get(c.definition().id()).families().contains(Family.SAFE_MICRO_EVENT));
+        List<Candidate> selectable = candidates.stream().filter(c -> !regularAvailable
+            || !input.catalog().events().get(c.definition().id()).families().contains(Family.SAFE_MICRO_EVENT)).toList();
+        return service(input, selectable);
+    }
     public Service service(DecisionInput input, List<Candidate> candidates) {
         var ready = input.requests().stream().filter(v -> pending(v.state()) && candidates.stream().anyMatch(c -> matches(v.state(), c)))
             .sorted(Comparator.<RequestView>comparingInt(v -> v.state().schedulingPolicy().narrativePriority().rank()).reversed()

@@ -4,6 +4,7 @@ import fr.proutlost.director.api.codec.*;
 import fr.proutlost.director.api.model.*;
 import fr.proutlost.director.persistence.JournalStore;
 import fr.proutlost.director.runtime.*;
+import fr.proutlost.director.engine.RequestScheduler;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
@@ -20,8 +21,27 @@ public final class DirectorNativeEventEnvelopes {
  private final Thread actor=Thread.currentThread();private final JournalStore store;
  private final StoreSession session;private final DirectorRuntimeContent content;private final Supplier<Tick> clock;
  private final ResourceArbiter arbiter;private final Map<EventInstanceId,Entry> held=new LinkedHashMap<>();
- private record Ready(SelectedEventStart selected,List<PreparedEffect> prepared,Set<PlayerId> audience,java.util.function.BooleanSupplier authorized) {
-  Ready {prepared=List.copyOf(prepared);audience=Set.copyOf(audience);}
+ private record Ready(SelectedEventStart selected,List<PreparedEffect> prepared,Set<PlayerId> audience,
+   java.util.function.BooleanSupplier authorized,Optional<RequestId> requiredOpportunity) {
+  Ready(SelectedEventStart selected,List<PreparedEffect> prepared,Set<PlayerId> audience,java.util.function.BooleanSupplier authorized) {
+   this(selected,prepared,audience,authorized,DirectorNativeEventEnvelopes.requiredOpportunity(selected));
+  }
+  Ready {prepared=List.copyOf(prepared);audience=Set.copyOf(audience);requiredOpportunity=Objects.requireNonNull(requiredOpportunity);}
+ }
+ /** Replay the already-audited opportunity, not a content label or a coincident match.
+  * Compute once when queued; the original captured credit/input is immutable.
+  * Current live authorization and all physical guards are still checked separately. */
+ private static Optional<RequestId> requiredOpportunity(SelectedEventStart selected) {
+  var service=new RequestScheduler().decisionService(selected.captured(),selected.proposal().candidates());
+  var request=service.request();
+  if(request.isEmpty())return request;
+  boolean selectedInLane=service.candidates().stream().anyMatch(c->c.id().equals(selected.plan().candidateId()));
+  boolean scheduled=selected.proposal().stateChanges().stream().map(AggregateChange::next)
+   .filter(RequestAggregate.class::isInstance).map(RequestAggregate.class::cast)
+   .anyMatch(a->a.value().requestId().equals(request.orElseThrow())
+    &&a.value().kind()==RequestKind.REQUIRE&&a.value().status()==RequestStatus.SCHEDULED);
+  if(!selectedInLane||!scheduled)throw new IllegalStateException("Audited REQUIRE opportunity binding mismatch");
+  return request;
  }
  private record Proposal(Ready source,ResourceArbiter.Candidate candidate,Map<ResourceKey,Epoch> epochs) {}
  private final Map<EventInstanceId,Ready> ready=new LinkedHashMap<>();
@@ -102,11 +122,12 @@ public final class DirectorNativeEventEnvelopes {
   var queued=ready.get(selected.eventId());
   if(queued!=null){
    if(!queued.selected().proposal().equals(selected.proposal())||!queued.selected().captured().equals(selected.captured())||!queued.selected().parentChain().equals(selected.parentChain())||!queued.prepared().equals(prepared)||!queued.audience().equals(audience))throw new IllegalStateException("ready envelope identity changed");
-   if(authorized!=null)ready.put(selected.eventId(),new Ready(selected,prepared,audience,authorized));
+   if(authorized!=null)ready.put(selected.eventId(),new Ready(selected,prepared,audience,authorized,queued.requiredOpportunity()));
    return waiting("WAIT_GLOBAL_READY_WINDOW");
   }
   if(held.size()+ready.size()>=64)return waiting("GLOBAL_EVENT_CAPACITY");
-  ready.put(selected.eventId(),new Ready(selected,prepared,audience,authorized));
+  var next=new Ready(selected,prepared,audience,authorized);ready.put(selected.eventId(),next);
+  next.requiredOpportunity().ifPresent(request->System.out.println("DIRECTOR_GLOBAL_READY_REQUIRE_OPPORTUNITY event="+selected.eventId().value()+" request="+request.value()));
   return waiting(deferrals.getOrDefault(selected.eventId(),"WAIT_GLOBAL_READY_WINDOW"));
  }
  private Optional<Proposal> defer(EventInstanceId event,String reason){
@@ -180,7 +201,7 @@ public final class DirectorNativeEventEnvelopes {
   }
   double score=selected.proposal().candidates().stream().filter(c->c.id().equals(selected.plan().candidateId())).mapToDouble(Candidate::score).findFirst().orElse(0);
   long duration=lease(current.config());
-  var rank=new ResourceArbiter.Rank(false,selected.definition().conflicts().priority()==Priority.REQUIRE,selected.parentChain().isPresent(),
+  var rank=new ResourceArbiter.Rank(false,source.requiredOpportunity().isPresent(),selected.parentChain().isPresent(),
    selected.definition().conflicts().priority(),Math.max(0,now.value()-selected.captured().context().capturedTick().value()),score,selected.captured().seed());
   var id=new ReservationId(UUID.nameUUIDFromBytes((session.worldId().value()+"/event-envelope/"+selected.eventId().value()).getBytes(StandardCharsets.UTF_8)));
   var request=new ResourceArbiter.Candidate(id,selected.eventId(),rank,now.plus(duration),List.copyOf(claims.values()),costs,selected.physicalResources());

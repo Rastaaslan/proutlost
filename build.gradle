@@ -1227,3 +1227,20 @@ tasks.register('directorDecisionResultPagesTest', JavaExec) {
     mainClass = 'fr.proutlost.director.admin.server.DecisionResultPageTests'
     jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
 }
+
+
+// Exact native-adapter rank contract on isolated Linux JournalStore inputs.
+// This is a synthetic JDK test; no author approval or native Minecraft receipt.
+tasks.register('directorNativeReadyRequirementRankTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.bootstrap.NativeReadyRequirementRankTests'
+    maxHeapSize = '512m'
+    jvmArgs '-ea', '-XX:ActiveProcessorCount=1'
+    args project.file('src/directorTest/resources/catalog/DEFAULT_FOR_TESTING.json')
+    doFirst {
+        if (!System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('linux'))
+            throw new GradleException('Native ready rank contract uses a real isolated Linux JournalStore')
+        args layout.buildDirectory.dir('native-ready-requirement-' + UUID.randomUUID()).get().asFile.absolutePath
+    }
+}

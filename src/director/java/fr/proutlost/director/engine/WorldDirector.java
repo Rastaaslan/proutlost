@@ -117,9 +117,7 @@ public final class WorldDirector implements DecisionPort,ProviderProvenance {
             adjusted.add(new Candidate(candidate.id(), candidate.definition(), candidate.eligible(), candidate.reasons(), score.contributions(), score.score(), candidate.roles(), candidate.scopes()));
         }
         candidates.clear(); candidates.addAll(adjusted);
-        boolean regularAvailable = candidates.stream().anyMatch(c -> c.eligible() && !input.catalog().events().get(c.definition().id()).families().contains(Family.SAFE_MICRO_EVENT));
-        List<Candidate> selectable = candidates.stream().filter(c -> !regularAvailable || !input.catalog().events().get(c.definition().id()).families().contains(Family.SAFE_MICRO_EVENT)).toList();
-        var service = new RequestScheduler().service(input, selectable);
+        var service = new RequestScheduler().decisionService(input, candidates);
         var selected = new WeightedSelector(input.config()).select(service.candidates(), random);
         var audit = new AuditDecision(id, input.context(), input.config().revision(), input.config().provenanceHash(),
             new Revision(input.catalog().generation().value()), input.catalog().hash(), candidates, selected.pool(), input.seed(), random.draws(), advisor,
