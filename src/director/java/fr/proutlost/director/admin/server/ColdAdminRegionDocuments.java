@@ -41,6 +41,10 @@ public final class ColdAdminRegionDocuments implements AutoCloseable {
     private void actor(){if(Thread.currentThread()!=owner)throw new IllegalStateException("dense admin actor");}
     private void remove(Key key){entries.remove(key);cursors.values().removeIf(c->c.key().equals(key));}
     public AdminReadResult query(AdminQuery query,ActorIdentity actor,DirectorWorldState current,Sequence cut){
+        return query(query,actor,current,cut,current.simTick());
+    }
+    public AdminReadResult query(AdminQuery query,ActorIdentity actor,DirectorWorldState current,Sequence cut,Tick capturedTick){
+        Objects.requireNonNull(capturedTick);
         actor();long now=System.nanoTime();cursors.values().removeIf(c->now-c.expires()>=0);
         for(var key:entries.entrySet().stream().filter(e->now-e.getValue().touched>=TTL).map(Map.Entry::getKey).toList())remove(key);
         if(closed||!(query.filter() instanceof RegionFilter filter)||filter.regionId().isEmpty()||query.panel()!=AdminPanel.MEMORY
@@ -71,7 +75,7 @@ public final class ColdAdminRegionDocuments implements AutoCloseable {
             if(entry.read==null){if(entry.future==null)entry.future=new Builder(store,reader,snapshot.get(),filter.regionId().orElseThrow()).load().toCompletableFuture();return deferred(query);}
         }
         var read=cursor==null?entry.read:cursor.read();var stamp=cursor==null?
-            new AdminSnapshotStamp(world,session.bootEpoch(),current.header().revision(),current.simTick(),cut):cursor.stamp();
+            new AdminSnapshotStamp(world,session.bootEpoch(),current.header().revision(),capturedTick,cut):cursor.stamp();
         int document=cursor==null?0:cursor.document(),offset=cursor==null?0:cursor.offset();
         if(!read.tags().containsAll(filter.tags()))document=read.documents().size();
         List<AdminRow> rows=new ArrayList<>();int nextDocument=document,nextOffset=offset;

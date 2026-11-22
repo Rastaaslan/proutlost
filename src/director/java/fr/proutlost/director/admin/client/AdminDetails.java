@@ -8,6 +8,10 @@ import java.util.*;
 public final class AdminDetails {
     private AdminDetails() {}
     public static List<String> lines(AdminRow row,int limit) {
+        return lines(row,limit,row.capturedTick());
+    }
+    public static List<String> lines(AdminRow row,int limit,Tick capturedTick) {
+        Objects.requireNonNull(capturedTick);
         if(limit<2) throw new IllegalArgumentException("line limit");
         List<String> lines=new ArrayList<>();
         if(row.data() instanceof MemoryDocumentPageData)
@@ -26,7 +30,11 @@ public final class AdminDetails {
             }
             add(lines,limit,"Coupe J04 vérifiée ; Suivante parcourt les autres sections et pages.");
         }
-        if(row.data() instanceof WorldAdminData data)worldSummary(data,lines,limit);
+        if(row.data() instanceof DecisionAdminData data){
+            add(lines,limit,"DÉCISION / "+data.decisionId().value());
+            add(lines,limit,"Candidats de cette vue : "+data.candidates().size()+" / choix global : "+data.selected().map(c->c.value().toString()).orElse("aucun"));
+        }
+        if(row.data() instanceof WorldAdminData data)worldSummary(data,lines,limit,capturedTick);
         if(row.data() instanceof EventAdminData data)eventSummary(data,lines,limit);
         if(row.data() instanceof DisasterAdminData data)disasterSummary(data.disaster(),lines,limit);
         if(row.data() instanceof MutationAdminData data)mutationSummary(data,lines,limit);
@@ -45,7 +53,7 @@ public final class AdminDetails {
             case JsonValue.Nil ignored -> lines.add(path+" : —");
         }
     }
-    private static void worldSummary(WorldAdminData data,List<String> lines,int limit) {
+    private static void worldSummary(WorldAdminData data,List<String> lines,int limit,Tick capturedTick) {
         var world=data.state();var budget=data.budgets();
         boolean lab=world.intensityProfileId().value().equals("proutlost_director:lab_only");
         add(lines,limit,"MONDE / controle durable : "+world.runControl()+" / sante : "+world.healthMode());
@@ -55,7 +63,8 @@ public final class AdminDetails {
         add(lines,limit,"Revision : "+world.header().revision().value()+" / tick : "+world.simTick().value());
         add(lines,limit,"Boot : "+world.bootEpoch().value()+" / generation : "+world.storeGeneration().value());
         var engine=world.engineControl();
-        long remaining=Math.max(0L,engine.pacingDeadlineTick().value()-world.simTick().value());
+        long viewTick=world.runControl()==RunControl.RUNNING?capturedTick.value():world.simTick().value();
+        long remaining=Math.max(0L,engine.pacingDeadlineTick().value()-viewTick);
         add(lines,limit,"Phase depuis tick : "+engine.pacingEnteredTick().value()+" / prochaine transition tick : "+engine.pacingDeadlineTick().value());
         add(lines,limit,"Delai restant : "+remaining+" ticks de simulation / controle : "+world.runControl());
         add(lines,limit,"Moteur revision : "+engine.revision().value()+" / credit service requis : "+engine.requiredServiceCredit().value());

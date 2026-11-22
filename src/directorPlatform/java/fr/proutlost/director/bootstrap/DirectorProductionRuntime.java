@@ -346,7 +346,7 @@ public final class DirectorProductionRuntime implements DirectorCommands.Access,
   if(ColdAdminMemoryReader.handles(query)){
    var actor=identity(query.actorSession());if(actor.isEmpty())return unavailableProjection();
    var profile=AdminWorldControlHandler.configuration(current.value(),bundle.profiles());
-   return coldMemory.query(query,actor.get(),current.value(),current.cut(),new fr.proutlost.director.memory.MemorySettings(profile,declaredQa==null));
+   return coldMemory.query(query,actor.get(),current.value(),current.cut(),new fr.proutlost.director.memory.MemorySettings(profile,declaredQa==null),new Tick(clock()));
   }
   if(query.expectedSnapshotRevision().filter(r->!r.equals(current.value().header().revision())).isPresent())return unavailableProjection();
   if(query.panel()==AdminPanel.ACTIVE&&query.filter() instanceof EventFilter filter&&filter.instanceId().isPresent()&&query.cursor().isEmpty()){
@@ -364,7 +364,7 @@ public final class DirectorProductionRuntime implements DirectorCommands.Access,
     DirectorNativeAdminReadBridge.decisionPage(store,query,current.value());
    if(query.panel()==AdminPanel.ACTIVE&&snapshot.isEmpty())return activePublicationComplete?pages.query(query,identity(query.actorSession()).orElseThrow(),session.bootEpoch()):unavailableProjection();
    return DirectorNativeAdminReadBridge.sameWalCut(snapshot,current.cut()).map(value->new AdminReadResult(AdminStatus.SUCCEEDED,value.rows(),Optional.empty(),value.nextCursor(),
-    Optional.of(new AdminSnapshotStamp(world,session.bootEpoch(),value.snapshotRevision(),value.capturedTick(),value.lastDurableSequence())))).orElseGet(this::unavailableProjection);
+    Optional.of(new AdminSnapshotStamp(world,session.bootEpoch(),value.snapshotRevision(),new Tick(clock()),value.lastDurableSequence())))).orElseGet(this::unavailableProjection);
   }
   if(query.panel()==AdminPanel.MEMORY&&(!memory.status().complete()||memory.status().lastDurableSequence()!=current.cut().value()))return unavailableProjection();
   if(query.panel()==AdminPanel.WORLD&&!worldBudgetPublished)return unavailableProjection();

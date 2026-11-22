@@ -1220,3 +1220,10 @@ tasks.register('directorNativeAdminRefusalEvidenceTest', JavaExec) {
     mainClass = 'fr.proutlost.director.bootstrap.NativeAdminRefusalEvidenceTests'
     jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
 }
+
+tasks.register('directorDecisionResultPagesTest', JavaExec) {
+    dependsOn tasks.named('directorTestClasses')
+    classpath = sourceSets.directorTest.runtimeClasspath
+    mainClass = 'fr.proutlost.director.admin.server.DecisionResultPageTests'
+    jvmArgs '-ea', '-Xmx256m', '-XX:ActiveProcessorCount=1'
+}

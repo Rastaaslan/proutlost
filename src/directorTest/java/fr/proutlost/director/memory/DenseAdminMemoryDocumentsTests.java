@@ -61,7 +61,9 @@ public final class DenseAdminMemoryDocumentsTests {
     private static AdminQuery query(SessionId actor,Optional<String> cursor,Optional<Revision> expected){return new AdminQuery(actor,new RequestId(UUID.randomUUID()),AdminPanel.MEMORY,new RegionFilter(Optional.of(new RegionId(id(71,1))),Set.of()),cursor,expected,1);}
     private static AdminReadResult until(ColdAdminMemoryReader reader,JournalStore store,AdminQuery query,ActorIdentity actor,DirectorWorldState world,MemorySettings settings)throws Exception{
         long end=System.nanoTime()+TimeUnit.SECONDS.toNanos(30);AdminReadResult result;
-        do{result=reader.query(query,actor,world,store.metadataSnapshot().orElseThrow().cut(),settings);if(result.status()==AdminStatus.SUCCEEDED)return result;Thread.sleep(2);}while(System.nanoTime()<end);
+        do{result=reader.query(query,actor,world,store.metadataSnapshot().orElseThrow().cut(),settings,world.simTick().plus(1000));if(result.status()==AdminStatus.SUCCEEDED){
+            if(query.cursor().isEmpty())check(result.snapshot().orElseThrow().capturedTick().equals(world.simTick().plus(1000)),"actual actor capture time differs from last durable WORLD control");
+            return result;}Thread.sleep(2);}while(System.nanoTime()<end);
         throw new AssertionError("dense exact read never available: "+result);
     }
     public static void main(String[] args)throws Exception{
@@ -78,6 +80,7 @@ public final class DenseAdminMemoryDocumentsTests {
             var request=query(actorId,Optional.empty(),Optional.empty());
             check(reader.query(request,actor,world,store.metadataSnapshot().orElseThrow().cut(),settings).status()==AdminStatus.DEFERRED,"first600anchor exact read is async, never falseempty success");
             var result=until(reader,store,request,actor,world,settings);var pinned=result.snapshot().orElseThrow();
+            check(pinned.capturedTick().equals(world.simTick().plus(1000)),"dense snapshot uses supplied real capture time");
             check(result.data().getFirst().data() instanceof MemoryDocumentPageData,"whole immutable RegionRecord is fragmented rather than truncated/oversize");
             commandReference(actor,result);
             Set<AnchorId> anchors=new HashSet<>();Set<LocationId> locations=new HashSet<>();Set<RegionMemoryDetailData.Section> sections=new HashSet<>();int packets=0,fragments=0,documentRows=0,automaticContinuations=0;var firstFragments=new ArrayList<AdminSnapshot>();
@@ -102,7 +105,7 @@ public final class DenseAdminMemoryDocumentsTests {
                 if(result.nextCursor().isEmpty())break;
                 if(packets==1){world=nextWorld(world);durable(store,new DurableAggregate(new WorldAggregate(world)),List.of());}
                 var priorCursor=result.nextCursor();request=query(actorId,priorCursor,Optional.of(pinned.snapshotRevision()));
-                var next=reader.query(request,actor,world,store.metadataSnapshot().orElseThrow().cut(),settings);
+                var next=reader.query(request,actor,world,store.metadataSnapshot().orElseThrow().cut(),settings,new Tick(5000+packets));
                 check(next.status()==AdminStatus.SUCCEEDED&&next.snapshot().orElseThrow().equals(pinned),"cursor remains pinned across unrelated WORLD revision, no cut mixing");
                 check(reader.query(request,actor,world,store.metadataSnapshot().orElseThrow().cut(),settings).status()==AdminStatus.DEFERRED,"cursor consumed once");
                 var otherId=new SessionId(id(74,2));var other=new ActorIdentity(otherId,ActorKind.SERVER,Optional.empty(),Optional.empty(),4,true);

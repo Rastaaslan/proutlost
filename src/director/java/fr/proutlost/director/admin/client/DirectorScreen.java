@@ -325,15 +325,17 @@ public final class DirectorScreen extends Screen {
             graphics.drawString(font,"Révision "+snapshot.snapshotRevision().value()+" • capturé au tick "+snapshot.capturedTick().value()+" • durable "+snapshot.lastDurableSequence().value(),10,77,0xaacccc);
             if(panel==AdminPanel.LABORATORY)
                 graphics.drawString(font,"Simulation : calcul uniquement ; declenchement soumis a admission serveur.",10,94,0xffcc88);
+            if(panel==AdminPanel.DECISIONS&&snapshot.nextCursor().isPresent()&&!snapshot.rows().isEmpty())
+                graphics.drawString(font,"Vue paginee ; Suivante continue les resultats.",10,94,0xffcc88);
             if(!snapshot.rows().isEmpty()) {
                 var row=snapshot.rows().get(Math.min(rowIndex,snapshot.rows().size()-1));
                 if(renderedRow!=row||renderedWidth!=width) {
                     renderedRow=row;renderedWidth=width;
-                    renderedLines=AdminDetails.lines(row,512).stream().flatMap(line->font.split(Component.literal(line),Math.max(20,width-25)).stream()).toList();
+                    renderedLines=AdminDetails.lines(row,512,snapshot.capturedTick()).stream().flatMap(line->font.split(Component.literal(line),Math.max(20,width-25)).stream()).toList();
                 }
                 var lines=renderedLines;
                 detailOffset=Math.min(detailOffset,Math.max(0,lines.size()-1));
-                int y=panel==AdminPanel.LABORATORY?110:94;
+                int y=panel==AdminPanel.LABORATORY||panel==AdminPanel.DECISIONS&&snapshot.nextCursor().isPresent()?110:94;
                 for(int i=detailOffset;i<lines.size()&&y<height-(compact?95:145);i++,y+=10) graphics.drawString(font,lines.get(i),10,y,0xdddddd);
             }
         });

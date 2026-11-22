@@ -50,7 +50,7 @@ public final class ColdAdminMemoryReaderTests {
             Map.of("source_namespace",new JsonValue.Text(SOURCE.value()),"export_revision",new JsonValue.Text("1"),"export_digest",new JsonValue.Text(input.exportDigest().value()),
                 "location_import_base64",new JsonValue.Text(Base64.getEncoder().encodeToString(new ModelCodec<>(LocationImport.class).encode(input)))),true,Optional.empty());
         var records=new ArrayList<DurableRecord>();
-        records.add(new DurableAggregate(new RegionAggregate(new RegionRecord(header(region.value(),1),region,DIM,RegionStatus.ACTIVE,
+        records.add(new DurableAggregate(new RegionAggregate(new RegionRecord(new AggregateHeader(1,region.value(),new Revision(1),new Sequence(0),new Tick(250)),region,DIM,RegionStatus.ACTIVE,
             new SupportShape(List.of(new Aabb(DIM,0,0,0,16,256,16)),List.of(),List.of()),Set.of(anchor),new UnitValue(.7),Set.of(),Set.of(),new Revision(1),new RegionPersonality(Map.of()),Set.of(new MemoryId(region.value()))))));
         records.add(new DurableAggregate(new RegionMemoryAggregate(new RegionMemory(header(region.value(),1),region,Map.of(),new Tick(0),new Tick(0),Set.of(),Set.of(),new RegionActivityState(Map.of(),Map.of())))));
         records.add(new DurableAggregate(new AnchorAggregate(new AnchorRecord(header(anchor.value(),1),anchor,Optional.of(a),Set.of(region),DIM,new BlockPosition(DIM,1,64,1),"region.camp_radius_blocks",Set.of(new TagId("proutlost:anchor_center")),AnchorOrigin.IMPORTED,EvidenceStatus.CONFIRMED,true))));
@@ -61,7 +61,9 @@ public final class ColdAdminMemoryReaderTests {
     private static AdminQuery query(SessionId actor,AdminFilter filter,Optional<String> cursor){return new AdminQuery(actor,new RequestId(UUID.randomUUID()),AdminPanel.MEMORY,filter,cursor,Optional.empty(),1);}
     private static AdminReadResult until(ColdAdminMemoryReader reader,JournalStore store,AdminQuery query,ActorIdentity actor,DirectorWorldState world,MemorySettings settings)throws Exception{
         long end=System.nanoTime()+TimeUnit.SECONDS.toNanos(15);AdminReadResult result;
-        do{result=reader.query(query,actor,world,store.metadataSnapshot().orElseThrow().cut(),settings);if(result.status()==AdminStatus.SUCCEEDED)return result;Thread.sleep(2);}while(System.nanoTime()<end);
+        do{result=reader.query(query,actor,world,store.metadataSnapshot().orElseThrow().cut(),settings,world.simTick().plus(1000));if(result.status()==AdminStatus.SUCCEEDED){
+            if(query.cursor().isEmpty())check(result.snapshot().orElseThrow().capturedTick().equals(world.simTick().plus(1000)),"actual actor capture time differs from last durable WORLD control");
+            return result;}Thread.sleep(2);}while(System.nanoTime()<end);
         throw new AssertionError("exact cold read never became available: "+result);
     }
     public static void main(String[] args)throws Exception{
@@ -74,6 +76,7 @@ public final class ColdAdminMemoryReaderTests {
             var filter=new RegionFilter(Optional.of(new RegionId(id(1,1))),Set.of());var request=query(actorId,filter,Optional.empty());
             check(reader.query(request,actor,world,store.metadataSnapshot().orElseThrow().cut(),settings).status()==AdminStatus.DEFERRED,"first exact request queues bounded IO without claiming empty success");
             var result=until(reader,store,request,actor,world,settings);var data=(RegionAdminData)result.data().getFirst().data();
+            check(data.region().header().updatedTick().value()==250&&world.simTick().value()==0&&result.snapshot().orElseThrow().capturedTick().value()==1000,"newer durable region is not stamped with old WORLD tick");
             check(data.region().importance().value()==.7&&data.anchors().size()==1,"cold region and real anchor returned from authoritative J04");
             check(data.locations().size()==2,"source-bound unanchored location hydrated independently of J01 cache");
             check(data.tags().containsAll(Set.of(new TagId("proutlost:clearing"),new TagId("proutlost:minor_poi"))),"authored region and location tags recovered through exact retained source");

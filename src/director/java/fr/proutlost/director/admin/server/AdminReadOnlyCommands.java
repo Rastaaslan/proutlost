@@ -19,6 +19,7 @@ public final class AdminReadOnlyCommands {
         final CompletableFuture<AdminResult> future=new CompletableFuture<>();
         volatile Computed computed;
         volatile AdminLaboratoryResultPages laboratoryPages;
+        volatile AdminDecisionResultPages decisionPages;
         boolean succeeded;
         Job(AdminCommand command,AdminSnapshotStamp stamp){this.command=command;this.stamp=stamp;}
     }
@@ -81,6 +82,10 @@ public final class AdminReadOnlyCommands {
                         var result=new AdminReadResult(AdminStatus.SUCCEEDED,List.of(row),Optional.empty(),Optional.empty(),Optional.of(stamp));
                         if(!AdminLaboratoryResultPages.fits(result))
                             job.laboratoryPages=new AdminLaboratoryResultPages(command.actorSession(),row,stamp);
+                    }else if(data instanceof DecisionAdminData){
+                        var result=new AdminReadResult(AdminStatus.SUCCEEDED,List.of(row),Optional.empty(),Optional.empty(),Optional.of(stamp));
+                        if(!AdminDecisionResultPages.fits(result))
+                            job.decisionPages=new AdminDecisionResultPages(command.actorSession(),row,stamp);
                     }
                     job.computed=new Computed(row,null,null);
                 }
@@ -112,6 +117,7 @@ public final class AdminReadOnlyCommands {
         }
         if(selected==null)return Optional.empty();
         if(selected.laboratoryPages!=null)return Optional.of(selected.laboratoryPages.query(query));
+        if(selected.decisionPages!=null)return Optional.of(selected.decisionPages.query(query));
         if(query.cursor().isPresent())return Optional.of(new AdminReadResult(AdminStatus.DEFERRED,List.of(),Optional.empty(),Optional.empty(),Optional.empty()));
         return Optional.of(new AdminReadResult(AdminStatus.SUCCEEDED,List.of(selected.computed.row()),Optional.empty(),Optional.empty(),Optional.of(selected.stamp)));
     }

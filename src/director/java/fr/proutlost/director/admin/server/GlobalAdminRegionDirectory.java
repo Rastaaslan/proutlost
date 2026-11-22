@@ -46,6 +46,10 @@ public final class GlobalAdminRegionDirectory implements AutoCloseable {
             &&read.snapshot.generations().equals(now.generations())&&read.snapshot.sources().equals(now.sources());
     }
     public AdminReadResult query(AdminQuery query,ActorIdentity actor,DirectorWorldState current,Sequence cut){
+        return query(query,actor,current,cut,current.simTick());
+    }
+    public AdminReadResult query(AdminQuery query,ActorIdentity actor,DirectorWorldState current,Sequence cut,Tick capturedTick){
+        Objects.requireNonNull(capturedTick);
         actor();long now=System.nanoTime();
         if(Boolean.getBoolean("proutlost.director.diagnostics.admin_reads")&&query.cursor().isPresent()){
             var observed=cursors.get(query.cursor().orElseThrow());
@@ -82,7 +86,7 @@ public final class GlobalAdminRegionDirectory implements AutoCloseable {
                     CompletableFuture.supplyAsync(()->GlobalRegionTagCensus.load(store,snapshot.get()),worker).thenCompose(stage->stage).toCompletableFuture();
                 read=new Read(snapshot.get(),tags);reads.put(key,read);
             }
-            pageKey=new PageKey(Optional.empty(),query.limit());stamp=new AdminSnapshotStamp(world,session.bootEpoch(),current.header().revision(),current.simTick(),cut);
+            pageKey=new PageKey(Optional.empty(),query.limit());stamp=new AdminSnapshotStamp(world,session.bootEpoch(),current.header().revision(),capturedTick,cut);
         }
         read.touched=now;CompletableFuture<Page> future;
         try{future=page(read,pageKey,filter.tags());}catch(RejectedExecutionException unavailable){discard(key,read);return refused(query,"PAGE_WORKER_BUSY","");}

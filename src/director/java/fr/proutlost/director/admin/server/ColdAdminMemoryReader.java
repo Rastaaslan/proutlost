@@ -37,14 +37,18 @@ public final class ColdAdminMemoryReader implements AutoCloseable {
     public static boolean handles(AdminQuery request){return request.panel()==AdminPanel.MEMORY&&
         (request.filter() instanceof RegionFilter||request.filter() instanceof PlayerFilter);}
     public AdminReadResult query(AdminQuery request,ActorIdentity actor,DirectorWorldState current,Sequence cut,MetadataMemoryReader.Configuration settings){
+        return query(request,actor,current,cut,settings,current.simTick());
+    }
+    public AdminReadResult query(AdminQuery request,ActorIdentity actor,DirectorWorldState current,Sequence cut,MetadataMemoryReader.Configuration settings,Tick capturedTick){
+        Objects.requireNonNull(capturedTick);
         actor();Objects.requireNonNull(request);Objects.requireNonNull(actor);Objects.requireNonNull(current);Objects.requireNonNull(cut);
         if(closed||!handles(request)||!session.equals(store.session())||store.readOnlySafe()
             ||!current.worldId().equals(world)||!current.bootEpoch().equals(session.bootEpoch())
             ||!current.storeGeneration().equals(session.storeGeneration())||!actor.serverAuthenticated()
             ||actor.permissionLevel()<4||!actor.session().equals(request.actorSession()))return refused(request,"AUTHORITY_GUARD","closed="+closed+" readonly="+store.readOnlySafe()+" actor_auth="+actor.serverAuthenticated()+" permission="+actor.permissionLevel());
-        if(request.filter() instanceof RegionFilter filter&&filter.regionId().isEmpty())return directory.query(request,actor,current,cut);
+        if(request.filter() instanceof RegionFilter filter&&filter.regionId().isEmpty())return directory.query(request,actor,current,cut,capturedTick);
         var documentKey=new Key(request.actorSession(),request.filter());
-        if(documentMode.contains(documentKey)){var result=documents.query(request,actor,current,cut);if(result.status()!=AdminStatus.SUCCEEDED)trace(request,"DOCUMENT_MODE_RESULT","status="+result.status());return result;}
+        if(documentMode.contains(documentKey)){var result=documents.query(request,actor,current,cut,capturedTick);if(result.status()!=AdminStatus.SUCCEEDED)trace(request,"DOCUMENT_MODE_RESULT","status="+result.status());return result;}
         if(request.cursor().isEmpty()&&request.expectedSnapshotRevision().filter(v->!v.equals(current.header().revision())).isPresent())return refused(request,"FRESH_EXPECTED_REVISION","world="+current.header().revision().value());
         var snapshot=store.snapshot();if(snapshot.isEmpty()||!snapshot.get().cut().equals(cut))return refused(request,"INITIAL_CUT","expected="+cut.value()+" observed="+snapshot.map(v->String.valueOf(v.cut().value())).orElse("EMPTY"));
         var key=new Key(request.actorSession(),request.filter());Entry entry=entries.get(key);Cursor cursor=null;
@@ -65,7 +69,7 @@ public final class ColdAdminMemoryReader implements AutoCloseable {
                 catch(CompletionException failed){entry.future=null;entry.loaded=null;trace(request,"LOAD_FUTURE_FAILED",safeFailure(failed));
                     if(request.filter() instanceof RegionFilter&&capacityFailure(failed)){
                         if(documentMode.size()>=maximumReads)documentMode.removeFirst();documentMode.add(key);entries.remove(key);
-                        return documents.query(request,actor,current,cut);
+                        return documents.query(request,actor,current,cut,capturedTick);
                     }
                     entry.retryAfter=System.nanoTime()+1_000_000_000L;return refused(request,"FAILED_LOAD_BACKOFF","");}
             }
@@ -76,7 +80,7 @@ public final class ColdAdminMemoryReader implements AutoCloseable {
             }
         }
         var loaded=cursor==null?entry.loaded:cursor.loaded();var rows=loaded.rows();
-        var stamp=cursor==null?new AdminSnapshotStamp(world,session.bootEpoch(),current.header().revision(),current.simTick(),cut):cursor.stamp();
+        var stamp=cursor==null?new AdminSnapshotStamp(world,session.bootEpoch(),current.header().revision(),capturedTick,cut):cursor.stamp();
         if(request.filter() instanceof RegionFilter filter&&!filter.tags().isEmpty())rows=rows.stream().filter(r->r.data() instanceof RegionAdminData region&&region.tags().containsAll(filter.tags())).toList();
         int start=cursor==null?0:cursor.offset();
         if(start<0||start>rows.size())return refused(request,"ROW_OFFSET","offset="+start+" count="+rows.size());
