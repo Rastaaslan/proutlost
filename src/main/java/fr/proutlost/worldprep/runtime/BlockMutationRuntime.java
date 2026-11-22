@@ -308,7 +308,7 @@ public final class BlockMutationRuntime {
         for(var change:changes){
             validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());
             var loaded=ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
-            if(!encode(loaded.getBlockState(pos)).equals(change.before())||!safeAtBoundary(level,data,area,plan,change,pos))throw ownership(pos);
+            if(!loaded.getBlockState(pos).equals(decode(change.before()))||!safeAtBoundary(level,data,area,plan,change,pos))throw ownership(pos);
         }
         var advanced=RuntimePageJournal.publish(level,journal,List.copyOf(changes));
         if(advanced.pages().size()<=manifest.pages().size()
@@ -360,10 +360,10 @@ public final class BlockMutationRuntime {
                 if(data.protectedBlock(area.dimension(),change.x(),change.z()))throw new IllegalStateException("Rollback location is protected");
                 var pos=new BlockPos(change.x(),change.y(),change.z());
                 var loaded=ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
-                String current=encode(loaded.getBlockState(pos));
-                if(!current.equals(change.applied())&&!current.equals(change.before()))throw ownership(pos);
-                if(phase==BiomeApplyRecoveryCursor.Phase.REPLAY&&!current.equals(change.before())){
-                    writeVerified(level,pos,decode(change.before()),mutationFlags(pass));loaded.setUnsaved(true);
+                BlockState current=loaded.getBlockState(pos),before=decode(change.before()),applied=decode(change.applied());
+                if(!current.equals(applied)&&!current.equals(before))throw ownership(pos);
+                if(phase==BiomeApplyRecoveryCursor.Phase.REPLAY&&!current.equals(before)){
+                    writeVerified(level,pos,before,mutationFlags(pass));loaded.setUnsaved(true);
                 }
             }));
         var progress=r.cursor.progress();
@@ -380,12 +380,12 @@ public final class BlockMutationRuntime {
             (page,offset,count,phase)->RuntimePageJournal.visitRecoverySlice(level,journal,r.manifest,r.firstPage+page,offset,count,change->{
                 validateBounds(level,area,change);var pos=new BlockPos(change.x(),change.y(),change.z());
                 var loaded=ServerExistingChunkAccess.requireBlock(level,area,change.x(),change.y(),change.z());
-                String current=encode(loaded.getBlockState(pos));
-                if(current.equals(change.before())){
+                BlockState current=loaded.getBlockState(pos),before=decode(change.before()),applied=decode(change.applied());
+                if(current.equals(before)){
                     if(!safeAtBoundary(level,data,area,plan,change,pos))throw ownership(pos);
-                }else if(!current.equals(change.applied()))throw ownership(pos);
-                if(phase==BiomeApplyRecoveryCursor.Phase.REPLAY&&current.equals(change.before())){
-                    writeVerified(level,pos,decode(change.applied()),mutationFlags(plan.pass));loaded.setUnsaved(true);replayed[0]=true;
+                }else if(!current.equals(applied))throw ownership(pos);
+                if(phase==BiomeApplyRecoveryCursor.Phase.REPLAY&&current.equals(before)){
+                    writeVerified(level,pos,applied,mutationFlags(plan.pass));loaded.setUnsaved(true);replayed[0]=true;
                 }
             }));
     }
