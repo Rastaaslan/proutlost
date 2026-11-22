@@ -90,6 +90,15 @@ public record BiomeProfile(String id, long seed, Map<String,List<BiomeCandidate>
             for(var name:REQUIRED_PALETTES)if(!palettes.containsKey(name))
                 throw new IllegalStateException("Missing required biome palette: "+name);
         }
+        /** Coherent normalized spatial signal; registry/fallback authority remains in choose(). */
+        public BiomeCandidate.Resolution chooseSpatial(String palette,double fraction){
+            if(!Double.isFinite(fraction)||fraction<0||fraction>1)
+                throw new IllegalArgumentException("Spatial biome choice outside [0,1]");
+            var entries=palettes.get(palette);
+            if(entries==null||entries.isEmpty())throw new IllegalStateException("Missing biome palette: "+palette);
+            long index=Math.min(entries.size()-1,(long)Math.floor(fraction*entries.size()));
+            return choose(palette,index);
+        }
         public BiomeCandidate.Resolution choose(String palette,long selector){
             var entries=palettes.get(palette);
             if(entries==null||entries.isEmpty())throw new IllegalStateException("Missing biome palette: "+palette);

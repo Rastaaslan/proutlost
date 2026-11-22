@@ -219,7 +219,7 @@ public final class WorldPrepRuntime {
         if(override!=null&&override.exactBiome()!=null)
             return new fr.proutlost.worldprep.biome.BiomeCandidate.Resolution(
                 fr.proutlost.worldprep.biome.BiomeCandidate.Status.VALID,override.exactBiome());
-        long selector=seed^((long)x*341873128712L)^((long)z*132897987541L);
+        // Spatial choices are correlated at the existing 256-block macro scale, not quart parity.
         String palette;
         if(override!=null&&override.palette()!=null)palette=override.palette();
         else if(sample.waterDepth()>20)palette="marine_deep";
@@ -228,8 +228,8 @@ public final class WorldPrepRuntime {
         else if(sample.surfaceY()>=133)palette="mountain";
         else if(sample.slope()>=8)palette="rocky_highland";
         else if(sample.coastDistance()<=4)palette=sample.slope()>3?"stony_coast":"coastal";
-        else palette=(selector&3)==0?"lowland_forest":"open_lowland";
-        return loaded.resolved().choose(palette,selector);
+        else palette=fr.proutlost.worldprep.biome.SpatialBiomeChoice.lowlandPalette(seed,x,z);
+        return loaded.resolved().chooseSpatial(palette,fr.proutlost.worldprep.biome.SpatialBiomeChoice.variant(seed,x,z));
     }
     private static String chooseBiome(ServerLevel level,WorldPrepSavedData data,
             MinecraftTerrainSampler.Sample sample,long seed,int x,int z){

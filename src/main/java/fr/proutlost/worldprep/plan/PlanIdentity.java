@@ -13,7 +13,7 @@ public final class PlanIdentity {
     public static final String PROFILE="proutlost:river_test";
     /** Compatibility constant for old fixtures only. Runtime code reads the profile seed. */
     public static final long SEED=7640891576956012809L;
-    private static final String SEMANTIC_VERSION="semantic-config-v3-physical-surface-water";
+    private static final String SEMANTIC_VERSION="semantic-config-v4-coherent-lowland-biomes";
     public static long seed(ServerLevel level){return BiomeProfileRuntime.seed(level);}
     public static WorldPrepSavedData.PlanInput capture(ServerLevel level,WorldPrepSavedData d,WorldPrepSavedData.Area a){
         var loaded=BiomeProfileRuntime.resolve(level);loaded.resolved().requireValid();
