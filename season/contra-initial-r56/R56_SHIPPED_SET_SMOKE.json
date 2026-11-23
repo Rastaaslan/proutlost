@@ -1,0 +1,17 @@
+{
+  "candidate": "R56",
+  "normal_exit_code": 0,
+  "production_running": true,
+  "physical_grant_count": 1,
+  "qa_addon_count": 0,
+  "campaign_sites": 17,
+  "campaign_supports": 48,
+  "native_mods": 52,
+  "exact_launch": "sh run.sh",
+  "profile_manifest_sha256": "cd2bd1aa8c5207cae34c5aea485016fadb13fa14f211865321abaa29a5dd8dfb",
+  "actual_health_line": "[07:42:42] [Server thread/INFO] [minecraft/MinecraftServer]: [World Director] mode=PRODUCTION J04=WRITABLE phase=RUNNING sant\u00e9=NORMAL contr\u00f4le=RUNNING r\u00e9vision=40 ports_manquants=0; qualification humaine/G5 distincte.",
+  "actual_G0_activation": "[07:41:05] [Server thread/INFO] [STDOUT/]: [fr.proutlost.director.bootstrap.DirectorNativeLocationGenerations:poll:353]: DIRECTOR_LOCATION_IMPORT_DURABLE source=proutlost:season_authoring revision=1 attempt=0 sequence=197 digest=9c1c33ed6f831b707c60b7e44a0f07ae9ca36b8bd4a3f51090353b188f7b8eeb scope=J04_GENERATION",
+  "human_qualification": false,
+  "full_campaign_qualification": false,
+  "elapsed_seconds": 131.12484328399296
+}

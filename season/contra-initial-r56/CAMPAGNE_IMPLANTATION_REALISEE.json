@@ -28,7 +28,7 @@
     }
   ],
   "remaining_physical_blockers": [],
-  "short_progression_check": "See delivered actual check result",
+  "short_progression_check": "PASS_P0_P1_P2_NATIVE_CONTROLLED_ACTORS_NO_CALIBRATION_OVERRIDE",
   "full_campaign_walkthrough": false,
   "FULLSTACK_ACCEPTED": false
 }

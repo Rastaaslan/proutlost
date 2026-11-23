@@ -1,0 +1,28 @@
+{
+  "candidate": "R56",
+  "physical_implementation": "PRESENT_AND_BOUND",
+  "Director_real_G0_D0_import": "PASS",
+  "shipped52mod_set": "PRODUCTION_RUNNING_NORMAL_CLOSED_EXIT0",
+  "short_check_on_disposable_copy": {
+    "candidate": "R56",
+    "success": true,
+    "elapsed_seconds": 32.977,
+    "error": "",
+    "native_controlled_server_players": 2,
+    "authenticated_human_clients": 0,
+    "fixture_registration": "native PlayerList membership and existing arrival adapter; no authenticated network login",
+    "synthetic_quest_facts": 0,
+    "calibration_overridden": false,
+    "disposable_world_not_shipped": true,
+    "checks": [
+      "17_BINDINGS_48_ACTUAL_SUPPORTS",
+      "STANDARD_ARRIVAL_ADAPTER_AND_REAL_BOARDWALK",
+      "LOCKED_SUPPORT_REFUSED",
+      "P0_REAL_MARKER_PROGRESS",
+      "P1_DEFAULT_ACTIVITY_REAL_CAMP",
+      "SUPPORT_BREAK_PROTECTED",
+      "P2_REAL_SIGNAL_AND_RESPONSE"
+    ]
+  },
+  "FULLSTACK_ACCEPTED": false
+}

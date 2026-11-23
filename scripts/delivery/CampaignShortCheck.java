@@ -27,7 +27,7 @@ import fr.proutlost.quest.core.*;
 @Mod("proutlost_campaign_shortcheck")
 public final class CampaignShortCheck {
  MinecraftServer server;ServerPlayer a,b;int stage,ticks;long begun;boolean done;CampaignPhysicalRuntime.Manifest manifest;
- final List<String> checks=new ArrayList<>();java.util.List<ServerPlayer> fixtureActors;
+ final List<String> checks=new ArrayList<>();java.util.List<ServerPlayer> fixtureActors;java.util.Map<UUID,ServerPlayer> fixtureById;
  public CampaignShortCheck(IEventBus bus){NeoForge.EVENT_BUS.addListener(this::commands);NeoForge.EVENT_BUS.addListener(this::tick);}
  void commands(RegisterCommandsEvent e){e.getDispatcher().register(Commands.literal("pls2_campaign_shortcheck").requires(s->s.hasPermission(4)).executes(c->{
   if(server!=null||!Boolean.getBoolean("proutlost.campaign.shortCheck"))throw new IllegalStateException("Disposable-check JVM only");
@@ -50,7 +50,7 @@ public final class CampaignShortCheck {
    @Override public void send(net.minecraft.network.protocol.Packet<?> packet){}
    @Override public void send(net.minecraft.network.protocol.Packet<?> packet,net.minecraft.network.PacketSendListener listener){}
   };
-  try{var field=net.minecraft.server.players.PlayerList.class.getDeclaredField("players");field.setAccessible(true);@SuppressWarnings("unchecked") var list=(java.util.List<ServerPlayer>)field.get(server.getPlayerList());fixtureActors=list;fixtureActors.add(p);}catch(ReflectiveOperationException x){throw new IllegalStateException("Controlled actor membership",x);}Arrivals.joined(new net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent(p));return p;
+  try{var field=net.minecraft.server.players.PlayerList.class.getDeclaredField("players");field.setAccessible(true);@SuppressWarnings("unchecked") var list=(java.util.List<ServerPlayer>)field.get(server.getPlayerList());fixtureActors=list;fixtureActors.add(p);var byId=net.minecraft.server.players.PlayerList.class.getDeclaredField("playersByUUID");byId.setAccessible(true);@SuppressWarnings("unchecked") var map=(java.util.Map<UUID,ServerPlayer>)byId.get(server.getPlayerList());fixtureById=map;fixtureById.put(p.getUUID(),p);}catch(ReflectiveOperationException x){throw new IllegalStateException("Controlled actor membership",x);}Arrivals.joined(new net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent(p));return p;
  }
  void use(ServerPlayer p,String id){
   var s=manifest.supports().stream().filter(x->x.id().equals(id)).findFirst().orElseThrow();at(p,s.site());
@@ -88,7 +88,7 @@ public final class CampaignShortCheck {
   }
  }catch(Throwable x){x.printStackTrace();finish(false,x.toString());}}
  void finish(boolean success,String error){done=true;try{
-  if(fixtureActors!=null){fixtureActors.remove(a);fixtureActors.remove(b);}
+  if(fixtureActors!=null){fixtureActors.remove(a);fixtureActors.remove(b);if(a!=null)fixtureById.remove(a.getUUID());if(b!=null)fixtureById.remove(b.getUUID());}
   var r=new JsonObject();r.addProperty("candidate","R56");r.addProperty("success",success);r.addProperty("elapsed_seconds",(System.currentTimeMillis()-begun)/1000.);r.addProperty("error",error);r.addProperty("native_controlled_server_players",2);r.addProperty("authenticated_human_clients",0);r.addProperty("fixture_registration","native PlayerList membership and existing arrival adapter; no authenticated network login");r.addProperty("synthetic_quest_facts",0);r.addProperty("calibration_overridden",false);r.addProperty("disposable_world_not_shipped",true);r.add("checks",new Gson().toJsonTree(checks));Files.writeString(server.getWorldPath(LevelResource.ROOT).toAbsolutePath().normalize().getParent().resolve("R56_SHORT_CAMPAIGN_CHECK.json"),new GsonBuilder().setPrettyPrinting().create().toJson(r));System.out.println(success?"R56_SHORT_CAMPAIGN_CHECK_PASS":"R56_SHORT_CAMPAIGN_CHECK_FAIL "+error);
  }catch(Exception x){throw new IllegalStateException(x);}}
 }
