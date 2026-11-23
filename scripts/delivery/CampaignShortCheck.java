@@ -46,7 +46,10 @@ public final class CampaignShortCheck {
   };
   p.setInvulnerable(true);var conn=new net.minecraft.network.Connection(net.minecraft.network.protocol.PacketFlow.SERVERBOUND);new io.netty.channel.embedded.EmbeddedChannel(conn);// Controlled server actors use the existing arrival adapter, without claiming a
   // new authenticated network login or negotiating unrelated mod transports.
-  p.connection=new net.minecraft.server.network.ServerGamePacketListenerImpl(server,conn,p,cookie);
+  p.connection=new net.minecraft.server.network.ServerGamePacketListenerImpl(server,conn,p,cookie){
+   @Override public void send(net.minecraft.network.protocol.Packet<?> packet){}
+   @Override public void send(net.minecraft.network.protocol.Packet<?> packet,net.minecraft.network.PacketSendListener listener){}
+  };
   try{var field=net.minecraft.server.players.PlayerList.class.getDeclaredField("players");field.setAccessible(true);@SuppressWarnings("unchecked") var list=(java.util.List<ServerPlayer>)field.get(server.getPlayerList());fixtureActors=list;fixtureActors.add(p);}catch(ReflectiveOperationException x){throw new IllegalStateException("Controlled actor membership",x);}Arrivals.joined(new net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent(p));return p;
  }
  void use(ServerPlayer p,String id){
