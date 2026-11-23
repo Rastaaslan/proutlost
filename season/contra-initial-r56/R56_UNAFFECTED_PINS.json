@@ -1,0 +1,11 @@
+{
+  "main_sha256": "7d7ae1058e1887a015e2caf1bf2cbbb9b4bef4f9d7a147b71acc100738d0ac9e",
+  "SDK_reused_sha256": "41ac0a7b2f783ce854a085507c6d30d2c2fa6beecb46947d5bfc7c2bf5be66e6",
+  "unchanged_from_R55": [
+    "data/proutlost/quest/campaign.json",
+    "data/proutlost/quest/investigation.json",
+    "data/proutlost/quest/perception.json",
+    "fr/proutlost/integration/contra/ContraRealDirectorCatalogImportProbe.class"
+  ],
+  "real_provider_class_sha256": "192b0da0717a296577aae3121be727b30cf0b72346e430bca26be2a8524deb64"
+}

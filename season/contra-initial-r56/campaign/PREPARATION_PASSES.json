@@ -1,0 +1,10 @@
+{
+  "initial_native_applied_cells": 9102,
+  "targeted_finalize_cells": 2,
+  "total_planned_cells": 9104,
+  "initial_pass_log_sha256": "9f9ab49d8b13e68e5e0b3d54d9809d212528b4444e44f3a52367a09952c3384a",
+  "physical_receipt_sha256": "f4ab63067bd339dc3cfb31e04fde873ac8d39982d5f25067ea440e7319f77fc9",
+  "final_runtime_main_sha256": "7d7ae1058e1887a015e2caf1bf2cbbb9b4bef4f9d7a147b71acc100738d0ac9e",
+  "authoring_runtime_main_sha256": "f134422ae42cf982d25c99acc7f48235ba9d636eb064d8d43ef4b8454534ec0f",
+  "narrative_and_graph_unchanged": true
+}

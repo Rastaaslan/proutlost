@@ -29,6 +29,7 @@ public final class Investigation {
     }
     public QuestCore.Observation examine(QuestCore core,UUID player,String support,String siteKind,String location,long now){
         var s=CONTENT.supports().stream().filter(v->v.id().equals(support)).findFirst().orElseThrow();
+        requireAccessible(core,s.quest(),player);
         if(!s.siteKind().equals(siteKind))throw new IllegalStateException("Wrong support location");
         String id=player+":"+s.id()+":"+location;
         var existing=core.evidence(player,id);if(existing.isPresent())return existing.get();

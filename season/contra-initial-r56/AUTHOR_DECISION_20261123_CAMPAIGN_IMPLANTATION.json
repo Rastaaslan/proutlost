@@ -1,0 +1,8 @@
+{
+  "id": "PLS2-S2-AUTHOR-20261123-CAMPAIGN-IMPLANTATION",
+  "approved_by": "Damien Lagorce",
+  "recorded_utc": "2026-11-23T06:35:16.603720+00:00",
+  "baseline": "R55/a26225df78e63f819b9ce4a8d758947d46541f6e",
+  "scope": "Author explicitly delegates selection of compatible locations and effective construction and connection of the physical campaign supports from CDC/QUESTSPEC on the season copy. Absence is development work, not an external blocker. Preserve existing canonical facts and scopes; create technical coordinates, files and structures autonomously. Minimal tests only.",
+  "no_live_deployment": true
+}

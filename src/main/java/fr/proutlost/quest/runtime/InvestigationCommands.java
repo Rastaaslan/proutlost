@@ -34,6 +34,7 @@ public final class InvestigationCommands {
             switch(action){
                 case "inspect"->{String id=StringArgumentType.getString(c,"support");var support=Investigation.content().supports().stream().filter(s->s.id().equals(id)).findFirst().orElseThrow();
                     var site=d.sites().near(p,PreparedSites.Kind.valueOf(support.siteKind()),6).orElseThrow();
+                    CampaignPhysicalRuntime.requireSupport(p,"inspect "+id,site.getKey());
                     if(id.equals("departure_trace")&&!departureTrace(p,site.getValue()))throw new IllegalStateException("Physical trace missing");
                     useful=d.core().evidence(p.getUUID(),EvidenceArguments.documentId(p.getUUID(),id,site.getKey())).isEmpty();
                     var o=d.investigation().examine(d.core(),p.getUUID(),id,site.getValue().kind().name(),site.getKey(),now);

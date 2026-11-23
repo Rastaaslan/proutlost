@@ -1,0 +1,1073 @@
+{
+  "schema": 1,
+  "authorDecision": "PLS2-S2-AUTHOR-20261123-CAMPAIGN-IMPLANTATION",
+  "worldToken": "ea3a0e27-5af3-5833-bfcc-418d6810f381",
+  "worldSeed": 27594267,
+  "sites": [
+    {
+      "id": "s2_arrival",
+      "kind": "WRECK",
+      "anchor": {
+        "x": 2905,
+        "y": 65,
+        "z": 2784
+      },
+      "baselineState": "Block{minecraft:oak_planks}"
+    },
+    {
+      "id": "s2_shore",
+      "kind": "SAFE_SHORE",
+      "anchor": {
+        "x": 2928,
+        "y": 69,
+        "z": 2784
+      },
+      "baselineState": "Block{minecraft:oak_planks}"
+    },
+    {
+      "id": "s2_camp",
+      "kind": "CAMP",
+      "anchor": {
+        "x": 2916,
+        "y": 92,
+        "z": 2946
+      },
+      "baselineState": "Block{minecraft:barrel}[facing\u003dup,open\u003dfalse]"
+    },
+    {
+      "id": "s2_signal",
+      "kind": "SIGNAL",
+      "anchor": {
+        "x": 2896,
+        "y": 92,
+        "z": 2910
+      },
+      "baselineState": "Block{minecraft:gravel}"
+    },
+    {
+      "id": "s2_old_camp",
+      "kind": "OLD_CAMP",
+      "anchor": {
+        "x": 2896,
+        "y": 88,
+        "z": 3142
+      },
+      "baselineState": "Block{minecraft:spruce_planks}"
+    },
+    {
+      "id": "s2_archive",
+      "kind": "ARCHIVE",
+      "anchor": {
+        "x": 2932,
+        "y": 91,
+        "z": 3496
+      },
+      "baselineState": "Block{minecraft:stone_bricks}"
+    },
+    {
+      "id": "s2_old_shelter",
+      "kind": "OLD_SHELTER",
+      "anchor": {
+        "x": 2758,
+        "y": 95,
+        "z": 3242
+      },
+      "baselineState": "Block{minecraft:barrel}[facing\u003dup,open\u003dfalse]"
+    },
+    {
+      "id": "s2_perception",
+      "kind": "PERCEPTION",
+      "anchor": {
+        "x": 2868,
+        "y": 91,
+        "z": 2958
+      },
+      "baselineState": "Block{minecraft:mossy_stone_bricks}"
+    },
+    {
+      "id": "s2_repair_a",
+      "kind": "PASSAGE",
+      "anchor": {
+        "x": 2818,
+        "y": 102,
+        "z": 3338
+      },
+      "baselineState": "Block{minecraft:cracked_stone_bricks}"
+    },
+    {
+      "id": "s2_repair_b",
+      "kind": "PASSAGE",
+      "anchor": {
+        "x": 2818,
+        "y": 102,
+        "z": 3346
+      },
+      "baselineState": "Block{minecraft:cracked_stone_bricks}"
+    },
+    {
+      "id": "s2_detour_a",
+      "kind": "DETOUR",
+      "anchor": {
+        "x": 2834,
+        "y": 102,
+        "z": 3338
+      },
+      "baselineState": "Block{minecraft:coarse_dirt}"
+    },
+    {
+      "id": "s2_detour_b",
+      "kind": "DETOUR",
+      "anchor": {
+        "x": 2834,
+        "y": 101,
+        "z": 3346
+      },
+      "baselineState": "Block{minecraft:coarse_dirt}"
+    },
+    {
+      "id": "s2_signal_region_a",
+      "kind": "SIGNAL_REGION",
+      "anchor": {
+        "x": 2868,
+        "y": 91,
+        "z": 2980
+      },
+      "baselineState": "Block{minecraft:gravel}"
+    },
+    {
+      "id": "s2_signal_region_b",
+      "kind": "SIGNAL_REGION",
+      "anchor": {
+        "x": 2984,
+        "y": 96,
+        "z": 3386
+      },
+      "baselineState": "Block{minecraft:gravel}"
+    },
+    {
+      "id": "s2_transmitter",
+      "kind": "TRANSMITTER",
+      "anchor": {
+        "x": 3030,
+        "y": 80,
+        "z": 3466
+      },
+      "baselineState": "Block{minecraft:stone_bricks}"
+    },
+    {
+      "id": "s2_retreat",
+      "kind": "RETREAT",
+      "anchor": {
+        "x": 3032,
+        "y": 86,
+        "z": 3370
+      },
+      "baselineState": "Block{minecraft:spruce_planks}"
+    },
+    {
+      "id": "s2_memory",
+      "kind": "MEMORY",
+      "anchor": {
+        "x": 2932,
+        "y": 92,
+        "z": 2962
+      },
+      "baselineState": "Block{minecraft:stone_bricks}"
+    }
+  ],
+  "supports": [
+    {
+      "id": "arrival_motif",
+      "site": "s2_arrival",
+      "at": {
+        "x": 2908,
+        "y": 65,
+        "z": 2786
+      },
+      "block": "minecraft:lectern",
+      "action": "examine wreck_motif",
+      "quest": ""
+    },
+    {
+      "id": "shore_arrival",
+      "site": "s2_shore",
+      "at": {
+        "x": 2931,
+        "y": 69,
+        "z": 2784
+      },
+      "block": "minecraft:lectern",
+      "action": "reach_shore",
+      "quest": "P0"
+    },
+    {
+      "id": "camp_claim",
+      "site": "s2_camp",
+      "at": {
+        "x": 2913,
+        "y": 92,
+        "z": 2944
+      },
+      "block": "minecraft:lectern",
+      "action": "claim_camp",
+      "quest": "P1"
+    },
+    {
+      "id": "camp_arrangement",
+      "site": "s2_camp",
+      "at": {
+        "x": 2919,
+        "y": 92,
+        "z": 2944
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign record_arrangement",
+      "quest": "B2"
+    },
+    {
+      "id": "camp_scene",
+      "site": "s2_camp",
+      "at": {
+        "x": 2913,
+        "y": 92,
+        "z": 2948
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign observe_scene",
+      "quest": "D1"
+    },
+    {
+      "id": "signal_request",
+      "site": "s2_signal",
+      "at": {
+        "x": 2899,
+        "y": 92,
+        "z": 2907
+      },
+      "block": "minecraft:lectern",
+      "action": "activate_distress_signal",
+      "quest": "P2"
+    },
+    {
+      "id": "old_camp_motif",
+      "site": "s2_old_camp",
+      "at": {
+        "x": 2893,
+        "y": 88,
+        "z": 3140
+      },
+      "block": "minecraft:lectern",
+      "action": "examine camp_motif",
+      "quest": ""
+    },
+    {
+      "id": "trace_slot_0",
+      "site": "s2_old_shelter",
+      "at": {
+        "x": 2757,
+        "y": 94,
+        "z": 3242
+      },
+      "block": "minecraft:barrel",
+      "action": "campaign ancient_arrangement",
+      "quest": "B3"
+    },
+    {
+      "id": "trace_slot_1",
+      "site": "s2_old_shelter",
+      "at": {
+        "x": 2758,
+        "y": 94,
+        "z": 3242
+      },
+      "block": "minecraft:barrel",
+      "action": "campaign ancient_arrangement",
+      "quest": "B3"
+    },
+    {
+      "id": "trace_slot_2",
+      "site": "s2_old_shelter",
+      "at": {
+        "x": 2759,
+        "y": 94,
+        "z": 3242
+      },
+      "block": "minecraft:barrel",
+      "action": "campaign ancient_arrangement",
+      "quest": "B3"
+    },
+    {
+      "id": "ancient_arrangement",
+      "site": "s2_old_shelter",
+      "at": {
+        "x": 2761,
+        "y": 95,
+        "z": 3240
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign ancient_arrangement",
+      "quest": "B3"
+    },
+    {
+      "id": "scene_start",
+      "site": "s2_perception",
+      "at": {
+        "x": 2865,
+        "y": 91,
+        "z": 2956
+      },
+      "block": "minecraft:lectern",
+      "action": "scene",
+      "quest": "C1"
+    },
+    {
+      "id": "concept_ici",
+      "site": "s2_perception",
+      "at": {
+        "x": 2862,
+        "y": 92,
+        "z": 2961
+      },
+      "block": "minecraft:lectern",
+      "action": "sequence:ICI",
+      "quest": "C1"
+    },
+    {
+      "id": "concept_voir",
+      "site": "s2_perception",
+      "at": {
+        "x": 2866,
+        "y": 92,
+        "z": 2961
+      },
+      "block": "minecraft:lectern",
+      "action": "sequence:VOIR",
+      "quest": "C1"
+    },
+    {
+      "id": "concept_lier",
+      "site": "s2_perception",
+      "at": {
+        "x": 2870,
+        "y": 92,
+        "z": 2961
+      },
+      "block": "minecraft:lectern",
+      "action": "sequence:LIER",
+      "quest": "C1"
+    },
+    {
+      "id": "concept_ailleurs",
+      "site": "s2_perception",
+      "at": {
+        "x": 2874,
+        "y": 92,
+        "z": 2961
+      },
+      "block": "minecraft:lectern",
+      "action": "sequence:AILLEURS",
+      "quest": "C1"
+    },
+    {
+      "id": "concept_entendre",
+      "site": "s2_perception",
+      "at": {
+        "x": 2862,
+        "y": 92,
+        "z": 2964
+      },
+      "block": "minecraft:lectern",
+      "action": "sequence:ENTENDRE",
+      "quest": "C1"
+    },
+    {
+      "id": "concept_repeter",
+      "site": "s2_perception",
+      "at": {
+        "x": 2866,
+        "y": 92,
+        "z": 2964
+      },
+      "block": "minecraft:lectern",
+      "action": "sequence:REPETER",
+      "quest": "C1"
+    },
+    {
+      "id": "concept_partir",
+      "site": "s2_perception",
+      "at": {
+        "x": 2870,
+        "y": 92,
+        "z": 2964
+      },
+      "block": "minecraft:lectern",
+      "action": "sequence:PARTIR",
+      "quest": "C1"
+    },
+    {
+      "id": "s2_repair_a_explore",
+      "site": "s2_repair_a",
+      "at": {
+        "x": 2816,
+        "y": 102,
+        "z": 3338
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign explore REPAIR",
+      "quest": "D3"
+    },
+    {
+      "id": "s2_repair_a_work",
+      "site": "s2_repair_a",
+      "at": {
+        "x": 2820,
+        "y": 102,
+        "z": 3338
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign work REPAIR",
+      "quest": "D3"
+    },
+    {
+      "id": "s2_repair_b_explore",
+      "site": "s2_repair_b",
+      "at": {
+        "x": 2816,
+        "y": 102,
+        "z": 3346
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign explore REPAIR",
+      "quest": "D3"
+    },
+    {
+      "id": "s2_repair_b_work",
+      "site": "s2_repair_b",
+      "at": {
+        "x": 2820,
+        "y": 102,
+        "z": 3346
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign work REPAIR",
+      "quest": "D3"
+    },
+    {
+      "id": "s2_detour_a_explore",
+      "site": "s2_detour_a",
+      "at": {
+        "x": 2832,
+        "y": 102,
+        "z": 3338
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign explore DETOUR",
+      "quest": "D3"
+    },
+    {
+      "id": "s2_detour_a_work",
+      "site": "s2_detour_a",
+      "at": {
+        "x": 2836,
+        "y": 102,
+        "z": 3338
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign work DETOUR",
+      "quest": "D3"
+    },
+    {
+      "id": "s2_detour_b_explore",
+      "site": "s2_detour_b",
+      "at": {
+        "x": 2832,
+        "y": 101,
+        "z": 3346
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign explore DETOUR",
+      "quest": "D3"
+    },
+    {
+      "id": "s2_detour_b_work",
+      "site": "s2_detour_b",
+      "at": {
+        "x": 2836,
+        "y": 101,
+        "z": 3346
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign work DETOUR",
+      "quest": "D3"
+    },
+    {
+      "id": "departure_trace",
+      "site": "s2_repair_a",
+      "at": {
+        "x": 2816,
+        "y": 102,
+        "z": 3339
+      },
+      "block": "minecraft:chest",
+      "action": "inspect departure_trace",
+      "quest": "D2"
+    },
+    {
+      "id": "s2_signal_region_a_listen",
+      "site": "s2_signal_region_a",
+      "at": {
+        "x": 2870,
+        "y": 91,
+        "z": 2980
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign listen",
+      "quest": "E1"
+    },
+    {
+      "id": "s2_signal_region_a_record",
+      "site": "s2_signal_region_a",
+      "at": {
+        "x": 2866,
+        "y": 91,
+        "z": 2980
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign record_signal",
+      "quest": "E1"
+    },
+    {
+      "id": "s2_signal_region_b_listen",
+      "site": "s2_signal_region_b",
+      "at": {
+        "x": 2986,
+        "y": 96,
+        "z": 3386
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign listen",
+      "quest": "E1"
+    },
+    {
+      "id": "s2_signal_region_b_record",
+      "site": "s2_signal_region_b",
+      "at": {
+        "x": 2982,
+        "y": 96,
+        "z": 3386
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign record_signal",
+      "quest": "E1"
+    },
+    {
+      "id": "transmitter_action_0",
+      "site": "s2_transmitter",
+      "at": {
+        "x": 3027,
+        "y": 80,
+        "z": 3464
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign transmit FILTER",
+      "quest": "E3"
+    },
+    {
+      "id": "transmitter_action_1",
+      "site": "s2_transmitter",
+      "at": {
+        "x": 3029,
+        "y": 80,
+        "z": 3464
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign transmit AMPLIFY",
+      "quest": "E3"
+    },
+    {
+      "id": "transmitter_action_2",
+      "site": "s2_transmitter",
+      "at": {
+        "x": 3031,
+        "y": 80,
+        "z": 3464
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign repair_transmitter",
+      "quest": "R1"
+    },
+    {
+      "id": "transmitter_action_3",
+      "site": "s2_transmitter",
+      "at": {
+        "x": 3033,
+        "y": 80,
+        "z": 3464
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign record_transmission",
+      "quest": "F2"
+    },
+    {
+      "id": "retreat_action",
+      "site": "s2_retreat",
+      "at": {
+        "x": 3035,
+        "y": 86,
+        "z": 3370
+      },
+      "block": "minecraft:lectern",
+      "action": "campaign reach_retreat",
+      "quest": "R1"
+    },
+    {
+      "id": "memory_journal",
+      "site": "s2_memory",
+      "at": {
+        "x": 2929,
+        "y": 92,
+        "z": 2962
+      },
+      "block": "minecraft:lectern",
+      "action": "journal",
+      "quest": "F3"
+    },
+    {
+      "id": "document_daily_1",
+      "site": "s2_old_camp",
+      "at": {
+        "x": 2892,
+        "y": 88,
+        "z": 3142
+      },
+      "block": "minecraft:lectern",
+      "action": "inspect daily_1",
+      "quest": "A1"
+    },
+    {
+      "id": "document_daily_2",
+      "site": "s2_old_camp",
+      "at": {
+        "x": 2895,
+        "y": 88,
+        "z": 3139
+      },
+      "block": "minecraft:lectern",
+      "action": "inspect daily_2",
+      "quest": "A1"
+    },
+    {
+      "id": "document_signature",
+      "site": "s2_old_camp",
+      "at": {
+        "x": 2897,
+        "y": 88,
+        "z": 3139
+      },
+      "block": "minecraft:lectern",
+      "action": "inspect signature",
+      "quest": "A1"
+    },
+    {
+      "id": "document_other_camille",
+      "site": "s2_archive",
+      "at": {
+        "x": 2929,
+        "y": 91,
+        "z": 3494
+      },
+      "block": "minecraft:lectern",
+      "action": "inspect other_camille",
+      "quest": "A2"
+    },
+    {
+      "id": "document_other_story_1",
+      "site": "s2_old_shelter",
+      "at": {
+        "x": 2755,
+        "y": 95,
+        "z": 3240
+      },
+      "block": "minecraft:lectern",
+      "action": "inspect other_story_1",
+      "quest": "A3"
+    },
+    {
+      "id": "document_other_story_2",
+      "site": "s2_archive",
+      "at": {
+        "x": 2931,
+        "y": 91,
+        "z": 3493
+      },
+      "block": "minecraft:lectern",
+      "action": "inspect other_story_2",
+      "quest": "A3"
+    },
+    {
+      "id": "document_departure_1",
+      "site": "s2_archive",
+      "at": {
+        "x": 2933,
+        "y": 91,
+        "z": 3493
+      },
+      "block": "minecraft:lectern",
+      "action": "inspect departure_1",
+      "quest": "D2"
+    },
+    {
+      "id": "document_departure_2",
+      "site": "s2_old_shelter",
+      "at": {
+        "x": 2757,
+        "y": 95,
+        "z": 3239
+      },
+      "block": "minecraft:lectern",
+      "action": "inspect departure_2",
+      "quest": "D2"
+    },
+    {
+      "id": "document_signal_original",
+      "site": "s2_transmitter",
+      "at": {
+        "x": 3026,
+        "y": 80,
+        "z": 3466
+      },
+      "block": "minecraft:lectern",
+      "action": "inspect signal_original",
+      "quest": "E2"
+    },
+    {
+      "id": "document_signal_masked",
+      "site": "s2_transmitter",
+      "at": {
+        "x": 3029,
+        "y": 80,
+        "z": 3463
+      },
+      "block": "minecraft:lectern",
+      "action": "inspect signal_masked",
+      "quest": "E2"
+    }
+  ],
+  "zones": [
+    {
+      "id": "s2_arrival",
+      "minX": 2886,
+      "minY": 59,
+      "minZ": 2765,
+      "maxX": 2924,
+      "maxY": 73,
+      "maxZ": 2803,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_shore",
+      "minX": 2922,
+      "minY": 63,
+      "minZ": 2778,
+      "maxX": 2934,
+      "maxY": 77,
+      "maxZ": 2790,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_camp",
+      "minX": 2910,
+      "minY": 86,
+      "minZ": 2940,
+      "maxX": 2922,
+      "maxY": 100,
+      "maxZ": 2952,
+      "playerBuild": true
+    },
+    {
+      "id": "s2_signal",
+      "minX": 2885,
+      "minY": 86,
+      "minZ": 2899,
+      "maxX": 2907,
+      "maxY": 100,
+      "maxZ": 2921,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_old_camp",
+      "minX": 2889,
+      "minY": 82,
+      "minZ": 3135,
+      "maxX": 2903,
+      "maxY": 96,
+      "maxZ": 3149,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_archive",
+      "minX": 2925,
+      "minY": 85,
+      "minZ": 3489,
+      "maxX": 2939,
+      "maxY": 99,
+      "maxZ": 3503,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_old_shelter",
+      "minX": 2751,
+      "minY": 89,
+      "minZ": 3235,
+      "maxX": 2765,
+      "maxY": 103,
+      "maxZ": 3249,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_perception",
+      "minX": 2858,
+      "minY": 85,
+      "minZ": 2948,
+      "maxX": 2878,
+      "maxY": 99,
+      "maxZ": 2968,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_repair_a",
+      "minX": 2814,
+      "minY": 96,
+      "minZ": 3334,
+      "maxX": 2822,
+      "maxY": 110,
+      "maxZ": 3342,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_repair_b",
+      "minX": 2814,
+      "minY": 96,
+      "minZ": 3342,
+      "maxX": 2822,
+      "maxY": 110,
+      "maxZ": 3350,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_detour_a",
+      "minX": 2830,
+      "minY": 96,
+      "minZ": 3334,
+      "maxX": 2838,
+      "maxY": 110,
+      "maxZ": 3342,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_detour_b",
+      "minX": 2830,
+      "minY": 95,
+      "minZ": 3342,
+      "maxX": 2838,
+      "maxY": 109,
+      "maxZ": 3350,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_signal_region_a",
+      "minX": 2864,
+      "minY": 85,
+      "minZ": 2976,
+      "maxX": 2872,
+      "maxY": 99,
+      "maxZ": 2984,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_signal_region_b",
+      "minX": 2980,
+      "minY": 90,
+      "minZ": 3382,
+      "maxX": 2988,
+      "maxY": 104,
+      "maxZ": 3390,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_transmitter",
+      "minX": 3023,
+      "minY": 74,
+      "minZ": 3459,
+      "maxX": 3037,
+      "maxY": 88,
+      "maxZ": 3473,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_retreat",
+      "minX": 3026,
+      "minY": 80,
+      "minZ": 3364,
+      "maxX": 3038,
+      "maxY": 94,
+      "maxZ": 3376,
+      "playerBuild": false
+    },
+    {
+      "id": "s2_memory",
+      "minX": 2927,
+      "minY": 86,
+      "minZ": 2957,
+      "maxX": 2937,
+      "maxY": 100,
+      "maxZ": 2967,
+      "playerBuild": false
+    }
+  ],
+  "editable": [
+    {
+      "at": {
+        "x": 2818,
+        "y": 101,
+        "z": 3338
+      },
+      "option": "REPAIR"
+    },
+    {
+      "at": {
+        "x": 2818,
+        "y": 101,
+        "z": 3346
+      },
+      "option": "REPAIR"
+    },
+    {
+      "at": {
+        "x": 2834,
+        "y": 101,
+        "z": 3338
+      },
+      "option": "DETOUR"
+    },
+    {
+      "at": {
+        "x": 2834,
+        "y": 100,
+        "z": 3346
+      },
+      "option": "DETOUR"
+    }
+  ],
+  "frames": [
+    {
+      "site": "s2_arrival",
+      "uuid": "96212dc3-e0f2-51ff-9027-ea07c2864562",
+      "slot": 0,
+      "purpose": "motif",
+      "at": {
+        "x": 2902,
+        "y": 67,
+        "z": 2787
+      }
+    },
+    {
+      "site": "s2_camp",
+      "uuid": "7504ccf1-38f2-50a2-8c5e-f6d1ad208303",
+      "slot": 0,
+      "purpose": "memory_local",
+      "at": {
+        "x": 2919,
+        "y": 94,
+        "z": 2949
+      }
+    },
+    {
+      "site": "s2_old_camp",
+      "uuid": "5e1133d2-2fc6-5724-8231-9fedde325f34",
+      "slot": 0,
+      "purpose": "motif",
+      "at": {
+        "x": 2892,
+        "y": 90,
+        "z": 3145
+      }
+    },
+    {
+      "site": "s2_old_shelter",
+      "uuid": "84bf8aa9-fc87-59ec-83f5-e75bf71c54c2",
+      "slot": 0,
+      "purpose": "arrangement",
+      "at": {
+        "x": 2757,
+        "y": 96,
+        "z": 3243
+      }
+    },
+    {
+      "site": "s2_old_shelter",
+      "uuid": "6d2cc694-02b6-5d9d-aad3-c466c62273ba",
+      "slot": 1,
+      "purpose": "arrangement",
+      "at": {
+        "x": 2758,
+        "y": 96,
+        "z": 3243
+      }
+    },
+    {
+      "site": "s2_old_shelter",
+      "uuid": "44baa573-4d10-5c5d-a528-93100ece3e70",
+      "slot": 2,
+      "purpose": "arrangement",
+      "at": {
+        "x": 2759,
+        "y": 96,
+        "z": 3243
+      }
+    },
+    {
+      "site": "s2_memory",
+      "uuid": "d0418e98-afd0-5592-88e4-afeec0ef653e",
+      "slot": 0,
+      "purpose": "memory_central",
+      "at": {
+        "x": 2932,
+        "y": 94,
+        "z": 2965
+      }
+    },
+    {
+      "site": "s2_archive",
+      "uuid": "4407d2e6-1f39-5401-84e2-6222d67c3fe7",
+      "slot": 0,
+      "purpose": "memory_local",
+      "at": {
+        "x": 2935,
+        "y": 93,
+        "z": 3499
+      }
+    },
+    {
+      "site": "s2_old_shelter",
+      "uuid": "3ce408f1-d959-5c0b-86e0-95dc5420a4e6",
+      "slot": 0,
+      "purpose": "memory_local",
+      "at": {
+        "x": 2762,
+        "y": 97,
+        "z": 3245
+      }
+    }
+  ],
+  "repairPoint": {
+    "x": 3034,
+    "y": 81,
+    "z": 3466
+  },
+  "signalIndicator": {
+    "x": 3030,
+    "y": 83,
+    "z": 3469
+  }
+}

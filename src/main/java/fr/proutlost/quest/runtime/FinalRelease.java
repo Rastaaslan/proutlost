@@ -29,6 +29,7 @@ public final class FinalRelease {
         }
         if(!data.actions().passageVerified(data.state()))return;
         if(server.getPlayerList().getPlayers().isEmpty()||!core.convergenceReady("F4",now))return;
+        if(!CampaignPhysicalRuntime.clearSignal(server))return;
         fr.proutlost.ambient.AmbientRuntime.suppress(server,data.routineLocations());
         data.actions().confirmRelease(data.state(),server.getPlayerList().getPlayers().getFirst().getUUID(),true,true,!data.actions().transmissionMode().isEmpty(),now);
         data.setDirty();

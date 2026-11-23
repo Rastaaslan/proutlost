@@ -25,6 +25,9 @@ public final class CampaignActions {
     private long retreatAt=-1;
     private boolean disturbed,repaired,released;
     public boolean released(){return released;}
+    public boolean disturbed(){return disturbed;}
+    public boolean repaired(){return repaired;}
+    public Optional<Interactions.Arrangement> recordedArrangement(CampaignState state){return state.arrangement(arrangementId);}
     private final Set<UUID> heardFinal=new HashSet<>();
     public void recordArrangement(CampaignState state,Interactions.Arrangement arrangement,String id){
         Investigation.requireAccessible(state.core(),"B2",arrangement.authors().iterator().next());
@@ -52,6 +55,7 @@ public final class CampaignActions {
         emit(state.core(),"ANCIENT_ARRANGEMENT",player,location,now);emit(state.core(),"EXACT_ARRANGEMENT_COMPARISON",player,location,now);return true;
     }
     public String dailyScene(CampaignState state,UUID player,String location,String recentDetail,long now){
+        if(released)throw new IllegalStateException("Routine released");
         Investigation.requireAccessible(state.core(),"D1",player);
         if(lastOccurrence.containsKey(player)&&now-lastOccurrence.get(player)<calibration.sceneIntervalMillis())throw new IllegalStateException("Wait between occurrences");
         lastOccurrence.put(player,now);int occurrence=dailyOccurrences.merge(player,1,Integer::sum);

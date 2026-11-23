@@ -43,6 +43,7 @@ public final class EarlyInteractions {
                 else if(support.equals("camp_motif")){kind=PreparedSites.Kind.OLD_CAMP;type="OLD_CAMP_MOTIF";}
                 else return say(p,"Support inconnu.");
                 var d=data(p);var site=d.sites().near(p,kind,6);if(site.isEmpty())return say(p,"Approchez le support préparé.");
+                CampaignPhysicalRuntime.requireSupport(p,"examine "+support,site.get().getKey());
                 String id=EvidenceArguments.documentId(p.getUUID(),support,site.get().getKey());
                 if(d.core().evidence(p.getUUID(),id).isEmpty()){
                     d.core().observe(new QuestCore.Observation(id,p.getUUID(),type,Investigation.text("early.examine.observation"),site.get().getKey(),System.currentTimeMillis()));

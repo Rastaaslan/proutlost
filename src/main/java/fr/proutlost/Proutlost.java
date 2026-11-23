@@ -85,6 +85,15 @@ public final class Proutlost {
         NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.PerceptionDelivery::stopped);
         NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.Arrivals::register);
         NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.Arrivals::joined);
+        NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.CampaignPhysicalRuntime::started);
+        NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.CampaignPhysicalRuntime::stopped);
+        NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.CampaignPhysicalRuntime::use);
+        NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.CampaignPhysicalRuntime::readFrame);
+        NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.CampaignPhysicalRuntime::breaking);
+        NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.CampaignPhysicalRuntime::placing);
+        NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.CampaignPhysicalRuntime::exploding);
+        NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.CampaignPhysicalRuntime::piston);
+        NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.CampaignPhysicalRuntime::tick);
         container.registerConfig(ModConfig.Type.SERVER, fr.proutlost.ambient.AmbientRuntime.SPEC, "proutlost-ambient-server.toml");
         NeoForge.EVENT_BUS.addListener(fr.proutlost.ambient.AmbientRuntime::tick);
         NeoForge.EVENT_BUS.addListener(fr.proutlost.quest.runtime.QuestRuntime::routine);

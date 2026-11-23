@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "status": "PHYSICALLY_INSTALLED_AND_QUEST_BOUND",
+  "worldToken": "ea3a0e27-5af3-5833-bfcc-418d6810f381",
+  "manifest_sha256": "662f2c4c01b568fd3040bfdab37bb9853d698e24b257feaa0d1a794f1b7d1c6f",
+  "actual_native_changes": 2,
+  "sites": 17,
+  "supports": 48,
+  "new_chunks_generated": 0,
+  "original_spawn": "2048, 127, 2048",
+  "main_jar_sha256": "f134422ae42cf982d25c99acc7f48235ba9d636eb064d8d43ef4b8454534ec0f",
+  "SDK_jar_sha256": "41ac0a7b2f783ce854a085507c6d30d2c2fa6beecb46947d5bfc7c2bf5be66e6",
+  "full_qualification": false,
+  "short_progression_check": "PENDING"
+}

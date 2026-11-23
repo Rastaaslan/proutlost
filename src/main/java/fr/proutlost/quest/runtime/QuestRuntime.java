@@ -18,7 +18,9 @@ public final class QuestRuntime {
     private QuestRuntime() {}
     public static QuestSavedData data(MinecraftServer server) {
         var data=server.overworld().getDataStorage().computeIfAbsent(QuestSavedData.FACTORY,QuestSavedData.FILE_ID);
+        CampaignPhysicalRuntime.ensure(server,data);
         ActionReadiness.refresh(data.core(),data.sites(),fr.proutlost.ambient.AmbientRuntime.ENABLED.get());
+        if(!CampaignPhysicalRuntime.healthy(server))data.core().actionReadiness(id->false);
         data.actions().configure(new fr.proutlost.quest.content.CampaignActions.Calibration(QuestConfig.SCENE_INTERVAL_SECONDS.get()*1000L,QuestConfig.TRANSMISSION_INTERVAL_SECONDS.get()*1000L,QuestConfig.STABILIZATION_SECONDS.get()*1000L,QuestConfig.WORK_CONTRIBUTORS.get()));
         return data;
     }

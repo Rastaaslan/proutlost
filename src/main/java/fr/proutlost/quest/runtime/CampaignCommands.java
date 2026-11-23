@@ -45,7 +45,7 @@ public final class CampaignCommands {
                     var arrangement=Interactions.recordArrangement(site.getKey(),slots,Set.of(p.getUUID()),now,admissible);
                     actions.recordArrangement(d.state(),arrangement,UUID.randomUUID().toString());
                 }
-                case "ancient_arrangement"->{var site=d.sites().near(p,PreparedSites.Kind.OLD_SHELTER,6).orElseThrow();var o=actions.examineAncientArrangement(d.state(),p.getUUID(),site.getKey(),now);result="Trace ancienne : "+o.text()+"\n"+EvidenceArguments.quoted(o.id());}
+                case "ancient_arrangement"->{var site=d.sites().near(p,PreparedSites.Kind.OLD_SHELTER,6).orElseThrow();fr.proutlost.quest.content.Investigation.requireAccessible(core,"B3",p.getUUID());CampaignPhysicalRuntime.ancientArrangement(p,d,site.getKey());var o=actions.examineAncientArrangement(d.state(),p.getUUID(),site.getKey(),now);result="Trace ancienne : "+o.text()+"\n"+EvidenceArguments.quoted(o.id());}
                 case "prepare_arrangement"->actions.prepareArrangement(d.state(),p.getUUID(),StringArgumentType.getString(c,"observation"));
                 case "compare_arrangement"->{var site=d.sites().near(p,PreparedSites.Kind.OLD_SHELTER,6).orElseThrow();result=actions.compareArrangement(d.state(),p.getUUID(),site.getKey(),now)?"La trace ancienne correspond exactement à votre arrangement.":"PARTIAL_RESPONSE";}
                 case "observe_scene"->{var site=d.sites().near(p,PreparedSites.Kind.CAMP,6).orElseThrow();result=actions.dailyScene(d.state(),p.getUUID(),site.getKey(),actions.recentArrangement(),now);p.playNotifySound(SoundEvents.WOOD_STEP,SoundSource.AMBIENT,.5f,1f);}
@@ -63,10 +63,10 @@ public final class CampaignCommands {
                     var site=d.sites().near(p,PreparedSites.Kind.TRANSMITTER,6).orElseThrow();
                     if(d.sites().sites().values().stream().noneMatch(s->s.kind()==PreparedSites.Kind.RETREAT))throw new IllegalStateException("Prepare a retreat");
                     String option=StringArgumentType.getString(c,"option");result=actions.transmit(d.state(),p.getUUID(),option,site.getKey(),new java.security.SecureRandom().nextDouble()<QuestConfig.AMPLIFY_PERTURBATION_PROBABILITY.get(),now);
-                    p.playNotifySound(SoundEvents.NOTE_BLOCK_FLUTE.value(),SoundSource.AMBIENT,.7f,.8f);
+                    CampaignPhysicalRuntime.damageTransmitter(p,d);p.playNotifySound(SoundEvents.NOTE_BLOCK_FLUTE.value(),SoundSource.AMBIENT,.7f,.8f);
                 }
                 case "reach_retreat"->{var site=d.sites().near(p,PreparedSites.Kind.RETREAT,6).orElseThrow();actions.reachRetreat(d.state(),p.getUUID(),site.getKey(),now);}
-                case "repair_transmitter"->{var site=d.sites().near(p,PreparedSites.Kind.TRANSMITTER,6).orElseThrow();var stack=p.getMainHandItem();if(actions.repair(d.state(),p.getUUID(),site.getKey(),stack.is(ItemTags.PLANKS),now)){stack.shrink(1);QuestRuntime.played(p,d,now);}}
+                case "repair_transmitter"->{var site=d.sites().near(p,PreparedSites.Kind.TRANSMITTER,6).orElseThrow();var stack=p.getMainHandItem();if(actions.repair(d.state(),p.getUUID(),site.getKey(),stack.is(ItemTags.PLANKS)&&CampaignPhysicalRuntime.repairReady(p),now)){stack.shrink(1);QuestRuntime.played(p,d,now);}}
                 case "record_transmission"->{var site=d.sites().near(p,PreparedSites.Kind.TRANSMITTER,6).orElseThrow();actions.recordFinalTransmission(d.state(),p.getUUID(),site.getKey(),now);}
                 case "final_link"->actions.finalLink(d.state(),p.getUUID(),StringArgumentType.getString(c,"first"),StringArgumentType.getString(c,"second"),now);
                 case "final_evolve"->{var site=d.sites().sites().entrySet().stream().filter(e->Set.of(PreparedSites.Kind.PASSAGE,PreparedSites.Kind.DETOUR).contains(e.getValue().kind())&&e.getValue().near(p,6)).findFirst().orElseThrow();

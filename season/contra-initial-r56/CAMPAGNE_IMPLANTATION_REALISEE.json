@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "candidate": "R56",
+  "baseline_preserved": "R55/a26225df78e63f819b9ce4a8d758947d46541f6e",
+  "author_decision": "PLS2-S2-AUTHOR-20261123-CAMPAIGN-IMPLANTATION",
+  "status": "PHYSICALLY_IMPLEMENTED_AND_REAL_DIRECTOR_IMPORTED",
+  "actual_prepared_sites": 17,
+  "actual_supports": 48,
+  "planned_native_cells": 9104,
+  "existing_model_assets_reused": 4,
+  "terrain_route_links": 13,
+  "canonical_quest_definitions": 27,
+  "quest_scope": "SERVER_UNCHANGED",
+  "narrative_edits": false,
+  "D0_entries": 28,
+  "D0_revision": 2,
+  "D0_frozen_R55_adapters_reused": true,
+  "bounded_legacy_emprises": [
+    {
+      "location_id": "04b401a5-a661-3213-a950-595056d56363",
+      "full_cells": 12493,
+      "functional_windows": 10
+    },
+    {
+      "location_id": "e1c768fe-4b12-3ca4-b61b-044f3bec770d",
+      "full_cells": 3756258,
+      "functional_windows": 4
+    }
+  ],
+  "remaining_physical_blockers": [],
+  "short_progression_check": "See delivered actual check result",
+  "full_campaign_walkthrough": false,
+  "FULLSTACK_ACCEPTED": false
+}
